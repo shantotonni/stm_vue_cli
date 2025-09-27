@@ -49,27 +49,48 @@
             <span class="menu-icon">📚</span>
             <span class="menu-label">Academics</span>
           </router-link>
-<!--          <a href="#" class="menu-item" @click="showSection('attendance')">-->
-<!--            <span class="menu-icon">📅</span>-->
-<!--            <span class="menu-label">Attendance</span>-->
-<!--          </a>-->
-<!--          <a href="#" class="menu-item" @click="showSection('examinations')">-->
-<!--            <span class="menu-icon">📝</span>-->
-<!--            <span class="menu-label">Examinations</span>-->
-<!--          </a>-->
         </div>
 
-<!--        <div class="menu-section">-->
-<!--          <div class="menu-title">Clinical</div>-->
-<!--          <a href="#" class="menu-item" @click="showSection('skills')">-->
-<!--            <span class="menu-icon">💉</span>-->
-<!--            <span class="menu-label">Skills Assessment</span>-->
-<!--          </a>-->
-<!--          <a href="#" class="menu-item" @click="showSection('case-studies')">-->
-<!--            <span class="menu-icon">📋</span>-->
-<!--            <span class="menu-label">Case Studies</span>-->
-<!--          </a>-->
-<!--        </div>-->
+        <div class="menu-section">
+          <div class="menu-item cursor-pointer" @click="toggleDropdown('skills-cases')">
+            <span class="menu-icon">💉</span>
+            <span class="menu-label">Skills & Cases</span>
+            <span class="ml-auto" :class="{ 'rotate-180': openMenu === 'skills-cases' }">▼</span>
+          </div>
+
+          <!-- Dropdown Submenu -->
+          <transition name="fade">
+            <div v-if="openMenu === 'skills-cases'" class="pl-6 flex flex-col space-y-2 mt-2">
+              <a href="#" class="submenu-item" @click="showSection('skills')">
+                🩺 Skills Assessment
+              </a>
+              <a href="#" class="submenu-item" @click="showSection('case-studies')">
+                📋 Case Studies
+              </a>
+            </div>
+          </transition>
+        </div>
+
+        <div class="menu-section">
+          <div class="menu-item cursor-pointer" @click="toggleDropdown('resources')">
+            <span class="menu-icon">💉</span>
+            <span class="menu-label">Resources</span>
+            <span class="ml-auto" :class="{ 'rotate-180': openMenu === 'resources' }">▼</span>
+          </div>
+
+          <!-- Dropdown Submenu -->
+          <transition name="fade">
+            <div v-if="openMenu === 'resources'"  class="pl-6 flex flex-col space-y-2 mt-2">
+              <a href="#" class="submenu-item" @click="showSection('skills')">
+                📖 E-Library
+              </a>
+              <a href="#" class="submenu-item" @click="showSection('case-studies')">
+                🔬 Research Papers
+              </a>
+            </div>
+          </transition>
+        </div>
+
 
         <div class="menu-section">
           <div class="menu-title">Resources</div>
@@ -152,12 +173,14 @@ export default {
     return {
       studentName: "Demo Student",
       isSidebarOpen: false,
+      openMenu: null,
     };
   },
   computed: {
     ...mapGetters(["currentUser"]),
     canShowSidebar() {
       let is_change_password = localStorage.getItem("is_change_password")
+      console.log(is_change_password)
       return is_change_password === "Y"
     },
     user() {
@@ -173,9 +196,9 @@ export default {
       sidebar.classList.toggle('active');
     },
     logout() {
-      localStorage.removeItem("token");
-      localStorage.setItem("is_change_password", "");
-      this.$router.push({ name: "Login" });
+      localStorage.removeItem('token');
+      localStorage.setItem('is_change_password', '');
+      this.$router.push({ name: 'Login' });
     },
    showSection(section) {
       document.querySelectorAll('.menu-item').forEach(item => {
@@ -198,19 +221,50 @@ export default {
    toggleUserMenu() {
       console.log('User menu clicked');
     },
-    srtName(currentUser){
-      if (!currentUser || !currentUser.name) return "";
-      return currentUser.name
-          .trim()
-          .split(" ")
-          .filter(word => word.length > 0)
-          .map(word => word[0].toUpperCase())
-          .join("");
-    }
+   srtName(currentUser){
+    if (!currentUser || !currentUser.name) return "";
+    return currentUser.name
+        .trim()
+        .split(" ")
+        .filter(word => word.length > 0)
+        .map(word => word[0].toUpperCase())
+        .join("");
+   },
+    toggleDropdown(menuKey) {
+      this.openMenu = this.openMenu === menuKey ? null : menuKey;
+    },
 },
 }
 </script>
 
 <style scoped>
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: background 0.3s;
+}
+
+.submenu-item {
+  display: block;
+  padding: 8px 40px;
+  border-radius: 6px;
+  transition: background 0.3s;
+}
+.submenu-item:hover {
+  background: #e5e7eb;
+}
+
+/* Simple fade transition */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
 
 </style>
