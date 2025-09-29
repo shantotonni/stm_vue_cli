@@ -1,5 +1,5 @@
 import axios from "axios";
-import router from "@/router";
+//import router from "@/router";
 const api = axios.create({
     //baseURL: "https://backendevaluation.mcwh.online/api/",
      baseURL: "http://127.0.0.1:8000/api/",
@@ -18,7 +18,7 @@ api.interceptors.response.use(
     (error) => {
         if (error.response && error.response.status === 401) {
             localStorage.removeItem("token");
-            router.push("/login");
+            //router.push("/login");
         }
         return Promise.reject(error);
     }

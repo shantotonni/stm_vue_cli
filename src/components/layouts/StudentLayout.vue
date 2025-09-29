@@ -71,86 +71,85 @@
           </transition>
         </div>
 
-        <div class="menu-section">
-          <div class="menu-item cursor-pointer" @click="toggleDropdown('resources')">
-            <span class="menu-icon">💉</span>
-            <span class="menu-label">Resources</span>
-            <span class="ml-auto" :class="{ 'rotate-180': openMenu === 'resources' }">▼</span>
-          </div>
+<!--        <div class="menu-section">-->
+<!--          <div class="menu-item cursor-pointer" @click="toggleDropdown('resources')">-->
+<!--            <span class="menu-icon">💉</span>-->
+<!--            <span class="menu-label">Resources</span>-->
+<!--            <span class="ml-auto" :class="{ 'rotate-180': openMenu === 'resources' }">▼</span>-->
+<!--          </div>-->
 
-          <!-- Dropdown Submenu -->
-          <transition name="fade">
-            <div v-if="openMenu === 'resources'"  class="pl-6 flex flex-col space-y-2 mt-2">
-              <a href="#" class="submenu-item" @click="showSection('skills')">
-                📖 E-Library
-              </a>
-              <a href="#" class="submenu-item" @click="showSection('case-studies')">
-                🔬 Research Papers
-              </a>
-            </div>
-          </transition>
-        </div>
+<!--          &lt;!&ndash; Dropdown Submenu &ndash;&gt;-->
+<!--          <transition name="fade">-->
+<!--            <div v-if="openMenu === 'resources'"  class="pl-6 flex flex-col space-y-2 mt-2">-->
+<!--              <a href="#" class="submenu-item" @click="showSection('skills')">-->
+<!--                📖 E-Library-->
+<!--              </a>-->
+<!--              <a href="#" class="submenu-item" @click="showSection('case-studies')">-->
+<!--                🔬 Research Papers-->
+<!--              </a>-->
+<!--            </div>-->
+<!--          </transition>-->
+<!--        </div>-->
 
-
-        <div class="menu-section">
-          <div class="menu-title">Resources</div>
-          <router-link to="/e-learning" class="menu-item" @click="showSection('library')">
-            <span class="menu-icon">📖</span>
-            <span class="menu-label">E-Library</span>
-          </router-link>
-          <a href="#" class="menu-item" @click="showSection('research')">
-            <span class="menu-icon">🔬</span>
-            <span class="menu-label">Research Papers</span>
-          </a>
-<!--          <a href="#" class="menu-item" @click="showSection('videos')">-->
-<!--            <span class="menu-icon">🎥</span>-->
-<!--            <span class="menu-label">Video Lectures</span>-->
+<!--        <div class="menu-section">-->
+<!--          <div class="menu-title">Resources</div>-->
+<!--          <router-link to="/e-learning" class="menu-item" @click="showSection('library')">-->
+<!--            <span class="menu-icon">📖</span>-->
+<!--            <span class="menu-label">E-Library</span>-->
+<!--          </router-link>-->
+<!--          <a href="#" class="menu-item" @click="showSection('research')">-->
+<!--            <span class="menu-icon">🔬</span>-->
+<!--            <span class="menu-label">Research Papers</span>-->
 <!--          </a>-->
-        </div>
+<!--&lt;!&ndash;          <a href="#" class="menu-item" @click="showSection('videos')">&ndash;&gt;-->
+<!--&lt;!&ndash;            <span class="menu-icon">🎥</span>&ndash;&gt;-->
+<!--&lt;!&ndash;            <span class="menu-label">Video Lectures</span>&ndash;&gt;-->
+<!--&lt;!&ndash;          </a>&ndash;&gt;-->
+<!--        </div>-->
 
-        <div class="menu-section">
-          <div class="menu-title">Student Services</div>
-          <a href="#" class="menu-item" @click="showSection('fees')">
-            <span class="menu-icon">💳</span>
-            <span class="menu-label">Fee Management</span>
-          </a>
-          <a href="#" class="menu-item" @click="showSection('hostel')">
-            <span class="menu-icon">🏠</span>
-            <span class="menu-label">Hostel</span>
-          </a>
-          <a href="#" class="menu-item" @click="showSection('health')">
-            <span class="menu-icon">🏥</span>
-            <span class="menu-label">Health Records</span>
-          </a>
-          <a href="#" class="menu-item" @click="showSection('documents')">
-            <span class="menu-icon">📄</span>
-            <span class="menu-label">Documents</span>
-          </a>
-        </div>
+<!--        <div class="menu-section">-->
+<!--          <div class="menu-title">Student Services</div>-->
+<!--          <a href="#" class="menu-item" @click="showSection('fees')">-->
+<!--            <span class="menu-icon">💳</span>-->
+<!--            <span class="menu-label">Fee Management</span>-->
+<!--          </a>-->
+<!--          <a href="#" class="menu-item" @click="showSection('hostel')">-->
+<!--            <span class="menu-icon">🏠</span>-->
+<!--            <span class="menu-label">Hostel</span>-->
+<!--          </a>-->
+<!--          <a href="#" class="menu-item" @click="showSection('health')">-->
+<!--            <span class="menu-icon">🏥</span>-->
+<!--            <span class="menu-label">Health Records</span>-->
+<!--          </a>-->
+<!--          <a href="#" class="menu-item" @click="showSection('documents')">-->
+<!--            <span class="menu-icon">📄</span>-->
+<!--            <span class="menu-label">Documents</span>-->
+<!--          </a>-->
+<!--        </div>-->
 
-        <div class="menu-section">
-          <div class="menu-title">Communication</div>
-          <a href="#" class="menu-item" @click="showSection('announcements')">
-            <span class="menu-icon">📢</span>
-            <span class="menu-label">Announcements</span>
-          </a>
-          <a href="#" class="menu-item" @click="showSection('forums')">
-            <span class="menu-icon">💭</span>
-            <span class="menu-label">Forums</span>
-          </a>
-          <a href="#" class="menu-item" @click="showSection('support')">
-            <span class="menu-icon">🆘</span>
-            <span class="menu-label">Support</span>
-          </a>
-        </div>
+<!--        <div class="menu-section">-->
+<!--          <div class="menu-title">Communication</div>-->
+<!--          <a href="#" class="menu-item" @click="showSection('announcements')">-->
+<!--            <span class="menu-icon">📢</span>-->
+<!--            <span class="menu-label">Announcements</span>-->
+<!--          </a>-->
+<!--          <a href="#" class="menu-item" @click="showSection('forums')">-->
+<!--            <span class="menu-icon">💭</span>-->
+<!--            <span class="menu-label">Forums</span>-->
+<!--          </a>-->
+<!--          <a href="#" class="menu-item" @click="showSection('support')">-->
+<!--            <span class="menu-icon">🆘</span>-->
+<!--            <span class="menu-label">Support</span>-->
+<!--          </a>-->
+<!--        </div>-->
 
-        <div class="menu-section">
-          <div class="menu-title">Settings</div>
-          <router-link to="/change-password" class="menu-item" @click="showSection('changepassword')">
-            <span class="menu-icon">@</span>
-            <span class="menu-label">Change Password</span>
-          </router-link>
-        </div>
+<!--        <div class="menu-section">-->
+<!--          <div class="menu-title">Settings</div>-->
+<!--          <router-link to="/change-password" class="menu-item" @click="showSection('changepassword')">-->
+<!--            <span class="menu-icon">@</span>-->
+<!--            <span class="menu-label">Change Password</span>-->
+<!--          </router-link>-->
+<!--        </div>-->
 
         <div class="menu-section">
           <a href="#" class="menu-item" @click="logout()">
@@ -166,7 +165,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from 'vuex'
 export default {
   name: "StudentLayout",
   data() {
@@ -174,23 +173,32 @@ export default {
       studentName: "Demo Student",
       isSidebarOpen: false,
       openMenu: null,
+      collapsed: false
     };
   },
   computed: {
-    ...mapGetters(["currentUser"]),
+    ...mapGetters(["currentUser","userMenus"]),
     canShowSidebar() {
       let is_change_password = localStorage.getItem("is_change_password")
-      console.log(is_change_password)
       return is_change_password === "Y"
+    },
+    menus() {
+      console.log('okkkk')
+      return this.$store.getters.userMenus
     },
     user() {
       return this.$store.getters.currentUser;
     },
   },
+  created() {
+    this.fetchUserMenus()
+    this.loadUser()
+  },
   mounted() {
     //this.loadScript()
   },
   methods: {
+    ...mapActions(['fetchUserMenus','loadUser']),
     toggleSidebar() {
       const sidebar = document.getElementById('sidebar');
       sidebar.classList.toggle('active');

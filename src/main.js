@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import api from "./plugins/axios";
 import store from "./store";
+import '@fortawesome/fontawesome-free/css/all.min.css'
 
 
 import Toasted from 'vue-toasted'

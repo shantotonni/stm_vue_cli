@@ -6,8 +6,10 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
+        token: localStorage.getItem('token') || null,
         user: null,
-        token: null,
+        userMenus: [],
+        loading: false
     },
     mutations: {
         setUser(state, user) {
@@ -15,11 +17,26 @@ export default new Vuex.Store({
         },
         setToken(state, token) {
             state.token = token;
+            if (token) {
+                localStorage.setItem('token', token)
+                api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+            } else {
+                localStorage.removeItem('token')
+                delete api.defaults.headers.common['Authorization']
+            }
+        },
+        userMenus(state, menus) {
+            state.userMenus = menus
+        },
+        SET_LOADING(state, loading) {
+            state.loading = loading
         },
         logout(state) {
-            state.user = null;
-            state.token = null;
-            localStorage.removeItem("token");
+            state.token = null
+            state.user = null
+            state.userMenus = []
+            localStorage.removeItem('token')
+            delete api.defaults.headers.common['Authorization']
         },
     },
     actions: {
@@ -54,14 +71,47 @@ export default new Vuex.Store({
                 }
             }
         },
+        async fetchUserMenus({ commit }) {
+            try {
+                const response = await api.get('/get-user-menu')
+                commit('userMenus', response.data.menus)
+            } catch (error) {
+                console.error('Failed to fetch user menus:', error)
+            }
+        },
+        async refreshToken({ commit, state }) {
+            if (!state.token) return
+            try {
+                const response = await api.post('/auth/refresh')
+                commit('setToken', response.data.token)
+                return response.data
+            } catch (error) {
+                commit('logout')
+                throw error
+            }
+        },
         logout({ commit }) {
             commit("logout");
             localStorage.removeItem("token");
         },
     },
     getters: {
+        isAuthenticated: state => !!state.token,
+        user: state => state.user,
+        token: state => state.token,
+        loading: state => state.loading,
+        hasPermission: (state) => (permission) => {
+            return state.user && state.user.permissions.includes(permission)
+        },
+        hasRole: (state) => (role) => {
+            return state.user && state.user.role === role
+        },
+        userType: state => state.user ? state.user.user_type : null,
         currentUser(state) {
             return state.user;
+        },
+        userMenus(state) {
+            return state.userMenus;
         },
         isLoggedIn(state) {
             return !!state.token;

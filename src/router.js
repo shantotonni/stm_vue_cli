@@ -10,6 +10,9 @@ import Academics from './views/academics/Academics.vue'
 
 import ELearning from './views/elearning/ELearning.vue'
 
+// settings
+import Profile from './views/settings/Profile'
+
 Vue.use(Router)
 
 const router = new Router({
@@ -21,14 +24,13 @@ const router = new Router({
             component: StudentLayout,
             redirect: {name: 'Dashboard'},
             children: [
-                { path: '/dashboard', name: 'Dashboard', component: Dashboard },
-                { path: '/survey', name: 'SurveyForm', component: SurveyForm },
-                { path: '/one-time-password-change', name: 'OneTimePasswordChange', component: OneTimePasswordChange },
-                { path: '/change-password', name: 'PasswordChange', component: PasswordChange },
-                //for academics route
-                { path: '/academics', name: 'Academics', component: Academics },
-                //e-learning
-                { path: '/e-learning', name: 'ELearning', component: ELearning },
+                { path: 'dashboard', name: 'Dashboard', component: Dashboard },
+                { path: 'survey', name: 'SurveyForm', component: SurveyForm },
+                { path: 'one-time-password-change', name: 'OneTimePasswordChange', component: OneTimePasswordChange },
+                { path: 'change-password', name: 'PasswordChange', component: PasswordChange },
+                { path: 'academics', name: 'Academics', component: Academics },
+                { path: 'e-learning', name: 'ELearning', component: ELearning },
+                { path: 'profile', name: 'Profile', component: Profile },
             ],
             meta: { requiresAuth: true },
         },
