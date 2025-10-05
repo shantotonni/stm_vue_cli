@@ -25,7 +25,7 @@ export default new Vuex.Store({
                 delete api.defaults.headers.common['Authorization']
             }
         },
-        userMenus(state, menus) {
+        setUserMenus(state, menus) {
             state.userMenus = menus
         },
         SET_LOADING(state, loading) {
@@ -46,6 +46,7 @@ export default new Vuex.Store({
                 if (res.data.token) {
                     commit("setToken", res.data.token);
                     commit("setUser", res.data.user);
+                    commit("setUserMenus", res.data.menus);
                     localStorage.setItem("token", res.data.token);
                     localStorage.setItem("is_change_password", res.data.user.is_change_password);
                 }
@@ -64,7 +65,8 @@ export default new Vuex.Store({
                         },
                     });
                     if (res) {
-                        commit("setUser", res.data.data);
+                        commit("setUser", res.data.user);
+                        commit('setUserMenus', res.data.menus)
                     }
                 } catch (err) {
                     console.error("Login error:", err);
@@ -74,7 +76,7 @@ export default new Vuex.Store({
         async fetchUserMenus({ commit }) {
             try {
                 const response = await api.get('/get-user-menu')
-                commit('userMenus', response.data.menus)
+                commit('setUserMenus', response.data.menus)
             } catch (error) {
                 console.error('Failed to fetch user menus:', error)
             }
@@ -97,7 +99,6 @@ export default new Vuex.Store({
     },
     getters: {
         isAuthenticated: state => !!state.token,
-        user: state => state.user,
         token: state => state.token,
         loading: state => state.loading,
         hasPermission: (state) => (permission) => {

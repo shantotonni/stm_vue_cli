@@ -64,7 +64,7 @@
           {{ role.display_name }}
         </button>
       </div>
-
+{{allMenus}}
       <div v-if="selectedRole" class="role-menu-form">
         <h4>Menus for {{ selectedRole.display_name }}</h4>
         <form @submit.prevent="updateRoleMenus">
@@ -115,7 +115,7 @@
 </template>
 
 <script>
-import api from '../../services/api'
+
 import MenuFormModal from './MenuFormModal.vue'
 
 export default {
@@ -143,10 +143,13 @@ export default {
     async loadData() {
       try {
         const [menusRes, rolesRes, permsRes] = await Promise.all([
-          api.get('/menus'),
-          api.get('/roles'),
-          api.get('/permissions')
+          this.$api.get('/menus'),
+          this.$api.get('/roles'),
+          this.$api.get('/permissions')
         ])
+        console.log("menusRes:", menusRes)
+        console.log("rolesRes:", rolesRes)
+        console.log("permsRes:", permsRes)
 
         this.allMenus = menusRes.data.menus
         this.menus = this.buildMenuTree(menusRes.data.menus)
@@ -193,7 +196,7 @@ export default {
     async deleteMenu(menu) {
       if (confirm(`Are you sure you want to delete "${menu.title}"?`)) {
         try {
-          await api.delete(`/menus/${menu.id}`)
+          await this.$api.delete(`/menus/${menu.id}`)
           this.loadData()
         } catch (error) {
           alert('Failed to delete menu')
@@ -203,7 +206,7 @@ export default {
 
     async updateRoleMenus() {
       try {
-        await api.put(`/menus/roles/${this.selectedRole.id}`, {
+        await this.$api.put(`/menus/roles/${this.selectedRole.id}`, {
           menu_ids: this.selectedMenus
         })
 

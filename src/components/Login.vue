@@ -76,7 +76,6 @@ export default {
           loginId: this.loginId,
           password: this.password,
         });
-        console.log(res)
         if (res && res.token) {
           await this.$store.dispatch("loadUser");
           const is_change_password = localStorage.getItem("is_change_password");

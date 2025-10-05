@@ -5,7 +5,6 @@ import api from "./plugins/axios";
 import store from "./store";
 import '@fortawesome/fontawesome-free/css/all.min.css'
 
-
 import Toasted from 'vue-toasted'
 
 import { ValidationObserver, ValidationProvider, extend } from 'vee-validate'
