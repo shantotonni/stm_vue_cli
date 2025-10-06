@@ -50,7 +50,7 @@
 
             <transition name="fade">
               <div v-if="openMenu === menu.id" class="pl-6 flex flex-col space-y-2 mt-2">
-                <router-link v-for="child in menu.children" :key="child.id" :to="child.route" class="submenu-item" style="font-weight: bold;color: black;text-decoration: auto;}">
+                <router-link v-for="child in menu.children" :key="child.id" :to="child.url" class="submenu-item" style="font-weight: bold;color: black;text-decoration: auto;}">
                   <i :class="child.icon"></i> {{ child.title }}
                 </router-link>
               </div>
@@ -58,7 +58,7 @@
           </template>
 
           <!-- Menu without children -->
-          <router-link v-else :to="menu.route" class="menu-item" :class="{ active: $route.path === menu.route }">
+          <router-link v-else :to="menu.route" class="menu-item" :class="{ active: $route.path === menu.url }">
             <span class="menu-icon"><i :class="menu.icon"></i></span>
             <span class="menu-label">{{ menu.title }}</span>
           </router-link>

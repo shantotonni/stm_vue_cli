@@ -10,6 +10,8 @@ import Academics from './views/academics/Academics.vue'
 
 import ELearning from './views/elearning/ELearning.vue'
 import Menu from './views/Admin/Menu/Index'
+//setup route
+import UserList from './views/Admin/user/Index'
 
 // settings
 import Profile from './views/settings/Profile'
@@ -32,6 +34,9 @@ const router = new Router({
                 { path: 'academics', name: 'Academics', component: Academics },
                 { path: 'e-learning', name: 'ELearning', component: ELearning },
                 { path: 'menu', name: 'Menu', component: Menu },
+                //SETUP ROUTE
+                { path: 'users-list', name: 'UserList', component: UserList },
+
                 { path: 'profile', name: 'Profile', component: Profile },
             ],
             meta: { requiresAuth: true },

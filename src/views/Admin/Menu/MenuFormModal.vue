@@ -105,10 +105,10 @@
             <input
                 id="url"
                 v-model="form.url"
-                type="url"
+                type="text"
                 class="form-control"
                 :class="{ error: errors.url }"
-                placeholder="e.g. https://external-site.com"
+                placeholder="url"
             />
             <small class="help-text">External link (use instead of route for external links)</small>
             <span v-if="errors.url" class="error-text">{{ errors.url[0] }}</span>
