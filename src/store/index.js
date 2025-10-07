@@ -57,6 +57,7 @@ export default new Vuex.Store({
         },
         async loadUser({ commit }) {
             const token = localStorage.getItem("token");
+
             if (token) {
                 try {
                     const res = await api.get("me", {
@@ -64,7 +65,9 @@ export default new Vuex.Store({
                             Authorization: `Bearer ${token}`,
                         },
                     });
+                    console.log(res.data.user)
                     if (res) {
+                        localStorage.setItem("is_change_password", res.data.user.is_change_password);
                         commit("setUser", res.data.user);
                         commit('setUserMenus', res.data.menus)
                     }

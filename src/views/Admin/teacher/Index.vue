@@ -1,20 +1,20 @@
 <template>
-  <div class="user-management">
+  <div class="teacher-management">
     <!-- Modern Header with Gradient -->
     <div class="header-section">
       <div class="header-content">
         <div class="title-section">
           <div class="icon-wrapper">
-            <i class="fa fa-users"></i>
+            <i class="fa fa-chalkboard-teacher"></i>
           </div>
           <div>
-            <h1>User Management</h1>
-            <p class="subtitle">Manage your users and their permissions</p>
+            <h1>Teacher Management</h1>
+            <p class="subtitle">Manage teachers and their information</p>
           </div>
         </div>
         <button @click="openAddModal" class="btn-add">
           <i class="fa fa-plus-circle"></i>
-          <span>Add New User</span>
+          <span>Add New Teacher</span>
         </button>
       </div>
     </div>
@@ -23,83 +23,82 @@
     <div class="stats-cards">
       <div class="stat-card">
         <div class="stat-icon blue">
-          <i class="fa fa-users"></i>
+          <i class="fa fa-chalkboard-teacher"></i>
         </div>
         <div class="stat-info">
           <h3>{{ pagination.total }}</h3>
-          <p>Total Users</p>
+          <p>Total Teachers</p>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-icon green">
-          <i class="fa fa-check-circle"></i>
+          <i class="fa fa-user-tie"></i>
         </div>
         <div class="stat-info">
-          <h3>{{ activeUsersCount }}</h3>
-          <p>Active Users</p>
+          <h3>{{ departmentHeadsCount }}</h3>
+          <p>Department Heads</p>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-icon orange">
-          <i class="fa fa-user-graduate"></i>
+          <i class="fa fa-building"></i>
         </div>
         <div class="stat-info">
-          <h3>{{ studentsCount }}</h3>
-          <p>Students</p>
+          <h3>{{ uniqueDepartmentsCount }}</h3>
+          <p>Departments</p>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-icon purple">
-          <i class="fa fa-chalkboard-teacher"></i>
+          <i class="fa fa-certificate"></i>
         </div>
         <div class="stat-info">
-          <h3>{{ teachersCount }}</h3>
-          <p>Teachers</p>
+          <h3>{{ qualifiedTeachersCount }}</h3>
+          <p>Qualified Teachers</p>
         </div>
       </div>
     </div>
 
-    <!-- Filters Section with Modern Design -->
+    <!-- Filters Section -->
     <div class="filters-section">
       <div class="search-container">
         <i class="fa fa-search search-icon"></i>
         <input
             v-model="filters.search"
-            @input="searchUsers"
+            @input="searchTeachers"
             type="text"
-            placeholder="Search by name, login code or mobile..."
+            placeholder="Search by name, email, mobile or BMDC number..."
             class="search-input"
         />
       </div>
 
       <div class="filter-group">
         <div class="filter-item">
-          <label><i class="fa fa-toggle-on"></i> Status</label>
-          <select v-model="filters.status" @change="fetchUsers" class="filter-select">
-            <option value="">All Status</option>
-            <option value="1">Active</option>
-            <option value="0">Inactive</option>
-          </select>
-        </div>
-
-        <div class="filter-item">
-          <label><i class="fa fa-user-tag"></i> User Type</label>
-          <select v-model="filters.user_type" @change="fetchUsers" class="filter-select">
-            <option value="">All Types</option>
-            <option value="admin">Admin</option>
-            <option value="teacher">Teacher</option>
-            <option value="student">Student</option>
-            <option value="dept_head">Dept Head</option>
-          </select>
-        </div>
-
-        <div class="filter-item">
-          <label><i class="fa fa-shield-alt"></i> Role</label>
-          <select v-model="filters.role_id" @change="fetchUsers" class="filter-select">
-            <option value="">All Roles</option>
-            <option v-for="role in roles" :key="role.id" :value="role.id">
-              {{ role.name }}
+          <label><i class="fa fa-building"></i> Department</label>
+          <select v-model="filters.department_id" @change="fetchTeachers" class="filter-select">
+            <option value="">All Departments</option>
+            <option v-for="dept in departments" :key="dept.id" :value="dept.id">
+              {{ dept.name }}
             </option>
+          </select>
+        </div>
+
+        <div class="filter-item">
+          <label><i class="fa fa-id-badge"></i> Designation</label>
+          <select v-model="filters.designation_id" @change="fetchTeachers" class="filter-select">
+            <option value="">All Designations</option>
+            <option v-for="des in designations" :key="des.id" :value="des.id">
+              {{ des.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="filter-item">
+          <label><i class="fa fa-crown"></i> Head Status</label>
+          <select v-model="filters.is_head" @change="fetchTeachers" class="filter-select">
+            <option value="">All Status</option>
+            <option value="1">Department Head</option>
+            <option value="0">Regular Teacher</option>
           </select>
         </div>
       </div>
@@ -112,87 +111,77 @@
           <thead>
           <tr>
             <th><i class="fa fa-hashtag"></i> ID</th>
-<!--            <th><i class="fa fa-image"></i> Avatar</th>-->
-            <th><i class="fa fa-key"></i> Login Code</th>
+            <th><i class="fa fa-id-card"></i> BMDC No</th>
             <th><i class="fa fa-user"></i> Name</th>
+            <th><i class="fa fa-envelope"></i> Email</th>
             <th><i class="fa fa-mobile-alt"></i> Mobile</th>
-            <th><i class="fa fa-user-tag"></i> Type</th>
-            <th><i class="fa fa-shield-alt"></i> Role</th>
-            <th><i class="fa fa-toggle-on"></i> Status</th>
-            <th><i class="fa fa-clock"></i> Last Login</th>
+            <th><i class="fa fa-building"></i> Department</th>
+            <th><i class="fa fa-id-badge"></i> Designation</th>
+            <th><i class="fa fa-crown"></i> Head</th>
             <th><i class="fa fa-cog"></i> Actions</th>
           </tr>
           </thead>
           <tbody>
           <tr v-if="loading">
-            <td colspan="10" class="loading-cell">
+            <td colspan="11" class="loading-cell">
               <div class="loading-spinner">
                 <i class="fa fa-spinner fa-spin"></i>
-                <span>Loading users...</span>
+                <span>Loading teachers...</span>
               </div>
             </td>
           </tr>
-          <tr v-else-if="!users || users.length === 0">
-            <td colspan="10" class="empty-cell">
+          <tr v-else-if="teachers.length === 0">
+            <td colspan="11" class="empty-cell">
               <div class="empty-state">
-                <i class="fa fa-users-slash"></i>
-                <p>No users found</p>
+                <i class="fa fa-user-slash"></i>
+                <p>No teachers found</p>
               </div>
             </td>
           </tr>
-          <tr v-else v-for="user in users" :key="user.id" class="table-row">
-            <td><span class="id-badge">{{ user.id }}</span></td>
-<!--            <td>-->
-<!--              <div class="avatar-wrapper">-->
-<!--                <img-->
-<!--                    :src="user.avatar ? '/' + user.avatar : '/default-avatar.png'"-->
-<!--                    :alt="user.name"-->
-<!--                    class="user-avatar"-->
-<!--                    @error="setDefaultAvatar"-->
-<!--                />-->
-<!--                <span v-if="user.is_active" class="online-indicator"></span>-->
-<!--              </div>-->
-<!--            </td>-->
-            <td><span class="login-code">{{ user.login_code }}</span></td>
+          <tr v-else v-for="teacher in teachers" :key="teacher.id" class="table-row">
+            <td><span class="id-badge">{{ teacher.id }}</span></td>
+            <td><span class="bmdc-code">{{ teacher.BMDC_NO }}</span></td>
             <td>
-              <div class="user-name-cell">
-                <span class="name">{{ user.name }}</span>
+              <div class="teacher-name-cell">
+                <span class="name">{{ teacher.name }}</span>
               </div>
             </td>
             <td>
-              <span class="mobile" v-if="user.mobile">
-                <i class="fa fa-phone"></i> {{ user.mobile }}
-              </span>
-              <span v-else class="text-muted">No mobile</span>
-            </td>
-            <td>
-              <span :class="['type-badge', 'type-' + user.user_type]">
-                <i :class="getUserTypeIcon(user.user_type)"></i>
-                {{ formatUserType(user.user_type) }}
+              <span class="email">
+                <i class="fa fa-envelope"></i> {{ teacher.email }}
               </span>
             </td>
             <td>
-              <span class="role-badge">{{ user.role ? user.role.name : 'N/A' }}</span>
+              <span class="mobile">
+                <i class="fa fa-phone"></i> {{ teacher.mobile }}
+              </span>
+            </td>
+            <td>
+              <span class="dept-badge">
+                {{ teacher.department ? teacher.department.name : 'N/A' }}
+              </span>
+            </td>
+            <td>
+              <span class="designation-badge">
+                {{ teacher.designation ? teacher.designation.name : 'N/A' }}
+              </span>
             </td>
             <td>
               <button
-                  @click="toggleStatus(user)"
-                  :class="['status-toggle', user.is_active ? 'active' : 'inactive']"
-                  :title="'Click to ' + (user.is_active ? 'deactivate' : 'activate')"
+                  @click="toggleHead(teacher)"
+                  :class="['head-toggle', teacher.is_head ? 'is-head' : 'not-head']"
+                  :title="'Click to ' + (teacher.is_head ? 'remove as head' : 'make head')"
               >
-                <i :class="user.is_active ? 'fa fa-check-circle' : 'fa fa-times-circle'"></i>
-                {{ user.is_active ? 'Active' : 'Inactive' }}
+                <i :class="teacher.is_head ? 'fa fa-crown' : 'fa fa-user'"></i>
+                {{ teacher.is_head ? 'Head' : 'Teacher' }}
               </button>
             </td>
             <td>
-              <span class="date-time">{{ formatDate(user.last_login_at) }}</span>
-            </td>
-            <td>
               <div class="action-buttons">
-                <button @click="editUser(user)" class="btn-action btn-edit" title="Edit">
+                <button @click="editTeacher(teacher)" class="btn-action btn-edit" title="Edit">
                   <i class="fa fa-edit"></i>
                 </button>
-                <button @click="deleteUser(user)" class="btn-action btn-delete" title="Delete">
+                <button @click="deleteTeacher(teacher)" class="btn-action btn-delete" title="Delete">
                   <i class="fa fa-trash-alt"></i>
                 </button>
               </div>
@@ -207,7 +196,7 @@
         <div class="pagination-info">
           Showing {{ ((pagination.current_page - 1) * filters.per_page) + 1 }} to
           {{ Math.min(pagination.current_page * filters.per_page, pagination.total) }}
-          of {{ pagination.total }} users
+          of {{ pagination.total }} teachers
         </div>
         <div class="pagination-controls">
           <button
@@ -254,7 +243,7 @@
           </button>
         </div>
         <div class="per-page-selector">
-          <select v-model="filters.per_page" @change="fetchUsers" class="per-page-select">
+          <select v-model="filters.per_page" @change="fetchTeachers" class="per-page-select">
             <option value="5">5 / page</option>
             <option value="10">10 / page</option>
             <option value="25">25 / page</option>
@@ -271,31 +260,53 @@
           <div class="modal-header">
             <div class="modal-title">
               <i :class="isEditing ? 'fa fa-user-edit' : 'fa fa-user-plus'"></i>
-              <h2>{{ isEditing ? 'Edit User' : 'Create New User' }}</h2>
+              <h2>{{ isEditing ? 'Edit Teacher' : 'Create New Teacher' }}</h2>
             </div>
             <button @click="closeModal" class="modal-close">
               <i class="fa fa-times"></i>
             </button>
           </div>
 
-          <form @submit.prevent="saveUser" class="modal-form">
+          <form @submit.prevent="saveTeacher" class="modal-form">
             <div class="form-grid">
               <div class="form-field">
                 <label class="field-label">
-                  <i class="fa fa-key"></i>
-                  Login Code <span class="required">*</span>
+                  <i class="fa fa-user"></i>
+                  Select User <span class="required">*</span>
+                </label>
+                <select
+                    v-model="form.user_id"
+                    class="field-select"
+                    :class="{ 'error': errors.user_id }"
+                    required
+                >
+                  <option value="">Select user</option>
+                  <option v-for="user in users" :key="user.id" :value="user.id">
+                    {{ user.name }} ({{ user.login_code }})
+                  </option>
+                </select>
+                <span v-if="errors.user_id" class="error-message">
+                  <i class="fa fa-exclamation-circle"></i>
+                  {{ errors.user_id[0] }}
+                </span>
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">
+                  <i class="fa fa-id-card"></i>
+                  BMDC Number <span class="required">*</span>
                 </label>
                 <input
-                    v-model="form.login_code"
+                    v-model="form.BMDC_NO"
                     type="text"
                     class="field-input"
-                    :class="{ 'error': errors.login_code }"
-                    placeholder="Enter login code"
+                    :class="{ 'error': errors.BMDC_NO }"
+                    placeholder="Enter BMDC number"
                     required
                 />
-                <span v-if="errors.login_code" class="error-message">
+                <span v-if="errors.BMDC_NO" class="error-message">
                   <i class="fa fa-exclamation-circle"></i>
-                  {{ errors.login_code[0] }}
+                  {{ errors.BMDC_NO[0] }}
                 </span>
               </div>
 
@@ -320,8 +331,27 @@
 
               <div class="form-field">
                 <label class="field-label">
+                  <i class="fa fa-envelope"></i>
+                  Email Address <span class="required">*</span>
+                </label>
+                <input
+                    v-model="form.email"
+                    type="email"
+                    class="field-input"
+                    :class="{ 'error': errors.email }"
+                    placeholder="Enter email address"
+                    required
+                />
+                <span v-if="errors.email" class="error-message">
+                  <i class="fa fa-exclamation-circle"></i>
+                  {{ errors.email[0] }}
+                </span>
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">
                   <i class="fa fa-mobile-alt"></i>
-                  Mobile Number
+                  Mobile Number <span class="required">*</span>
                 </label>
                 <input
                     v-model="form.mobile"
@@ -329,6 +359,7 @@
                     class="field-input"
                     :class="{ 'error': errors.mobile }"
                     placeholder="Enter mobile number"
+                    required
                 />
                 <span v-if="errors.mobile" class="error-message">
                   <i class="fa fa-exclamation-circle"></i>
@@ -338,109 +369,92 @@
 
               <div class="form-field">
                 <label class="field-label">
-                  <i class="fa fa-lock"></i>
-                  Password <span class="required" v-if="!isEditing">*</span>
-                  <span v-if="isEditing" class="optional">(Leave blank to keep current)</span>
-                </label>
-                <input
-                    v-model="form.password"
-                    type="password"
-                    class="field-input"
-                    :class="{ 'error': errors.password }"
-                    placeholder="Enter password"
-                    :required="!isEditing"
-                />
-                <span v-if="errors.password" class="error-message">
-                  <i class="fa fa-exclamation-circle"></i>
-                  {{ errors.password[0] }}
-                </span>
-              </div>
-
-              <div class="form-field">
-                <label class="field-label">
-                  <i class="fa fa-user-tag"></i>
-                  User Type <span class="required">*</span>
+                  <i class="fa fa-building"></i>
+                  Department
                 </label>
                 <select
-                    v-model="form.user_type"
+                    v-model="form.department_id"
                     class="field-select"
-                    :class="{ 'error': errors.user_type }"
-                    required
+                    :class="{ 'error': errors.department_id }"
                 >
-                  <option value="">Select user type</option>
-                  <option value="admin">Admin</option>
-                  <option value="teacher">Teacher</option>
-                  <option value="student">Student</option>
-                  <option value="dept_head">Department Head</option>
-                </select>
-                <span v-if="errors.user_type" class="error-message">
-                  <i class="fa fa-exclamation-circle"></i>
-                  {{ errors.user_type[0] }}
-                </span>
-              </div>
-
-              <div class="form-field">
-                <label class="field-label">
-                  <i class="fa fa-shield-alt"></i>
-                  Role <span class="required">*</span>
-                </label>
-                <select
-                    v-model="form.role_id"
-                    class="field-select"
-                    :class="{ 'error': errors.role_id }"
-                    required
-                >
-                  <option value="">Select role</option>
-                  <option v-for="role in roles" :key="role.id" :value="role.id">
-                    {{ role.name }}
+                  <option value="">Select department</option>
+                  <option v-for="dept in departments" :key="dept.id" :value="dept.id">
+                    {{ dept.name }}
                   </option>
                 </select>
-                <span v-if="errors.role_id" class="error-message">
+                <span v-if="errors.department_id" class="error-message">
                   <i class="fa fa-exclamation-circle"></i>
-                  {{ errors.role_id[0] }}
+                  {{ errors.department_id[0] }}
                 </span>
               </div>
-            </div>
 
-            <div class="form-field full-width">
-              <label class="field-label">
-                <i class="fa fa-image"></i>
-                Profile Avatar
-              </label>
-              <div class="file-upload-wrapper">
+              <div class="form-field">
+                <label class="field-label">
+                  <i class="fa fa-id-badge"></i>
+                  Designation
+                </label>
+                <select
+                    v-model="form.designation_id"
+                    class="field-select"
+                    :class="{ 'error': errors.designation_id }"
+                >
+                  <option value="">Select designation</option>
+                  <option v-for="des in designations" :key="des.id" :value="des.id">
+                    {{ des.name }}
+                  </option>
+                </select>
+                <span v-if="errors.designation_id" class="error-message">
+                  <i class="fa fa-exclamation-circle"></i>
+                  {{ errors.designation_id[0] }}
+                </span>
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">
+                  <i class="fa fa-graduation-cap"></i>
+                  Qualification <span class="required">*</span>
+                </label>
                 <input
-                    type="file"
-                    @change="handleFileUpload"
-                    accept="image/*"
-                    class="file-input"
-                    id="avatar-upload"
+                    v-model="form.qualification"
+                    type="text"
+                    class="field-input"
+                    :class="{ 'error': errors.qualification }"
+                    placeholder="Enter qualification (e.g., MBBS, PhD)"
+                    required
                 />
-                <label for="avatar-upload" class="file-label">
-                  <i class="fa fa-cloud-upload-alt"></i>
-                  <span>Choose image or drag here</span>
+                <span v-if="errors.qualification" class="error-message">
+                  <i class="fa fa-exclamation-circle"></i>
+                  {{ errors.qualification[0] }}
+                </span>
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">
+                  <i class="fa fa-calendar-alt"></i>
+                  Joining Date <span class="required">*</span>
+                </label>
+                <input
+                    v-model="form.joining_date"
+                    type="date"
+                    class="field-input"
+                    :class="{ 'error': errors.joining_date }"
+                    required
+                />
+                <span v-if="errors.joining_date" class="error-message">
+                  <i class="fa fa-exclamation-circle"></i>
+                  {{ errors.joining_date[0] }}
+                </span>
+              </div>
+
+              <div class="form-field full-width">
+                <label class="checkbox-wrapper">
+                  <input v-model="form.is_head" type="checkbox" class="checkbox-input" />
+                  <span class="checkbox-label">
+                    <i class="fa fa-crown"></i>
+                    Mark as Department Head
+                  </span>
                 </label>
               </div>
-              <span v-if="errors.avatar" class="error-message">
-                <i class="fa fa-exclamation-circle"></i>
-                {{ errors.avatar[0] }}
-              </span>
-
-              <div v-if="avatarPreview || (isEditing && form.avatar)" class="image-preview">
-                <img :src="avatarPreview || '/' + form.avatar" alt="Avatar Preview" />
-                <button type="button" @click="removeAvatar" class="remove-image">
-                  <i class="fa fa-times"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="checkbox-group">
-              <label class="checkbox-wrapper">
-                <input v-model="form.is_active" type="checkbox" class="checkbox-input" />
-                <span class="checkbox-label">
-                  <i class="fa fa-check-circle"></i>
-                  Active User
-                </span>
-              </label>
             </div>
 
             <div class="modal-actions">
@@ -450,7 +464,7 @@
               </button>
               <button type="submit" class="btn-submit" :disabled="saving">
                 <i :class="saving ? 'fa fa-spinner fa-spin' : (isEditing ? 'fa fa-save' : 'fa fa-plus-circle')"></i>
-                {{ saving ? 'Saving...' : (isEditing ? 'Update User' : 'Create User') }}
+                {{ saving ? 'Saving...' : (isEditing ? 'Update Teacher' : 'Create Teacher') }}
               </button>
             </div>
           </form>
@@ -462,20 +476,22 @@
 
 <script>
 export default {
-  name: 'UserManagement',
+  name: 'TeacherManagement',
   data() {
     return {
+      teachers: [],
+      departments: [],
+      designations: [],
       users: [],
-      roles: [],
       loading: false,
       saving: false,
       showModal: false,
       isEditing: false,
       filters: {
         search: '',
-        status: '',
-        user_type: '',
-        role_id: '',
+        department_id: '',
+        designation_id: '',
+        is_head: '',
         per_page: 10,
       },
       pagination: {
@@ -485,30 +501,31 @@ export default {
       },
       form: {
         id: null,
-        login_code: '',
+        user_id: '',
+        BMDC_NO: '',
         name: '',
-        password: '',
+        email: '',
         mobile: '',
-        role_id: '',
-        user_type: '',
-        avatar: null,
-        is_active: true,
+        department_id: '',
+        designation_id: '',
+        qualification: '',
+        joining_date: '',
+        is_head: false,
       },
-      avatarFile: null,
-      avatarPreview: null,
       errors: {},
       searchTimeout: null,
     };
   },
   computed: {
-    activeUsersCount() {
-      return (this.users || []).filter(u => u.is_active).length;
+    departmentHeadsCount() {
+      return this.teachers.filter(t => t.is_head).length;
     },
-    studentsCount() {
-      return (this.users || []).filter(u => u.user_type === 'student').length;
+    uniqueDepartmentsCount() {
+      const depts = new Set(this.teachers.filter(t => t.department_id).map(t => t.department_id));
+      return depts.size;
     },
-    teachersCount() {
-      return (this.users || []).filter(u => u.user_type === 'teacher').length;
+    qualifiedTeachersCount() {
+      return this.teachers.filter(t => t.qualification && t.qualification.trim() !== '').length;
     },
     visiblePages() {
       const current = this.pagination.current_page;
@@ -534,56 +551,76 @@ export default {
     }
   },
   mounted() {
+    this.fetchTeachers();
+    this.fetchDepartments();
+    this.fetchDesignations();
     this.fetchUsers();
-    this.fetchRoles();
   },
   methods: {
-    async fetchUsers(page = 1) {
+    async fetchTeachers(page = 1) {
       this.loading = true;
       try {
         const params = {
           page: page,
           per_page: this.filters.per_page,
           search: this.filters.search,
-          status: this.filters.status,
-          user_type: this.filters.user_type,
-          role_id: this.filters.role_id,
+          department_id: this.filters.department_id,
+          designation_id: this.filters.designation_id,
+          is_head: this.filters.is_head,
         };
 
-        const response = await this.$api.get('/users', { params });
-        this.users = response.data.data;
+        const response = await this.$api.get('/teachers', { params });
+        this.teachers = response.data.data;
         this.pagination = {
           current_page: response.data.current_page,
           last_page: response.data.last_page,
           total: response.data.total,
         };
       } catch (error) {
-        console.error('Error fetching users:', error);
-        this.showToast('Failed to fetch users', 'error')
+        console.error('Error fetching teachers:', error);
+        alert('Failed to fetch teachers');
       } finally {
         this.loading = false;
       }
     },
 
-    async fetchRoles() {
+    async fetchDepartments() {
       try {
-        const response = await this.$api.get('/roles');
-        this.roles = response.data;
+        const response = await this.$api.get('/departments');
+        this.departments = response.data;
       } catch (error) {
-        console.error('Error fetching roles:', error);
+        console.error('Error fetching departments:', error);
       }
     },
 
-    searchUsers() {
+    async fetchDesignations() {
+      try {
+        const response = await this.$api.get('/designations');
+        this.designations = response.data;
+      } catch (error) {
+        console.error('Error fetching designations:', error);
+      }
+    },
+
+    async fetchUsers() {
+      try {
+        const response = await this.$api.get('/teacher-users');
+        this.users = response.data;
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    },
+
+    searchTeachers() {
       clearTimeout(this.searchTimeout);
       this.searchTimeout = setTimeout(() => {
-        this.fetchUsers();
+        this.fetchTeachers();
       }, 500);
     },
 
     changePage(page) {
       if (page !== '...' && page >= 1 && page <= this.pagination.last_page) {
-        this.fetchUsers(page);
+        this.fetchTeachers(page);
       }
     },
 
@@ -593,123 +630,86 @@ export default {
       this.showModal = true;
     },
 
-    editUser(user) {
+    editTeacher(teacher) {
       this.isEditing = true;
       this.form = {
-        id: user.id,
-        login_code: user.login_code,
-        name: user.name,
-        password: '',
-        mobile: user.mobile || '',
-        role_id: user.role_id,
-        user_type: user.user_type,
-        avatar: user.avatar,
-        is_active: user.is_active,
+        id: teacher.id,
+        user_id: teacher.user_id,
+        BMDC_NO: teacher.BMDC_NO,
+        name: teacher.name,
+        email: teacher.email,
+        mobile: teacher.mobile,
+        department_id: teacher.department_id || '',
+        designation_id: teacher.designation_id || '',
+        qualification: teacher.qualification,
+        joining_date: teacher.joining_date,
+        is_head: teacher.is_head,
       };
-      this.avatarPreview = null;
-      this.avatarFile = null;
       this.showModal = true;
     },
 
-    handleFileUpload(event) {
-      const file = event.target.files[0];
-      if (file) {
-        this.avatarFile = file;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.avatarPreview = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    },
-
-    removeAvatar() {
-      this.avatarFile = null;
-      this.avatarPreview = null;
-      this.form.avatar = null;
-      document.getElementById('avatar-upload').value = '';
-    },
-
-    async saveUser() {
+    async saveTeacher() {
       this.saving = true;
       this.errors = {};
 
       try {
-        const formData = new FormData();
-        formData.append('login_code', this.form.login_code);
-        formData.append('name', this.form.name);
-        formData.append('mobile', this.form.mobile || '');
-        formData.append('role_id', this.form.role_id);
-        formData.append('user_type', this.form.user_type);
-        formData.append('is_active', this.form.is_active ? 1 : 0);
-
-        if (this.form.password) {
-          formData.append('password', this.form.password);
-        }
-
-        if (this.avatarFile) {
-          formData.append('avatar', this.avatarFile);
-        }
+        const data = {
+          user_id: this.form.user_id,
+          BMDC_NO: this.form.BMDC_NO,
+          name: this.form.name,
+          email: this.form.email,
+          mobile: this.form.mobile,
+          department_id: this.form.department_id || null,
+          designation_id: this.form.designation_id || null,
+          qualification: this.form.qualification,
+          joining_date: this.form.joining_date,
+          is_head: this.form.is_head ? 1 : 0,
+        };
 
         if (this.isEditing) {
-          formData.append('_method', 'PUT');
-          await this.$api.post(`/users/${this.form.id}`, formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
-          });
-          this.showToast('User updated successfully!', 'success')
+          await this.$api.put(`/teachers/${this.form.id}`, data);
+          alert('Teacher updated successfully!');
         } else {
-          await this.$api.post('/users', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
-          });
-          this.showToast('User created successfully!', 'success')
+          await this.$api.post('/teachers', data);
+          alert('Teacher created successfully!');
         }
-        console.log('ok')
+
         this.closeModal();
-        this.fetchUsers(this.pagination.current_page);
+        this.fetchTeachers(this.pagination.current_page);
       } catch (error) {
         if (error.response && error.response.status === 422) {
           this.errors = error.response.data.errors;
         } else {
-          this.showToast('An error occurred. Please try again.', 'error')
+          alert('An error occurred. Please try again.');
         }
       } finally {
         this.saving = false;
       }
     },
-    showToast(message, type = 'success') {
-      this.toast = {
-        show: true,
-        type,
-        message,
-        icon: type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle'
-      }
-      setTimeout(() => {
-        this.toast.show = false
-      }, 3000)
-    },
-    async toggleStatus(user) {
-      const action = user.is_active ? 'deactivate' : 'activate';
-      if (confirm(`Are you sure you want to ${action} ${user.name}?`)) {
+
+    async toggleHead(teacher) {
+      const action = teacher.is_head ? 'remove as department head' : 'make department head';
+      if (confirm(`Are you sure you want to ${action} for ${teacher.name}?`)) {
         try {
-          await this.$api.post(`/users/${user.id}/toggle-status`);
-          this.showToast(`User ${action}d successfully!`, 'success')
-          this.fetchUsers(this.pagination.current_page);
+          await this.$api.post(`/teachers/${teacher.id}/toggle-head`);
+          alert('Teacher head status updated successfully!');
+          this.fetchTeachers(this.pagination.current_page);
         } catch (error) {
-          console.error('Error toggling status:', error);
-          this.showToast(`Failed to update user status`, 'error')
+          console.error('Error toggling head status:', error);
+          alert('Failed to update teacher head status');
         }
       }
     },
 
-    async deleteUser(user) {
-      if (confirm(`Are you sure you want to delete ${user.name}? This action cannot be undone.`)) {
+    async deleteTeacher(teacher) {
+      if (confirm(`Are you sure you want to delete ${teacher.name}? This action cannot be undone.`)) {
         try {
-          await this.$api.delete(`/users/${user.id}`);
-          this.showToast(`User deleted successfully!`, 'success')
-          this.fetchUsers(this.pagination.current_page);
+          await this.$api.delete(`/teachers/${teacher.id}`);
+          alert('Teacher deleted successfully!');
+          this.fetchTeachers(this.pagination.current_page);
         } catch (error) {
-          console.error('Error deleting user:', error);
-          this.showToast(`Failed to delete user`, 'error')
+          console.error('Error deleting teacher:', error);
+          alert('Failed to delete teacher');
         }
       }
     },
@@ -722,55 +722,24 @@ export default {
     resetForm() {
       this.form = {
         id: null,
-        login_code: '',
+        user_id: '',
+        BMDC_NO: '',
         name: '',
-        password: '',
+        email: '',
         mobile: '',
-        role_id: '',
-        user_type: '',
-        avatar: null,
-        is_active: true,
+        department_id: '',
+        designation_id: '',
+        qualification: '',
+        joining_date: '',
+        is_head: false,
       };
-      this.avatarFile = null;
-      this.avatarPreview = null;
       this.errors = {};
     },
 
     formatDate(dateString) {
-      if (!dateString) return '<span class="never-logged">Never</span>';
-      const options = {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      };
-      return new Date(dateString).toLocaleDateString('en-US', options);
+      if (!dateString) return 'N/A';
+      return dateString;
     },
-
-    formatUserType(type) {
-      const types = {
-        admin: 'Admin',
-        teacher: 'Teacher',
-        student: 'Student',
-        dept_head: 'Dept Head'
-      };
-      return types[type] || type;
-    },
-
-    getUserTypeIcon(type) {
-      const icons = {
-        admin: 'fa fa-user-shield',
-        teacher: 'fa fa-chalkboard-teacher',
-        student: 'fa fa-user-graduate',
-        dept_head: 'fa fa-user-tie'
-      };
-      return icons[type] || 'fa fa-user';
-    },
-
-    setDefaultAvatar(event) {
-      event.target.src = '/default-avatar.png';
-    }
   },
 };
 </script>
@@ -780,13 +749,12 @@ export default {
   box-sizing: border-box;
 }
 
-.user-management {
+.teacher-management {
   min-height: 100vh;
   background: white;
   padding: 30px 20px;
 }
 
-/* Modern Header Section */
 .header-section {
   background: white;
   border-radius: 20px;
@@ -812,7 +780,7 @@ export default {
 .icon-wrapper {
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
   border-radius: 15px;
   display: flex;
   align-items: center;
@@ -835,7 +803,7 @@ export default {
 }
 
 .btn-add {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
   color: white;
   border: none;
   padding: 14px 28px;
@@ -847,15 +815,14 @@ export default {
   align-items: center;
   gap: 10px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4);
 }
 
 .btn-add:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+  box-shadow: 0 6px 20px rgba(17, 153, 142, 0.6);
 }
 
-/* Stats Cards */
 .stats-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -890,8 +857,8 @@ export default {
   color: white;
 }
 
-.stat-icon.blue { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-.stat-icon.green { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+.stat-icon.blue { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+.stat-icon.green { background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%); }
 .stat-icon.orange { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
 .stat-icon.purple { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
 
@@ -909,7 +876,6 @@ export default {
   font-weight: 500;
 }
 
-/* Filters Section */
 .filters-section {
   background: white;
   border-radius: 16px;
@@ -944,9 +910,9 @@ export default {
 
 .search-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #11998e;
   background: white;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  box-shadow: 0 0 0 3px rgba(17, 153, 142, 0.1);
 }
 
 .filter-group {
@@ -965,7 +931,7 @@ export default {
 
 .filter-item label i {
   margin-right: 6px;
-  color: #667eea;
+  color: #11998e;
 }
 
 .filter-select {
@@ -981,11 +947,10 @@ export default {
 
 .filter-select:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #11998e;
+  box-shadow: 0 0 0 3px rgba(17, 153, 142, 0.1);
 }
 
-/* Table Card */
 .table-card {
   background: white;
   border-radius: 16px;
@@ -1000,21 +965,21 @@ export default {
 .modern-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 1200px;
+  min-width: 1400px;
 }
 
 .modern-table thead {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
 }
 
 .modern-table th {
-  padding: 6px 12px;
+  padding: 6px 10px;
   text-align: left;
   font-size: 13px;
   font-weight: 600;
   color: white;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  /* text-transform: uppercase; */
+  /* letter-spacing: 0.5px; */
 }
 
 .modern-table th i {
@@ -1049,7 +1014,7 @@ export default {
   flex-direction: column;
   align-items: center;
   gap: 15px;
-  color: #667eea;
+  color: #11998e;
 }
 
 .loading-spinner i {
@@ -1087,78 +1052,37 @@ export default {
   font-size: 13px;
 }
 
-.avatar-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
-.user-avatar {
-  width: 45px;
-  height: 45px;
-  border-radius: 12px;
-  object-fit: cover;
-  border: 3px solid #e2e8f0;
-}
-
-.online-indicator {
-  position: absolute;
-  bottom: 2px;
-  right: 2px;
-  width: 12px;
-  height: 12px;
-  background: #48bb78;
-  border: 2px solid white;
-  border-radius: 50%;
-}
-
-.login-code {
+.bmdc-code {
   font-family: 'Courier New', monospace;
-  background: #edf2f7;
+  background: #e6fffa;
   padding: 6px 12px;
   border-radius: 8px;
   font-weight: 600;
-  color: #667eea;
+  color: #11998e;
   font-size: 13px;
 }
 
-.user-name-cell .name {
+.teacher-name-cell .name {
   font-weight: 600;
   color: #2d3748;
 }
 
+.email,
 .mobile {
   color: #4a5568;
   font-size: 13px;
-}
-
-.mobile i {
-  margin-right: 5px;
-  color: #667eea;
-}
-
-.text-muted {
-  color: #a0aec0;
-  font-style: italic;
-  font-size: 13px;
-}
-
-.type-badge {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  white-space: nowrap;
+  gap: 5px;
 }
 
-.type-admin { background: #e6f2ff; color: #0066cc; }
-.type-teacher { background: #e0f7fa; color: #00838f; }
-.type-student { background: #fff3e0; color: #e65100; }
-.type-dept_head { background: #f3e5f5; color: #6a1b9a; }
+.email i,
+.mobile i {
+  color: #11998e;
+}
 
-.role-badge {
+.dept-badge,
+.designation-badge {
   background: #f7fafc;
   color: #4a5568;
   padding: 6px 14px;
@@ -1166,9 +1090,20 @@ export default {
   font-size: 12px;
   font-weight: 600;
   border: 1px solid #e2e8f0;
+  display: inline-block;
 }
 
-.status-toggle {
+.qualification {
+  font-size: 13px;
+  color: #4a5568;
+}
+
+.date-time {
+  font-size: 13px;
+  color: #718096;
+}
+
+.head-toggle {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -1181,29 +1116,19 @@ export default {
   transition: all 0.3s ease;
 }
 
-.status-toggle.active {
-  background: #c6f6d5;
-  color: #22543d;
+.head-toggle.is-head {
+  background: #fef5e7;
+  color: #f39c12;
 }
 
-.status-toggle.inactive {
-  background: #fed7d7;
-  color: #742a2a;
+.head-toggle.not-head {
+  background: #e8f5e9;
+  color: #4caf50;
 }
 
-.status-toggle:hover {
+.head-toggle:hover {
   transform: scale(1.05);
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-}
-
-.date-time {
-  font-size: 13px;
-  color: #718096;
-}
-
-.never-logged {
-  color: #cbd5e0;
-  font-style: italic;
 }
 
 .action-buttons {
@@ -1244,7 +1169,6 @@ export default {
   transform: scale(1.1);
 }
 
-/* Pagination */
 .pagination-wrapper {
   display: flex;
   justify-content: space-between;
@@ -1286,8 +1210,8 @@ export default {
 
 .page-btn:hover:not(:disabled),
 .page-number:hover {
-  border-color: #667eea;
-  color: #667eea;
+  border-color: #11998e;
+  color: #11998e;
   transform: translateY(-2px);
 }
 
@@ -1297,7 +1221,7 @@ export default {
 }
 
 .page-number.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
   color: white;
   border-color: transparent;
 }
@@ -1324,7 +1248,6 @@ export default {
   color: #4a5568;
 }
 
-/* Modal Styles */
 .modal-fade-enter-active,
 .modal-fade-leave-active {
   transition: all 0.3s ease;
@@ -1359,7 +1282,7 @@ export default {
   background: white;
   border-radius: 20px;
   width: 100%;
-  max-width: 800px;
+  max-width: 900px;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 20px 60px rgba(0,0,0,0.3);
@@ -1394,7 +1317,7 @@ export default {
 
 .modal-title i {
   font-size: 28px;
-  color: #667eea;
+  color: #11998e;
 }
 
 .modal-title h2 {
@@ -1456,19 +1379,12 @@ export default {
 
 .field-label i {
   margin-right: 8px;
-  color: #667eea;
+  color: #11998e;
 }
 
 .required {
   color: #e53e3e;
   margin-left: 4px;
-}
-
-.optional {
-  font-size: 12px;
-  color: #718096;
-  font-weight: 400;
-  margin-left: 8px;
 }
 
 .field-input,
@@ -1484,8 +1400,8 @@ export default {
 .field-input:focus,
 .field-select:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #11998e;
+  box-shadow: 0 0 0 3px rgba(17, 153, 142, 0.1);
 }
 
 .field-input.error,
@@ -1502,93 +1418,13 @@ export default {
   font-size: 12px;
 }
 
-.file-upload-wrapper {
-  position: relative;
-}
-
-.file-input {
-  display: none;
-}
-
-.file-label {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 30px;
-  border: 2px dashed #cbd5e0;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background: #f7fafc;
-}
-
-.file-label:hover {
-  border-color: #667eea;
-  background: #edf2f7;
-}
-
-.file-label i {
-  font-size: 36px;
-  color: #667eea;
-  margin-bottom: 10px;
-}
-
-.file-label span {
-  color: #718096;
-  font-size: 14px;
-}
-
-.image-preview {
-  margin-top: 15px;
-  position: relative;
-  display: inline-block;
-}
-
-.image-preview img {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 12px;
-  border: 3px solid #e2e8f0;
-}
-
-.remove-image {
-  position: absolute;
-  top: -10px;
-  right: -10px;
-  width: 30px;
-  height: 30px;
-  background: #fc8181;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  transition: all 0.3s ease;
-}
-
-.remove-image:hover {
-  background: #e53e3e;
-  transform: scale(1.1);
-}
-
-.checkbox-group {
-  display: flex;
-  gap: 30px;
-  margin-bottom: 25px;
-  padding: 20px;
-  background: #f7fafc;
-  border-radius: 12px;
-}
-
 .checkbox-wrapper {
   display: flex;
   align-items: center;
   cursor: pointer;
+  padding: 15px;
+  background: #f7fafc;
+  border-radius: 12px;
 }
 
 .checkbox-input {
@@ -1596,7 +1432,7 @@ export default {
   height: 20px;
   margin-right: 10px;
   cursor: pointer;
-  accent-color: #667eea;
+  accent-color: #11998e;
 }
 
 .checkbox-label {
@@ -1609,7 +1445,7 @@ export default {
 }
 
 .checkbox-label i {
-  color: #667eea;
+  color: #f39c12;
 }
 
 .modal-actions {
@@ -1644,14 +1480,14 @@ export default {
 }
 
 .btn-submit {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
   color: white;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4);
 }
 
 .btn-submit:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+  box-shadow: 0 6px 20px rgba(17, 153, 142, 0.6);
 }
 
 .btn-submit:disabled {
@@ -1660,45 +1496,118 @@ export default {
 }
 
 /* Responsive Design */
+@media (max-width: 1200px) {
+  .stats-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .filter-group {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .teacher-management {
+    padding: 20px 15px;
+  }
+  .header-section {
+    padding: 20px;
+  }
+  .title-section h1 {
+    font-size: 26px;
+  }
+}
+
 @media (max-width: 768px) {
   .header-content {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
   }
-
+  .title-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  .btn-add {
+    width: 100%;
+    justify-content: center;
+  }
   .stats-cards {
     grid-template-columns: 1fr;
   }
-
   .filter-group {
     grid-template-columns: 1fr;
   }
-
-  .form-grid {
-    grid-template-columns: 1fr;
+  .table-card {
+    margin: 0 -20px;
+    border-radius: 0;
   }
-
-  .pagination-wrapper {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .checkbox-group {
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .modal-container {
-    margin: 20px;
-  }
-
   .modern-table {
     font-size: 12px;
   }
-
   .modern-table th,
   .modern-table td {
     padding: 10px 8px;
   }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .pagination-wrapper {
+    flex-direction: column;
+  }
+  .modal-actions {
+    flex-direction: column-reverse;
+  }
+  .btn-cancel,
+  .btn-submit {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .teacher-management {
+    padding: 15px 10px;
+  }
+  .title-section h1 {
+    font-size: 22px;
+  }
+  .stat-card {
+    padding: 15px;
+  }
+  .action-buttons {
+    flex-direction: column;
+    gap: 6px;
+  }
+  .btn-action {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.table-wrapper::-webkit-scrollbar,
+.modal-container::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.table-wrapper::-webkit-scrollbar-track,
+.modal-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb,
+.modal-container::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 10px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover,
+.modal-container::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
 }
 </style>

@@ -12,6 +12,15 @@ import ELearning from './views/elearning/ELearning.vue'
 import Menu from './views/Admin/Menu/Index'
 //setup route
 import UserList from './views/Admin/user/Index'
+import TeacherList from './views/Admin/teacher/Index'
+import StudentList from './views/Admin/student/Index'
+import StudentCreate from './views/Admin/student/Create'
+import StudentEdit from './views/Admin/student/Edit'
+import StudentShow from './views/Admin/student/Show'
+import DepartmentList from './views/Admin/department/Index'
+import SubjectList from './views/Admin/subject/Index'
+import ClassRoomList from './views/Admin/class-room/Index'
+import ClassSchedules from './views/Admin/class-schedules/Index'
 
 // settings
 import Profile from './views/settings/Profile'
@@ -36,6 +45,15 @@ const router = new Router({
                 { path: 'menu', name: 'Menu', component: Menu },
                 //SETUP ROUTE
                 { path: 'users-list', name: 'UserList', component: UserList },
+                { path: 'teachers-list', name: 'TeacherList', component: TeacherList },
+                { path: 'students-list', name: 'StudentList', component: StudentList },
+                { path: 'student-create', name: 'StudentCreate', component: StudentCreate },
+                { path: 'student-edit', name: 'StudentEdit', component: StudentEdit },
+                { path: 'student-show', name: 'StudentShow', component: StudentShow },
+                { path: 'department-list', name: 'DepartmentList', component: DepartmentList },
+                { path: 'subject-list', name: 'SubjectList', component: SubjectList },
+                { path: 'class-room-list', name: 'ClassRoomList', component: ClassRoomList },
+                { path: 'class-schedules', name: 'ClassSchedules', component: ClassSchedules },
 
                 { path: 'profile', name: 'Profile', component: Profile },
             ],
