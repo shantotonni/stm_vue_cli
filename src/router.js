@@ -21,6 +21,9 @@ import DepartmentList from './views/Admin/department/Index'
 import SubjectList from './views/Admin/subject/Index'
 import ClassRoomList from './views/Admin/class-room/Index'
 import ClassSchedules from './views/Admin/class-schedules/Index'
+import ClassList from './views/Admin/class/Index'
+import StudentEnrollments from './views/Admin/student-enrollments/Index'
+import ExamScheduleList from './views/Admin/exam-schedule/Index'
 
 // settings
 import Profile from './views/settings/Profile'
@@ -53,7 +56,10 @@ const router = new Router({
                 { path: 'department-list', name: 'DepartmentList', component: DepartmentList },
                 { path: 'subject-list', name: 'SubjectList', component: SubjectList },
                 { path: 'class-room-list', name: 'ClassRoomList', component: ClassRoomList },
+                { path: 'class-list', name: 'ClassList', component: ClassList },
                 { path: 'class-schedules', name: 'ClassSchedules', component: ClassSchedules },
+                { path: 'student-enrollments', name: 'StudentEnrollments', component: StudentEnrollments },
+                { path: 'exam-schedule-list', name: 'ExamScheduleList', component: ExamScheduleList },
 
                 { path: 'profile', name: 'Profile', component: Profile },
             ],

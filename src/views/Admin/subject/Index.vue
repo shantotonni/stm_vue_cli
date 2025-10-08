@@ -137,37 +137,32 @@
             <div class="form-row">
               <div class="form-group">
                 <label>Subject Name <span class="required">*</span></label>
-                <input
-                    v-model="form.name"
-                    type="text"
-                    class="form-control"
-                    :class="{ 'error': errors.name }"
-                    placeholder="Enter subject name"
-                />
+                <input v-model="form.name" type="text" class="form-control" :class="{ 'error': errors.name }" placeholder="Enter subject name"/>
                 <span v-if="errors.name" class="error-text">{{ errors.name[0] }}</span>
               </div>
 
               <div class="form-group">
                 <label>Subject Code <span class="required">*</span></label>
-                <input
-                    v-model="form.code"
-                    type="text"
-                    class="form-control"
-                    :class="{ 'error': errors.code }"
-                    placeholder="e.g., CSE101"
-                />
+                <input v-model="form.code" type="text" class="form-control" :class="{ 'error': errors.code }" placeholder="e.g., CSE101"/>
                 <span v-if="errors.code" class="error-text">{{ errors.code[0] }}</span>
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-group">
+                <label>Program <span class="required">*</span></label>
+                <select v-model="form.program_id" class="form-control" :class="{ 'error': errors.program_id }">
+                  <option value="">Select Program</option>
+                  <option v-for="program in programs" :key="program.id" :value="program.id">
+                    {{ program.name }}
+                  </option>
+                </select>
+                <span v-if="errors.program_id" class="error-text">{{ errors.program_id[0] }}</span>
+              </div>
+
+              <div class="form-group">
                 <label>Department <span class="required">*</span></label>
-                <select
-                    v-model="form.department_id"
-                    class="form-control"
-                    :class="{ 'error': errors.department_id }"
-                >
+                <select v-model="form.department_id" class="form-control" :class="{ 'error': errors.department_id }">
                   <option value="">Select Department</option>
                   <option v-for="dept in departments" :key="dept.id" :value="dept.id">
                     {{ dept.name }}
@@ -178,11 +173,7 @@
 
               <div class="form-group">
                 <label>Year <span class="required">*</span></label>
-                <select
-                    v-model="form.year"
-                    class="form-control"
-                    :class="{ 'error': errors.year }"
-                >
+                <select v-model="form.year" class="form-control" :class="{ 'error': errors.year }">
                   <option value="">Select Year</option>
                   <option value="1st">1st Year</option>
                   <option value="2nd">2nd Year</option>
@@ -197,11 +188,7 @@
             <div class="form-row">
               <div class="form-group">
                 <label>Semester <span class="required">*</span></label>
-                <select
-                    v-model="form.semester"
-                    class="form-control"
-                    :class="{ 'error': errors.semester }"
-                >
+                <select v-model="form.semester" class="form-control" :class="{ 'error': errors.semester }">
                   <option value="">Select Semester</option>
                   <option value="1st">1st Semester</option>
                   <option value="2nd">2nd Semester</option>
@@ -211,45 +198,25 @@
 
               <div class="form-group">
                 <label>Credit Hours</label>
-                <input
-                    v-model.number="form.credit_hours"
-                    type="number"
-                    class="form-control"
-                    placeholder="3"
-                />
+                <input v-model.number="form.credit_hours" type="number" class="form-control" placeholder="3"/>
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-group">
                 <label>Theory Hours</label>
-                <input
-                    v-model.number="form.theory_hours"
-                    type="number"
-                    class="form-control"
-                    placeholder="0"
-                />
+                <input v-model.number="form.theory_hours" type="number" class="form-control" placeholder="0"/>
               </div>
 
               <div class="form-group">
                 <label>Practical Hours</label>
-                <input
-                    v-model.number="form.practical_hours"
-                    type="number"
-                    class="form-control"
-                    placeholder="0"
-                />
+                <input v-model.number="form.practical_hours" type="number" class="form-control" placeholder="0"/>
               </div>
             </div>
 
             <div class="form-group">
               <label>Description</label>
-              <textarea
-                  v-model="form.description"
-                  class="form-control"
-                  rows="3"
-                  placeholder="Enter subject description..."
-              ></textarea>
+              <textarea v-model="form.description" class="form-control" rows="3" placeholder="Enter subject description..."></textarea>
             </div>
 
             <div class="form-group">
@@ -299,6 +266,7 @@ export default {
     return {
       subjects: [],
       departments: [],
+      programs: [],
       loading: false,
       saving: false,
       showModal: false,
@@ -322,6 +290,7 @@ export default {
         name: '',
         code: '',
         department_id: '',
+        program_id: '',
         year: '',
         semester: '',
         credit_hours: 0,
@@ -338,6 +307,7 @@ export default {
   mounted() {
     this.loadDepartments();
     this.loadSubjects();
+    this.loadProgram();
   },
 
   methods: {
@@ -345,6 +315,15 @@ export default {
       try {
         const response = await this.$api.get('/get-departments');
         this.departments = response.data;
+      } catch (error) {
+        this.showError('Failed to load departments');
+      }
+    },
+
+    async loadProgram() {
+      try {
+        const response = await this.$api.get('/get-program');
+        this.programs = response.data;
       } catch (error) {
         this.showError('Failed to load departments');
       }
@@ -360,8 +339,8 @@ export default {
         };
 
         const response = await this.$api.get('/subjects', { params });
-        console.log(response.data.data)
-        this.subjects = response.data.data;
+        console.log(response)
+        this.subjects = response.data;
         this.pagination = {
           current_page: response.data.current_page,
           last_page: response.data.last_page,

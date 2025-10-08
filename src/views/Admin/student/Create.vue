@@ -170,6 +170,23 @@
 
         <div class="form-grid">
           <div class="form-group">
+            <label class="form-label required">Program</label>
+            <div class="input-wrapper">
+              <select v-model="form.program_id" class="form-input" :class="{ 'input-error': errors.program_id }">
+                <option value="">Select Program</option>
+                <option v-for="program in programs" :key="program.id" :value="program.id">
+                  {{ program.name }}
+                </option>
+              </select>
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <span v-if="errors.program_id" class="error-message">{{ errors.program_id[0] }}</span>
+          </div>
+
+          <div class="form-group">
             <label class="form-label required">Session</label>
             <div class="input-wrapper">
               <select v-model="form.session_id" class="form-input" :class="{ 'input-error': errors.session_id }">
@@ -505,6 +522,7 @@ export default {
         mobile: '',
         session_id: '',
         category_id: '',
+        program_id: '',
         year: '',
         semester: '',
         is_hostel: '',
@@ -522,6 +540,7 @@ export default {
       },
       departments: [],
       categories: [],
+      programs: [],
       users: [],
       sessions: [],
       bloodGroups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'],
@@ -535,6 +554,7 @@ export default {
     this.fetchUsers();
     this.fetchSession();
     this.fetchCategory();
+    this.loadProgram();
   },
 
   methods: {
@@ -544,6 +564,14 @@ export default {
         this.departments = response.data;
       } catch (error) {
         console.error('Error fetching departments:', error);
+      }
+    },
+    async loadProgram() {
+      try {
+        const response = await this.$api.get('/get-program');
+        this.programs = response.data;
+      } catch (error) {
+        this.showError('Failed to load departments');
       }
     },
     async fetchSession() {
