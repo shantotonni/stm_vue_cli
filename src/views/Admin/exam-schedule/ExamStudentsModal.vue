@@ -29,13 +29,8 @@
                 </div>
                 <div class="stat-circle">
                   <svg viewBox="0 0 36 36" class="circular-chart">
-                    <path class="circle-bg"
-                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    />
-                    <path class="circle"
-                          :stroke-dasharray="`${enrolledPercentage}, 100`"
-                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    />
+                    <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                    <path class="circle" :stroke-dasharray="`${enrolledPercentage}, 100`" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
                   </svg>
                 </div>
               </div>
@@ -178,7 +173,7 @@
                     </div>
                     <div class="student-basic">
                       <h4 class="student-name">{{ student.name }}</h4>
-                      <p class="student-id">ID: {{ student.student_id }}</p>
+                      <p class="student-id">ID: {{ student.student_id_number }}</p>
                     </div>
                   </div>
                   <div class="eligibility-badge" :class="student.is_eligible ? 'eligible' : 'not-eligible'">
@@ -191,7 +186,7 @@
                   <div class="detail-item">
                     <i class="fas fa-hashtag"></i>
                     <span class="detail-label">Roll Number</span>
-                    <span class="detail-value">{{ student.roll_number }}</span>
+                    <span class="detail-value">{{ student.roll_no }}</span>
                   </div>
 
                   <div class="detail-item">
@@ -323,6 +318,7 @@ export default {
     async fetchEnrolledStudents() {
       try {
         const response = await this.$api.get(`/exams/${this.exam.id}/students`);
+        console.log(response)
         this.enrolledStudents = response.data.data || response.data;
       } catch (error) {
         console.error('Error fetching students:', error);
@@ -370,7 +366,7 @@ export default {
 
     async addStudentsByYearSem() {
       try {
-        await this.$api.post(`/exams/${this.exam.id}/students/bulk`, {
+        await this.$api.post(`/exams/${this.exam.id}/students/bulk/assign`, {
           year: this.addYear,
           semester: this.addSemester
         });
@@ -386,7 +382,7 @@ export default {
     async assignSeats() {
       if (confirm('Auto assign seats to all students?')) {
         try {
-          await this.$api.post(`/exams/${this.exam.id}/assign-seats`);
+          await this.$api.post(`/exams/${this.exam.id}/students/assign-seats`);
           this.$toast.success('Seats assigned successfully');
           this.fetchEnrolledStudents();
         } catch (error) {
