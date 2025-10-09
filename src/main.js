@@ -29,6 +29,46 @@ Vue.config.productionTip = false
 //Global CSS Import
 import '@/assets/css/main.css'
 
+// Simple toast notification
+Vue.prototype.$toast = {
+  success(message) {
+    this.show(message, 'success');
+  },
+  error(message) {
+    this.show(message, 'danger');
+  },
+  info(message) {
+    this.show(message, 'info');
+  },
+  warning(message) {
+    this.show(message, 'warning');
+  },
+  show(message, type) {
+    const toast = document.createElement('div');
+    toast.className = `alert alert-${type} alert-dismissible fade show toast-notification`;
+    toast.innerHTML = `
+      ${message}
+      <button type="button" class="close" data-dismiss="alert">
+        <span>&times;</span>
+      </button>
+    `;
+    toast.style.cssText = `
+      position: fixed;
+      background:green;
+      top: 20px;
+      right: 20px;
+      min-width: 250px;
+      z-index: 9999;
+      animation: slideInRight 0.3s ease-out;
+    `;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+      toast.remove();
+    }, 5000);
+  }
+};
+
 new Vue({
   store,
   router,
