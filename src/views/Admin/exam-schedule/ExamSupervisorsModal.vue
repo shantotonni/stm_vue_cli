@@ -32,14 +32,9 @@
                   <i class="fas fa-chalkboard-teacher"></i>
                   Select Teacher
                 </label>
-                {{availableTeachers}}
                 <select class="form-select-supervisor" v-model="selectedTeacher">
                   <option value="">Choose a teacher...</option>
-                  <option
-                      v-for="teacher in availableTeachers"
-                      :key="teacher.id"
-                      :value="teacher.id"
-                  >
+                  <option v-for="teacher in availableTeachers" :key="teacher.id" :value="teacher.id">
                     {{ teacher.name }} - {{ teacher.designation }}
                   </option>
                 </select>
@@ -244,7 +239,9 @@ export default {
     show(val) {
       if (val && this.exam) {
         this.fetchSupervisors();
-        this.fetchAvailableTeachers();
+        setTimeout(()=>{
+          this.fetchAvailableTeachers();
+        },1000)
       }
     }
   },
@@ -253,7 +250,6 @@ export default {
     async fetchSupervisors() {
       try {
         const response = await this.$api.get(`/exams/${this.exam.id}/supervisors`);
-        console.log(response.data)
         this.supervisors = response.data.data || response.data;
       } catch (error) {
         console.error('Error fetching supervisors:', error);
@@ -264,8 +260,8 @@ export default {
     async fetchAvailableTeachers() {
       try {
         const response = await this.$api.get('/get-teacher');
-        this.availableTeachers = response.data.data || response.data.data;
-        console.log(this.availableTeachers)
+        this.availableTeachers = response.data;
+        console.log(response.data)
       } catch (error) {
         console.error('Error fetching teachers:', error);
         this.$toast.error('Failed to load teachers');

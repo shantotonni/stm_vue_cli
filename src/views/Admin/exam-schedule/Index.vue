@@ -236,7 +236,7 @@
               <div class="info-content">
                 <span class="info-label">Venue</span>
                 <span class="info-value">
-                  {{ exam.room_number || exam.venue || 'TBA' }}
+                  {{exam.classroom.name || 'TBA' }}
                 </span>
               </div>
             </div>
@@ -253,7 +253,7 @@
               <i class="fas fa-users"></i>
               <div class="info-content">
                 <span class="info-label">Students</span>
-                <span class="info-value">{{ exam.students_count || 0 }}</span>
+                <span class="info-value">{{ exam.exam_students_count || 0 }}</span>
               </div>
             </div>
           </div>
@@ -272,6 +272,24 @@
           >
             <i class="fas fa-edit"></i>
             Edit
+          </button>
+          <button
+              v-if="exam.status === 'scheduled'"
+              class="action-btn btn-start"
+              @click="startExam(exam)"
+          >
+            <i class="fas fa-play"></i>
+            Start Exam
+          </button>
+
+          <!-- Complete Exam Button (ongoing → completed) -->
+          <button
+              v-if="exam.status === 'ongoing'"
+              class="action-btn btn-complete"
+              @click="completeExam(exam)"
+          >
+            <i class="fas fa-check-circle"></i>
+            Complete Exam
           </button>
 
           <button class="action-btn btn-success" @click="manageAttendance(exam)">
@@ -514,6 +532,48 @@ export default {
       }
     },
 
+    async startExam(exam) {
+      if (!confirm(`Start exam "${exam.title}"? This will allow attendance and mark the exam as ongoing.`)) {
+        return;
+      }
+
+      try {
+        const response = await this.$api.post(`/exams/${exam.id}/start`);
+
+        if (response.data.success) {
+          this.$toast.success('Exam started successfully');
+          // Update local exam object
+          exam.status = 'ongoing';
+          // Or refresh the list
+          this.fetchExams();
+        }
+      } catch (error) {
+        console.error('Error starting exam:', error);
+        const message = error.response?.data?.message || 'Failed to start exam';
+        this.$toast.error(message);
+      }
+    },
+
+    async completeExam(exam) {
+      if (!confirm(`Mark exam "${exam.title}" as completed? This action will finalize the exam.`)) {
+        return;
+      }
+
+      try {
+        const response = await this.$api.post(`/exams/${exam.id}/complete`);
+
+        if (response.data.success) {
+          this.$toast.success('Exam completed successfully');
+          exam.status = 'completed';
+          this.fetchExams();
+        }
+      } catch (error) {
+        console.error('Error completing exam:', error);
+        const message = error.response?.data?.message || 'Failed to complete exam';
+        this.$toast.error(message);
+      }
+    },
+
     updateStats() {
       // Calculate stats from exams
       this.stats = {
@@ -535,7 +595,7 @@ export default {
 
       switch(filter) {
         case 'upcoming':
-          this.filters.start_date = today;
+          this.filters.start_date = null;
           this.filters.end_date = '';
           this.filters.status = 'scheduled';
           break;

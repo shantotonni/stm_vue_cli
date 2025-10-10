@@ -254,7 +254,7 @@
                       Check-out
                     </button>
                     <button
-                        v-if="student.check_in_time"
+
                         class="table-btn btn-absent"
                         @click="markAbsent(student)"
                         title="Mark Absent"
@@ -357,6 +357,28 @@ export default {
   },
 
   methods: {
+    // async fetchAttendance() {
+    //   this.loading = true;
+    //   try {
+    //     // এই endpoint এখন exam_students table থেকে eligible students fetch করবে
+    //     const response = await this.$api.get(`/attendance/exam/${this.exam.id}`);
+    //
+    //     if (response.data.success) {
+    //       this.students = response.data.attendance;
+    //       this.statistics = response.data.statistics;
+    //
+    //       // যদি কোন enrolled student না থাকে
+    //       if (this.students.length === 0) {
+    //         this.$toast.warning('No students enrolled in this exam');
+    //       }
+    //     }
+    //   } catch (error) {
+    //     console.error('Error fetching attendance:', error);
+    //     this.$toast.error('Failed to load attendance data');
+    //   } finally {
+    //     this.loading = false;
+    //   }
+    // },
     async fetchAttendance() {
       try {
         const response = await this.$api.get(`/attendance/exam/${this.exam.id}`);
@@ -373,7 +395,6 @@ export default {
         await this.$api.post('/attendance/check-in', {
           exam_id: this.exam.id,
           student_id: student.id,
-          verified_by: 1
         });
 
         this.$toast.success(`${student.name} marked present`);
@@ -381,6 +402,67 @@ export default {
       } catch (error) {
         console.error('Error marking attendance:', error);
         this.$toast.error('Failed to mark attendance');
+      }
+    },
+
+    // ✅ UPDATED: Complete markAbsent function with API call
+    async markAbsent(student) {
+      // Confirmation dialog
+      if (!confirm(`Mark ${student.name} as absent?`)) {
+        return;
+      }
+
+      try {
+        // API call to mark student absent
+        const response = await this.$api.post('/attendance/mark-absent', {
+          exam_id: this.exam.id,
+          student_id: student.id
+        });
+
+        // Check response
+        if (response.data.success) {
+          this.$toast.success(`${student.name} marked absent`);
+          // Refresh attendance list
+          await this.fetchAttendance();
+        } else {
+          this.$toast.error(response.data.message || 'Failed to mark absent');
+        }
+      } catch (error) {
+        console.error('Error marking absent:', error);
+
+        // Handle different error types
+        if (error.response) {
+          // Server responded with error
+          const message = error.response.data?.message || 'Failed to mark absent';
+          this.$toast.error(message);
+        } else if (error.request) {
+          // Request made but no response
+          this.$toast.error('No response from server');
+        } else {
+          // Other errors
+          this.$toast.error('An error occurred');
+        }
+      }
+    },
+
+    // ✅ BONUS: Remove absent mark function
+    async removeAbsentMark(student) {
+      if (!confirm(`Remove absent mark for ${student.name}?`)) {
+        return;
+      }
+      try {
+        const response = await this.$api.post('/attendance/remove-absent', {
+          exam_id: this.exam.id,
+          student_id: student.id
+        });
+
+        if (response.data.success) {
+          this.$toast.success(`Absent mark removed for ${student.name}`);
+          await this.fetchAttendance();
+        }
+      } catch (error) {
+        console.error('Error removing absent mark:', error);
+        this.$toast.error('Failed to remove absent mark');
       }
     },
 
@@ -397,22 +479,11 @@ export default {
       }
     },
 
-    async markAbsent(student) {
-      if (confirm(`Mark ${student.name} as absent?`)) {
-        try {
-          this.$toast.success(`${student.name} marked absent`);
-          this.fetchAttendance();
-        } catch (error) {
-          console.error('Error marking absent:', error);
-        }
-      }
-    },
-
     async markAllPresent() {
       if (confirm('Mark all students as present?')) {
+        console.log(this.students)
         try {
-          const promises = this.students
-              .filter(s => !s.check_in_time)
+          const promises = this.students.filter(s => !s.check_in_time)
               .map(s => this.markPresent(s));
 
           await Promise.all(promises);

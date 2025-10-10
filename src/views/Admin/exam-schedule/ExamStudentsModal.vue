@@ -82,10 +82,10 @@
                 <i class="fas fa-chair"></i>
                 Auto Assign Seats
               </button>
-              <button class="action-btn btn-export">
-                <i class="fas fa-file-export"></i>
-                Export List
-              </button>
+<!--              <button class="action-btn btn-export">-->
+<!--                <i class="fas fa-file-export"></i>-->
+<!--                Export List-->
+<!--              </button>-->
             </div>
           </div>
 
@@ -136,12 +136,7 @@
           <div class="search-section">
             <div class="search-box">
               <i class="fas fa-search"></i>
-              <input
-                  type="text"
-                  class="search-input"
-                  placeholder="Search by name or student ID..."
-                  v-model="searchQuery"
-              >
+              <input type="text" class="search-input" placeholder="Search by name or student ID..." v-model="searchQuery">
               <span v-if="searchQuery" class="search-clear" @click="searchQuery = ''">
                 <i class="fas fa-times"></i>
               </span>
@@ -274,12 +269,11 @@ export default {
   computed: {
     filteredStudents() {
       if (!this.searchQuery) return this.enrolledStudents;
-
       const query = this.searchQuery.toLowerCase();
       return this.enrolledStudents.filter(s =>
           s.name.toLowerCase().includes(query) ||
-          s.student_id.toLowerCase().includes(query) ||
-          s.roll_number.toLowerCase().includes(query)
+          s.student_id_number.toLowerCase().includes(query) ||
+          s.roll_no.toLowerCase().includes(query)
       );
     },
 
@@ -318,7 +312,6 @@ export default {
     async fetchEnrolledStudents() {
       try {
         const response = await this.$api.get(`/exams/${this.exam.id}/students`);
-        console.log(response)
         this.enrolledStudents = response.data.data || response.data;
       } catch (error) {
         console.error('Error fetching students:', error);
