@@ -15,21 +15,21 @@
 
     <!-- Quick Actions -->
     <div class="quick-actions">
-      <a href="#" class="action-card">
+      <router-link to="/attendance-list" class="action-card">
         <div class="action-icon blue">📊</div>
         <div class="action-label">Mark Attendance</div>
         <div class="action-count">Today: Present</div>
-      </a>
+      </router-link>
       <a href="#" class="action-card">
         <div class="action-icon green">📝</div>
         <div class="action-label">Assignments</div>
         <div class="action-count">3 Pending</div>
       </a>
-      <a href="#" class="action-card">
+      <router-link to="/exam-schedule-list" class="action-card">
         <div class="action-icon purple">📚</div>
         <div class="action-label">Upcoming Exams</div>
         <div class="action-count">2 This Week</div>
-      </a>
+      </router-link>
       <a href="#" class="action-card">
         <div class="action-icon yellow">🏥</div>
         <div class="action-label">Clinical Duty</div>

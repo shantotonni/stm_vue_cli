@@ -493,7 +493,7 @@ export default {
   methods: {
     async fetchDepartments() {
       try {
-        const response = await this.$api.get('/get-departments');
+        const response = await this.$api.get('/departments');
         this.departments = response.data.data || response.data;
       } catch (error) {
         console.error('Error fetching departments:', error);

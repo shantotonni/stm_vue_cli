@@ -18,7 +18,7 @@
                 </span>
                 <span class="info-badge">
                   <i class="fas fa-check-circle"></i>
-                  Passing: {{ exam.pass_marks }}
+                  Passing: {{ exam.passing_marks }}
                 </span>
               </div>
             </div>
@@ -153,7 +153,7 @@
                   <i class="fas fa-info-circle"></i>
                   <div class="alert-content">
                     <strong>Instructions:</strong>
-                    <p>Enter marks for each student. Total Marks: <strong>{{ exam.total_marks }}</strong>, Passing Marks: <strong>{{ exam.pass_marks }}</strong></p>
+                    <p>Enter marks for each student. Total Marks: <strong>{{ exam.total_marks }}</strong>, Passing Marks: <strong>{{ exam.passing_marks }}</strong></p>
                   </div>
                 </div>
 
@@ -206,9 +206,9 @@
                         <td>
                           <span
                               class="status-badge"
-                              :class="bulkResults[index].marks_obtained >= exam.pass_marks ? 'status-pass' : 'status-fail'"
+                              :class="bulkResults[index].marks_obtained >= exam.passing_marks ? 'status-pass' : 'status-fail'"
                           >
-                            <i class="fas" :class="bulkResults[index].marks_obtained >= exam.pass_marks ? 'fa-check' : 'fa-times'"></i>
+                            <i class="fas" :class="bulkResults[index].marks_obtained >= exam.passing_marks ? 'fa-check' : 'fa-times'"></i>
                             {{ getPassFailText(bulkResults[index].marks_obtained) }}
                           </span>
                         </td>
@@ -300,10 +300,10 @@
                   <td>
                     <span
                         class="status-badge-result"
-                        :class="result.marks_obtained >= exam.pass_marks ? 'status-pass' : 'status-fail'"
+                        :class="result.marks_obtained >= exam.passing_marks ? 'status-pass' : 'status-fail'"
                     >
-                      <i class="fas" :class="result.marks_obtained >= exam.pass_marks ? 'fa-check-circle' : 'fa-times-circle'"></i>
-                      {{ result.marks_obtained >= exam.pass_marks ? 'PASS' : 'FAIL' }}
+                      <i class="fas" :class="result.marks_obtained >= exam.passing_marks ? 'fa-check-circle' : 'fa-times-circle'"></i>
+                      {{ result.marks_obtained >= exam.passing_marks ? 'PASS' : 'FAIL' }}
                     </span>
                   </td>
                   <td>
@@ -452,7 +452,6 @@ export default {
 
   watch: {
     show(val) {
-      console.log(this.exam)
       if (val && this.exam) {
         this.fetchResults();
         this.fetchStudents();
@@ -533,7 +532,7 @@ export default {
     },
 
     getPassFailText(marks) {
-      return marks >= this.exam.pass_marks ? 'PASS' : 'FAIL';
+      return marks >= this.exam.passing_marks ? 'PASS' : 'FAIL';
     },
 
     getPassPercentage() {

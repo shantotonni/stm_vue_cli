@@ -26,6 +26,16 @@ import StudentEnrollments from './views/Admin/student-enrollments/Index'
 import ExamScheduleList from './views/Admin/exam-schedule/Index'
 import TeachersSubjectList from './views/Admin/teachers-subject/Index'
 import AttendanceList from './views/Admin/attendance-list/Index'
+import AttendanceMarkingComponent from './views/Admin/attendance-list/AttendanceMarkingComponent';
+import AttendanceReportComponent from './views/Admin/attendance-list/Attendancereportcomponent';
+import NoticeList from './views/Admin/notice/Index';
+
+//report
+import ResultReport from './views/Admin/report/ResultReport.vue';
+import AttendanceReport from './views/Admin/report/AttendanceReport.vue';
+import ClassScheduleReport from './views/Admin/report/ClassScheduleReport.vue';
+import NoticeReport from './views/Admin/report/NoticeReport.vue';
+import ExamScheduleReport from './views/Admin/report/ExamScheduleReport.vue';
 
 // settings
 import Profile from './views/settings/Profile'
@@ -64,6 +74,80 @@ const router = new Router({
                 { path: 'exam-schedule-list', name: 'ExamScheduleList', component: ExamScheduleList },
                 { path: 'teachers-subject-list', name: 'TeachersSubjectList', component: TeachersSubjectList },
                 { path: 'attendance-list', name: 'AttendanceList', component: AttendanceList },
+                { path: 'notice-list', name: 'NoticeList', component: NoticeList },
+                {
+                    path: '/attendance/mark/:classId',
+                    name: 'MarkAttendance',
+                    component: AttendanceMarkingComponent,
+                    props: true,
+                    meta: {
+                        requiresAuth: true,
+                        role: ['teacher', 'admin'],
+                        title: 'Mark Attendance'
+                    }
+                },
+                {
+                    path: '/attendance/reports',
+                    name: 'AttendanceReports',
+                    component: AttendanceReportComponent,
+                    meta: {
+                        requiresAuth: true,
+                        role: ['admin'],
+                        title: 'Attendance Reports'
+                    }
+                },
+
+                //report
+                {
+                    path: 'report/results',
+                    name: 'StudentResults',
+                    component: ResultReport,
+                    meta: {
+                        requiresAuth: true,
+                        roles: ['admin', 'department_head', 'teacher', 'student'],
+                        title: 'Student Results',
+                    },
+                },
+                {
+                    path: 'report/attendance',
+                    name: 'StudentAttendance',
+                    component: AttendanceReport,
+                    meta: {
+                        requiresAuth: true,
+                        roles: ['admin', 'department_head', 'teacher', 'student'],
+                        title: 'Student Attendance',
+                    },
+                },
+                {
+                    path: 'report/class-schedule',
+                    name: 'ClassSchedule',
+                    component: ClassScheduleReport,
+                    meta: {
+                        requiresAuth: true,
+                        roles: ['admin', 'department_head', 'teacher', 'student'],
+                        title: 'Class Schedule',
+                    },
+                },
+                {
+                    path: 'report/notices',
+                    name: 'Notices',
+                    component: NoticeReport,
+                    meta: {
+                        requiresAuth: true,
+                        roles: ['admin', 'department_head', 'teacher', 'student'],
+                        title: 'Notices',
+                    },
+                },
+                {
+                    path: 'report/exam-schedule',
+                    name: 'ExamSchedule',
+                    component: ExamScheduleReport,
+                    meta: {
+                        requiresAuth: true,
+                        roles: ['admin', 'department_head', 'teacher', 'student'],
+                        title: 'Exam Schedule',
+                    },
+                },
 
                 { path: 'profile', name: 'Profile', component: Profile },
             ],
