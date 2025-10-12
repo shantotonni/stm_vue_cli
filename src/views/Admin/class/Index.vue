@@ -607,6 +607,7 @@ export default {
       try {
         const response = await this.$api.get('/classes/daily-class-generate');
         this.schedules = response.data || [];
+        this.fetchClasses();
       } catch (error) {
         this.showToast('Failed to fetch schedules', 'error');
         console.error(error);

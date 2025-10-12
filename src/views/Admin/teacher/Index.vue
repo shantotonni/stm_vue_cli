@@ -586,7 +586,7 @@ export default {
 
     async fetchDepartments() {
       try {
-        const response = await this.$api.get('/departments');
+        const response = await this.$api.get('/get-departments');
         this.departments = response.data;
       } catch (error) {
         console.error('Error fetching departments:', error);
@@ -668,7 +668,7 @@ export default {
 
         if (this.isEditing) {
           await this.$api.put(`/teachers/${this.form.id}`, data);
-          alert('Teacher updated successfully!');
+          //alert('Teacher updated successfully!');
         } else {
           await this.$api.post('/teachers', data);
           alert('Teacher created successfully!');
