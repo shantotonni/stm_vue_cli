@@ -211,12 +211,7 @@
       <div class="role-menu-container">
         <!-- Role Tabs -->
         <div class="role-tabs">
-          <button
-              v-for="role in roles"
-              :key="role.id"
-              @click="selectedRole = role"
-              :class="['role-tab', { 'active': selectedRole && selectedRole.id === role.id }]"
-          >
+          <button v-for="role in roles" :key="role.id" @click="selectedRole = role" :class="['role-tab', { 'active': selectedRole && selectedRole.id === role.id }]">
             <i class="fas fa-user-shield"></i>
             <span>{{ role.display_name }}</span>
             <span v-if="selectedRole && selectedRole.id === role.id" class="menu-count">
@@ -395,7 +390,7 @@ export default {
       try {
         const [menusRes, rolesRes, permsRes] = await Promise.all([
           this.$api.get('/menus'),
-          this.$api.get('/roles'),
+          this.$api.get('/get-roles'),
           this.$api.get('/permissions')
         ])
         this.allMenus = menusRes.data.menus || menusRes.data
@@ -473,7 +468,6 @@ export default {
     onParentMenuToggle(menu) {
       const isChecked = this.selectedMenus.includes(menu.id)
       const children = this.getMenuChildren(menu.id)
-
       if (children.length > 0) {
         children.forEach(child => {
           const index = this.selectedMenus.indexOf(child.id)

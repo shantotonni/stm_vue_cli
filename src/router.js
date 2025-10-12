@@ -36,6 +36,7 @@ import AttendanceReport from './views/Admin/report/AttendanceReport.vue';
 import ClassScheduleReport from './views/Admin/report/ClassScheduleReport.vue';
 import NoticeReport from './views/Admin/report/NoticeReport.vue';
 import ExamScheduleReport from './views/Admin/report/ExamScheduleReport.vue';
+import StudentSemesterReport from './views/Admin/report/StudentSemesterReport.vue';
 
 // settings
 import Profile from './views/settings/Profile'
@@ -146,6 +147,16 @@ const router = new Router({
                         requiresAuth: true,
                         roles: ['admin', 'department_head', 'teacher', 'student'],
                         title: 'Exam Schedule',
+                    },
+                },
+                {
+                    path: 'student-semester-report',
+                    name: 'StudentSemesterReport',
+                    component: StudentSemesterReport,
+                    meta: {
+                        requiresAuth: true,
+                        roles: ['admin', 'department_head', 'teacher', 'student'],
+                        title: 'Student Semester Report',
                     },
                 },
 

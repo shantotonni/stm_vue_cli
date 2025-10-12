@@ -31,18 +31,26 @@
         <div class="filter-item">
           <select v-model="filters.exam_type" @change="fetchResults" class="filter-select">
             <option value="">All Exam Types</option>
-            <option value="midterm">Midterm</option>
-            <option value="final">Final</option>
-            <option value="quiz">Quiz</option>
+            <option v-for="exam_type in exam_types" :key="exam_type.id" :value="exam_type.id">
+              {{ exam_type.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="filter-item">
+          <select v-model="filters.year" @change="fetchResults" class="filter-select">
+            <option value="">All Year</option>
+            <option v-for="year in years" :key="year.id" :value="year.id">
+              {{ year.name }}
+            </option>
           </select>
         </div>
 
         <div class="filter-item">
           <select v-model="filters.semester" @change="fetchResults" class="filter-select">
             <option value="">All Semesters</option>
-            <option v-for="sem in 8" :key="sem" :value="sem">
-              Semester {{ sem }}
-            </option>
+            <option value="1st">First Semester</option>
+            <option value="2nd">Second Semester</option>
           </select>
         </div>
 
@@ -78,10 +86,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr
-              v-for="result in results"
-              :key="result.id"
-              :class="['result-row', result.pass_fail_status === 'pass' ? 'pass-row' : 'fail-row']"
+          <tr v-for="(result, index) in results" :key="index" :class="['result-row', result.pass_fail_status === 'pass' ? 'pass-row' : 'fail-row']"
           >
             <td class="student-info">
               <div class="student-name">{{ result.student_name }}</div>
@@ -101,7 +106,7 @@
             <td class="gpa">{{ result.gpa }}</td>
             <td>
                 <span :class="['status-badge', result.pass_fail_status]">
-                  {{ result.pass_fail_status.toUpperCase() }}
+                  {{ result.pass_fail_status }}
                 </span>
             </td>
           </tr>
@@ -139,19 +144,20 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   name: 'ResultReport',
   data() {
     return {
       results: [],
       departments: [],
+      exam_types: [],
+      years: [],
       loading: false,
       filters: {
         search: '',
         department_id: '',
         exam_type: '',
+        year: '',
         semester: '',
       },
       currentPage: 1,
@@ -162,12 +168,30 @@ export default {
   mounted() {
     this.fetchDepartments();
     this.fetchResults();
+    this.fetchExamTypes();
+    this.fetchYear();
   },
   methods: {
     async fetchDepartments() {
       try {
-        const response = await axios.get('/api/departments');
-        this.departments = response.data.data;
+        const response = await this.$api.get('/get-departments');
+        this.departments = response.data;
+      } catch (error) {
+        console.error('Error fetching departments:', error);
+      }
+    },
+    async fetchExamTypes() {
+      try {
+        const response = await this.$api.get('/get-exam-types');
+        this.exam_types = response.data;
+      } catch (error) {
+        console.error('Error fetching departments:', error);
+      }
+    },
+    async fetchYear() {
+      try {
+        const response = await this.$api.get('/get-year');
+        this.years = response.data;
       } catch (error) {
         console.error('Error fetching departments:', error);
       }
@@ -179,7 +203,7 @@ export default {
           page: this.currentPage,
           ...this.filters,
         };
-        const response = await axios.get('/api/reports/results', { params });
+        const response = await this.$api.get('/reports/results', { params });
         this.results = response.data.data.data;
         this.currentPage = response.data.data.current_page;
         this.lastPage = response.data.data.last_page;
@@ -210,7 +234,7 @@ export default {
     },
     async exportResults() {
       try {
-        const response = await axios.get('/api/reports/results/export', {
+        const response = await this.$api.get('/reports/results/export', {
           params: this.filters,
           responseType: 'blob',
         });
@@ -233,8 +257,8 @@ export default {
 /* Main Container */
 .report-container {
   padding: 30px;
-  max-width: 1400px;
-  margin: 0 auto;
+  /*max-width: 1400px;*/
+  /*margin: 0 auto;*/
   background: #f5f7fa;
   min-height: 100vh;
 }

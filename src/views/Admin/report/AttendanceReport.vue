@@ -159,7 +159,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 
 export default {
   name: 'AttendanceReport',
@@ -202,16 +201,17 @@ export default {
   methods: {
     async fetchDepartments() {
       try {
-        const response = await axios.get('/api/departments');
-        this.departments = response.data.data;
+        const response = await this.$api.get('/get-departments');
+        console.log(response)
+        this.departments = response.data;
       } catch (error) {
         console.error('Error fetching departments:', error);
       }
     },
     async fetchSubjects() {
       try {
-        const response = await axios.get('/api/subjects');
-        this.subjects = response.data.data;
+        const response = await this.$api.get('/get-subjects');
+        this.subjects = response.data;
       } catch (error) {
         console.error('Error fetching subjects:', error);
       }
@@ -223,7 +223,7 @@ export default {
           page: this.currentPage,
           ...this.filters,
         };
-        const response = await axios.get('/api/reports/attendance', { params });
+        const response = await this.$api.get('/reports/attendance', { params });
         this.attendanceRecords = response.data.data.data;
         this.currentPage = response.data.data.current_page;
         this.lastPage = response.data.data.last_page;
@@ -287,8 +287,8 @@ export default {
 /* Main Container */
 .report-container {
   padding: 30px;
-  max-width: 1400px;
-  margin: 0 auto;
+  /*max-width: 1400px;*/
+  /*margin: 0 auto;*/
   background: #f5f7fa;
   min-height: 100vh;
 }

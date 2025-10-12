@@ -65,7 +65,6 @@ export default new Vuex.Store({
                             Authorization: `Bearer ${token}`,
                         },
                     });
-                    console.log(res.data.user)
                     if (res) {
                         localStorage.setItem("is_change_password", res.data.user.is_change_password);
                         commit("setUser", res.data.user);

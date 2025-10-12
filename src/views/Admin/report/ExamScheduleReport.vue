@@ -31,10 +31,9 @@
         <div class="filter-item">
           <select v-model="filters.exam_type" @change="fetchSchedule" class="filter-select">
             <option value="">All Exam Types</option>
-            <option value="midterm">Midterm</option>
-            <option value="final">Final</option>
-            <option value="quiz">Quiz</option>
-            <option value="practical">Practical</option>
+            <option v-for="type in exam_types" :key="type.id" :value="type.id">
+              {{ type.name }}
+            </option>
           </select>
         </div>
 
@@ -208,7 +207,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 
 export default {
   name: 'ExamScheduleReport',
@@ -216,6 +214,7 @@ export default {
     return {
       examSchedules: [],
       departments: [],
+      exam_types: [],
       loading: false,
       filters: {
         search: '',
@@ -244,12 +243,21 @@ export default {
   mounted() {
     this.fetchDepartments();
     this.fetchSchedule();
+    this.fetchExamTypes();
   },
   methods: {
     async fetchDepartments() {
       try {
-        const response = await axios.get('/api/departments');
-        this.departments = response.data.data;
+        const response = await this.$api.get('/get-departments');
+        this.departments = response.data;
+      } catch (error) {
+        console.error('Error fetching departments:', error);
+      }
+    },
+    async fetchExamTypes() {
+      try {
+        const response = await this.$api.get('/get-exam-types');
+        this.exam_types = response.data;
       } catch (error) {
         console.error('Error fetching departments:', error);
       }
@@ -261,7 +269,7 @@ export default {
           page: this.currentPage,
           ...this.filters,
         };
-        const response = await axios.get('/api/reports/exam-schedule', { params });
+        const response = await this.$api.get('/reports/exam-schedule', { params });
         this.examSchedules = response.data.data.data;
         this.currentPage = response.data.data.current_page;
         this.lastPage = response.data.data.last_page;
@@ -314,8 +322,8 @@ export default {
 /* Main Container */
 .report-container {
   padding: 30px;
-  max-width: 1600px;
-  margin: 0 auto;
+  /*max-width: 1600px;*/
+  /*margin: 0 auto;*/
   background: #f5f7fa;
   min-height: 100vh;
 }

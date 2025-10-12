@@ -143,12 +143,15 @@
 </template>
 
 <script>
-import axios from 'axios';
+
 
 export default {
-  name: 'ClassScheduleReport',
+  name: "ClassScheduleReport",
   data() {
     return {
+      loading: false,
+      viewMode: "weekly", // weekly or list
+      // Ensure weeklySchedule always has arrays for each day (normalized)
       weeklySchedule: {
         Monday: [],
         Tuesday: [],
@@ -160,102 +163,215 @@ export default {
       },
       scheduleList: [],
       departments: [],
-      loading: false,
-      viewMode: 'weekly',
       filters: {
-        search: '',
-        department_id: '',
+        department_id: "",
+        search: "",
       },
-      weekDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      expandedDays: {
-        Monday: true,
-        Tuesday: true,
-        Wednesday: true,
-        Thursday: true,
-        Friday: true,
-        Saturday: true,
-        Sunday: true,
-      },
-      searchTimeout: null,
+      expandedDays: {},
+      weekDays: [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+      ],
     };
   },
   computed: {
     hasSchedule() {
-      return Object.values(this.weeklySchedule).some(day => day.length > 0);
+      // check if any day has at least one class
+      return this.weekDays.some(day => Array.isArray(this.weeklySchedule[day]) && this.weeklySchedule[day].length > 0);
     },
-  },
-  mounted() {
-    this.fetchDepartments();
-    this.fetchSchedule();
   },
   methods: {
-    async fetchDepartments() {
-      try {
-        const response = await axios.get('/api/departments');
-        this.departments = response.data.data;
-      } catch (error) {
-        console.error('Error fetching departments:', error);
-      }
-    },
     async fetchSchedule() {
-      this.loading = true;
       try {
-        if (this.viewMode === 'weekly') {
-          const response = await axios.get('/api/reports/class-schedule/weekly', {
-            params: this.filters,
+        this.loading = true;
+
+        const response = await this.$api.get("/reports/class-schedule/weekly", {
+          params: {
+            department_id: this.filters.department_id || "",
+          },
+        });
+        console.log(response)
+        let payload = response.data.data;
+
+        // Defensive: if payload is array of schedule items, group by day
+        if (Array.isArray(payload)) {
+          this.weeklySchedule = this.emptyWeekTemplate();
+          payload.forEach(item => {
+            // support day either 'monday' or 'Monday'
+            const dayKey = this.normalizeDayKey(item.day || item.day_of_week || item.dayOfWeek || item.schedule_day || "Monday");
+            if (!this.weeklySchedule[dayKey]) this.weeklySchedule[dayKey] = [];
+            this.weeklySchedule[dayKey].push(item);
           });
-          this.weeklySchedule = response.data.data;
+        } else if (typeof payload === 'object' && payload !== null) {
+          // If payload is an object keyed by days, normalize keys and ensure arrays
+          const normalized = this.emptyWeekTemplate();
+          Object.keys(normalized).forEach(day => {
+            // try multiple casings from payload
+            const candidates = [day, day.toLowerCase(), day.toUpperCase()];
+            let value = null;
+            for (const c of candidates) {
+              if (payload[c] !== undefined) {
+                value = payload[c];
+                break;
+              }
+            }
+            // If found and it's array, use it; if single object, wrap into array; else keep empty
+            if (Array.isArray(value)) {
+              normalized[day] = value;
+            } else if (value && typeof value === 'object') {
+              normalized[day] = [value];
+            } else {
+              normalized[day] = [];
+            }
+          });
+          this.weeklySchedule = normalized;
         } else {
-          const response = await axios.get('/api/reports/class-schedule', {
-            params: this.filters,
-          });
-          this.scheduleList = response.data.data.data;
+          // fallback: empty week
+          this.weeklySchedule = this.emptyWeekTemplate();
         }
+
+        // Now create scheduleList from normalized weeklySchedule
+        this.scheduleList = this.convertToList(this.weeklySchedule);
+
+        // initialize expanded days
+        this.weekDays.forEach((day) => {
+          this.expandedDays[day] = false;
+        });
+
       } catch (error) {
-        console.error('Error fetching schedule:', error);
+        console.error("Error fetching schedule:", error);
+        // keep previous weeklySchedule but ensure structure
+        if (!this.weeklySchedule || typeof this.weeklySchedule !== 'object') {
+          this.weeklySchedule = this.emptyWeekTemplate();
+        }
       } finally {
         this.loading = false;
       }
     },
+
+    // helper: produce empty template with arrays
+    emptyWeekTemplate() {
+      return {
+        Monday: [],
+        Tuesday: [],
+        Wednesday: [],
+        Thursday: [],
+        Friday: [],
+        Saturday: [],
+        Sunday: [],
+      };
+    },
+
+    // helper: normalize day keys to Title Case (Monday)
+    normalizeDayKey(raw) {
+      if (!raw) return "Monday";
+      const s = String(raw).trim().toLowerCase();
+      const map = {
+        monday: "Monday",
+        tuesday: "Tuesday",
+        wednesday: "Wednesday",
+        thursday: "Thursday",
+        friday: "Friday",
+        saturday: "Saturday",
+        sunday: "Sunday",
+      };
+      return map[s] || "Monday";
+    },
+
+    async fetchDepartments() {
+      try {
+        const res = await this.$api.get("/get-departments");
+        this.departments = res.data || [];
+      } catch (error) {
+        console.error("Error fetching departments:", error);
+      }
+    },
+
     handleSearch() {
-      clearTimeout(this.searchTimeout);
-      this.searchTimeout = setTimeout(() => {
-        this.fetchSchedule();
-      }, 500);
+      if (!this.filters.search) {
+        this.scheduleList = this.convertToList(this.weeklySchedule);
+        return;
+      }
+
+      const term = this.filters.search.toLowerCase();
+      this.scheduleList = this.convertToList(this.weeklySchedule).filter(
+          (item) =>
+              (item.subject || "").toLowerCase().includes(term) ||
+              (item.teacher || "").toLowerCase().includes(term) ||
+              ((item.class_title || "")).toLowerCase().includes(term)
+      );
     },
+
     handleViewChange() {
-      this.fetchSchedule();
+      if (this.viewMode === "weekly") {
+        this.fetchSchedule();
+      }
     },
-    formatTime(time) {
-      if (!time) return '';
-      const [hours, minutes] = time.split(':');
-      const hour = parseInt(hours);
-      const ampm = hour >= 12 ? 'PM' : 'AM';
-      const formattedHour = hour % 12 || 12;
-      return `${formattedHour}:${minutes} ${ampm}`;
+
+    convertToList(weeklyData) {
+      let list = [];
+      // iterate through known weekdays to preserve order and avoid errors
+      this.weekDays.forEach((day) => {
+        const dayArr = weeklyData[day];
+        if (Array.isArray(dayArr)) {
+          dayArr.forEach((item) => {
+            // ensure item has day property for list usage
+            list.push({ ...item, day });
+          });
+        }
+        // if not array, skip safely
+      });
+      return list;
     },
-    isToday(day) {
-      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-      const today = new Date().getDay();
-      return days[today] === day;
-    },
+
     getDaySchedule(day) {
-      return this.scheduleList.filter(item => item.day === day);
+      return this.scheduleList.filter(
+          (item) => this.normalizeDayKey(item.day || item.day_of_week || item.schedule_day) === this.normalizeDayKey(day)
+      );
     },
+
     toggleDay(day) {
       this.expandedDays[day] = !this.expandedDays[day];
-      this.$forceUpdate();
     },
+
+    formatTime(time) {
+      if (!time) return "";
+      const parts = ('' + time).split(":");
+      if (parts.length < 2) return time;
+      const hour = parseInt(parts[0], 10);
+      const minute = parts[1].slice(0,2);
+      const suffix = hour >= 12 ? "PM" : "AM";
+      const h12 = hour % 12 === 0 ? 12 : hour % 12;
+      return `${h12}:${minute} ${suffix}`;
+    },
+
+    isToday(day) {
+      const today = new Date().toLocaleDateString("en-US", {
+        weekday: "long",
+      });
+      return today.toLowerCase() === day.toLowerCase();
+    },
+  },
+  async mounted() {
+    await this.fetchDepartments();
+    await this.fetchSchedule();
   },
 };
 </script>
+
+
 
 <style scoped>
 /* Main Container */
 .report-container {
   padding: 30px;
-  max-width: 1600px;
-  margin: 0 auto;
+  /*max-width: 1600px;*/
+  /*margin: 0 auto;*/
   background: #f5f7fa;
   min-height: 100vh;
 }
