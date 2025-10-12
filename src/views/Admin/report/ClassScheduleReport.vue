@@ -93,50 +93,43 @@
 
     <!-- List View (Mobile Friendly) -->
     <div v-else-if="viewMode === 'list' && scheduleList.length > 0" class="list-container">
-      <div
-          v-for="day in weekDays"
-          :key="day"
-          class="day-section"
-          v-if="getDaySchedule(day).length > 0"
-      >
-        <div class="day-section-header" @click="toggleDay(day)">
-          <h3>{{ day }}</h3>
-          <span class="toggle-icon">{{ expandedDays[day] ? '▼' : '▶' }}</span>
-        </div>
+      <div v-if="getDaySchedule(day).length > 0">
+        <div v-for="day in weekDays" :key="day" class="day-section" >
+          <div class="day-section-header" @click="toggleDay(day)">
+            <h3>{{ day }}</h3>
+            <span class="toggle-icon">{{ expandedDays[day] ? '▼' : '▶' }}</span>
+          </div>
 
-        <transition name="slide">
-          <div v-show="expandedDays[day]" class="day-classes">
-            <div
-                v-for="(classItem, index) in getDaySchedule(day)"
-                :key="index"
-                class="list-class-card"
-            >
-              <div class="list-class-color" :style="{ background: classItem.color_code }"></div>
-              <div class="list-class-content">
-                <div class="list-class-header">
-                  <h4>{{ classItem.class_title }}</h4>
-                  <span class="list-class-time">
+          <transition name="slide">
+            <div v-show="expandedDays[day]" class="day-classes">
+              <div v-for="(classItem, index) in getDaySchedule(day)" :key="index" class="list-class-card">
+                <div class="list-class-color" :style="{ background: classItem.color_code }"></div>
+                <div class="list-class-content">
+                  <div class="list-class-header">
+                    <h4>{{ classItem.class_title }}</h4>
+                    <span class="list-class-time">
                     {{ formatTime(classItem.start_time) }} - {{ formatTime(classItem.end_time) }}
                   </span>
-                </div>
-                <div class="list-class-details">
-                  <div class="detail-row">
-                    <span class="detail-label">Subject:</span>
-                    <span class="detail-value">{{ classItem.subject }}</span>
                   </div>
-                  <div class="detail-row">
-                    <span class="detail-label">Teacher:</span>
-                    <span class="detail-value">{{ classItem.teacher }}</span>
-                  </div>
-                  <div class="detail-row">
-                    <span class="detail-label">Room:</span>
-                    <span class="detail-value">{{ classItem.classroom }}</span>
+                  <div class="list-class-details">
+                    <div class="detail-row">
+                      <span class="detail-label">Subject:</span>
+                      <span class="detail-value">{{ classItem.subject }}</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">Teacher:</span>
+                      <span class="detail-value">{{ classItem.teacher }}</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">Room:</span>
+                      <span class="detail-value">{{ classItem.classroom }}</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </transition>
+          </transition>
+        </div>
       </div>
     </div>
 
