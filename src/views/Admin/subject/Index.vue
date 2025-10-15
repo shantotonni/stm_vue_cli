@@ -339,8 +339,7 @@ export default {
         };
 
         const response = await this.$api.get('/subjects', { params });
-        console.log(response)
-        this.subjects = response.data;
+        this.subjects = response.data.data;
         this.pagination = {
           current_page: response.data.current_page,
           last_page: response.data.last_page,

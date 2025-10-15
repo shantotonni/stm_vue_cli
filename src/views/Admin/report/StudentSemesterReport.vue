@@ -9,7 +9,7 @@
           <select id="student-select" v-model="selectedStudentId" class="form-control">
             <option value="">-- Select Student --</option>
             <option v-for="student in students" :key="student.id" :value="student.id">
-              {{ student.name }} ({{ student.roll }})
+              {{ student.name }} ({{ student.roll_no }})
             </option>
           </select>
         </div>

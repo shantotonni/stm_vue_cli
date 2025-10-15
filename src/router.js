@@ -29,6 +29,8 @@ import AttendanceList from './views/Admin/attendance-list/Index'
 import AttendanceMarkingComponent from './views/Admin/attendance-list/AttendanceMarkingComponent';
 import AttendanceReportComponent from './views/Admin/attendance-list/Attendancereportcomponent';
 import NoticeList from './views/Admin/notice/Index';
+import BookList from './views/Admin/book/Index';
+import BookCard from './views/Admin/book/Show';
 
 //report
 import ResultReport from './views/Admin/report/ResultReport.vue';
@@ -76,6 +78,8 @@ const router = new Router({
                 { path: 'teachers-subject-list', name: 'TeachersSubjectList', component: TeachersSubjectList },
                 { path: 'attendance-list', name: 'AttendanceList', component: AttendanceList },
                 { path: 'notice-list', name: 'NoticeList', component: NoticeList },
+                { path: 'book-list', name: 'BookList', component: BookList },
+                { path: 'e-library', name: 'BookCard', component: BookCard },
                 {
                     path: '/attendance/mark/:classId',
                     name: 'MarkAttendance',
