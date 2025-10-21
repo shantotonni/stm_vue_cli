@@ -4,7 +4,8 @@
     <div class="header-section">
       <div class="header-content">
         <h1 class="page-title">
-          <i class="fas fa-door-open"></i> Classroom Management
+          <i class="fas fa-door-open"></i>
+          <span>Classroom Management</span>
         </h1>
         <div class="stats-cards">
           <div class="stat-card">
@@ -37,7 +38,8 @@
         </div>
       </div>
       <button @click="openModal()" class="btn btn-primary">
-        <i class="fas fa-plus"></i> Add New Classroom
+        <i class="fas fa-plus"></i>
+        <span class="btn-text">Add New Classroom</span>
       </button>
     </div>
 
@@ -90,7 +92,8 @@
     <!-- Table -->
     <div class="table-container">
       <div v-if="loading" class="loading-spinner">
-        <i class="fas fa-spinner fa-spin"></i> Loading...
+        <i class="fas fa-spinner fa-spin"></i>
+        <span>Loading...</span>
       </div>
 
       <table v-else class="classrooms-table">
@@ -113,25 +116,25 @@
           </td>
         </tr>
         <tr v-for="classroom in classrooms" :key="classroom.id" class="table-row">
-          <td>
+          <td data-label="Code">
             <span class="status-badge status-available">{{ classroom.code }}</span>
           </td>
-          <td class="classroom-name">
+          <td data-label="Name" class="classroom-name">
             <i :class="getTypeIcon(classroom.type)"></i>
-            {{ classroom.name }}
+            <span>{{ classroom.name }}</span>
           </td>
-          <td>
+          <td data-label="Type">
               <span :class="['status-badge status-available', 'badge-type', getTypeBadgeClass(classroom.type)]">
                 {{ getTypeLabel(classroom.type) }}
               </span>
           </td>
-          <td>
+          <td data-label="Capacity">
               <span class="capacity-badge">
                 <i class="fas fa-users"></i>
                 {{ classroom.capacity }}
               </span>
           </td>
-          <td class="equipment-cell">
+          <td data-label="Equipment" class="equipment-cell">
             <div v-if="classroom.equipment" class="equipment-preview">
               {{ truncateText(classroom.equipment, 30) }}
               <button
@@ -144,13 +147,13 @@
             </div>
             <span v-else class="no-equipment">-</span>
           </td>
-          <td>
+          <td data-label="Status">
               <span :class="['status-badge', classroom.is_available ? 'status-available' : 'status-unavailable']">
                 <i :class="classroom.is_available ? 'fas fa-check-circle' : 'fas fa-times-circle'"></i>
                 {{ classroom.is_available ? 'Available' : 'Not Available' }}
               </span>
           </td>
-          <td class="actions">
+          <td data-label="Actions" class="actions">
             <button @click="openModal(classroom)" class="btn-icon btn-edit" title="Edit">
               <i class="fas fa-edit"></i>
             </button>
@@ -174,7 +177,7 @@
       </button>
 
       <span class="pagination-info">
-        Page {{ pagination.current_page }} of {{ pagination.last_page }}
+        <span class="page-text">Page {{ pagination.current_page }} of {{ pagination.last_page }}</span>
         <span class="total-items">({{ pagination.total }} total)</span>
       </span>
 
@@ -194,14 +197,14 @@
           <div class="modal-header">
             <h2>
               <i :class="editMode ? 'fas fa-edit' : 'fas fa-plus-circle'"></i>
-              {{ editMode ? 'Edit Classroom' : 'Add New Classroom' }}
+              <span>{{ editMode ? 'Edit Classroom' : 'Add New Classroom' }}</span>
             </h2>
             <button @click="closeModal" class="close-btn">
               <i class="fas fa-times"></i>
             </button>
           </div>
 
-          <form @submit.prevent="saveClassroom" class="modal-body">
+          <div class="modal-body">
             <div class="form-row">
               <div class="form-group">
                 <label>Classroom Name <span class="required">*</span></label>
@@ -283,14 +286,14 @@
             <div class="modal-footer">
               <button type="button" @click="closeModal" class="btn btn-secondary">
                 <i class="fas fa-times"></i>
-                Cancel
+                <span>Cancel</span>
               </button>
-              <button type="submit" class="btn btn-primary" :disabled="saving">
+              <button @click="saveClassroom" class="btn btn-primary" :disabled="saving">
                 <i :class="saving ? 'fas fa-spinner fa-spin' : 'fas fa-save'"></i>
-                {{ saving ? 'Saving...' : 'Save Classroom' }}
+                <span>{{ saving ? 'Saving...' : 'Save Classroom' }}</span>
               </button>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </transition>
@@ -302,7 +305,7 @@
           <div class="modal-header">
             <h2>
               <i class="fas fa-tools"></i>
-              Equipment Details
+              <span>Equipment Details</span>
             </h2>
             <button @click="closeEquipmentModal" class="close-btn">
               <i class="fas fa-times"></i>
@@ -388,7 +391,6 @@ export default {
           ...this.filters
         };
 
-        // Remove null/empty values
         Object.keys(params).forEach(key => {
           if (params[key] === null || params[key] === '') {
             delete params[key];
@@ -551,6 +553,8 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
 .classroom-management {
   padding: 24px;
   background: #f8f9fa;
@@ -569,6 +573,7 @@ export default {
 
 .header-content {
   flex: 1;
+  min-width: 0;
 }
 
 .page-title {
@@ -583,6 +588,7 @@ export default {
 
 .page-title i {
   color: #667eea;
+  flex-shrink: 0;
 }
 
 /* Stats Cards */
@@ -617,6 +623,7 @@ export default {
   justify-content: center;
   font-size: 24px;
   color: white;
+  flex-shrink: 0;
 }
 
 .stat-icon.total {
@@ -633,6 +640,7 @@ export default {
 
 .stat-info {
   flex: 1;
+  min-width: 0;
 }
 
 .stat-value {
@@ -730,6 +738,7 @@ export default {
   cursor: pointer;
   transition: all 0.3s ease;
   background: white;
+  width: 100%;
 }
 
 .filter-select:focus {
@@ -750,6 +759,7 @@ export default {
   border-radius: 8px;
   font-size: 14px;
   transition: all 0.3s ease;
+  min-width: 0;
 }
 
 .capacity-input:focus {
@@ -773,6 +783,7 @@ export default {
 .classrooms-table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 900px;
 }
 
 .classrooms-table thead {
@@ -787,6 +798,7 @@ export default {
   font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .classrooms-table td {
@@ -814,6 +826,7 @@ export default {
 
 .classroom-name i {
   color: #667eea;
+  flex-shrink: 0;
 }
 
 /* Badges */
@@ -863,6 +876,7 @@ export default {
   border-radius: 20px;
   font-weight: 600;
   color: #475569;
+  white-space: nowrap;
 }
 
 .capacity-badge i {
@@ -877,6 +891,7 @@ export default {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  white-space: nowrap;
 }
 
 .status-available {
@@ -911,6 +926,7 @@ export default {
   cursor: pointer;
   align-self: flex-start;
   transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
 .view-more-btn:hover {
@@ -925,6 +941,8 @@ export default {
 .actions {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
 }
 
 .btn-icon {
@@ -937,6 +955,7 @@ export default {
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
+  flex-shrink: 0;
 }
 
 .btn-edit {
@@ -972,6 +991,7 @@ export default {
   background: white;
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap;
 }
 
 .pagination-btn {
@@ -986,6 +1006,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .pagination-btn:hover:not(:disabled) {
@@ -1027,6 +1048,7 @@ export default {
   justify-content: center;
   z-index: 1000;
   padding: 20px;
+  overflow-y: auto;
 }
 
 .modal-content {
@@ -1037,6 +1059,7 @@ export default {
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  margin: auto;
 }
 
 .modal-small {
@@ -1049,6 +1072,11 @@ export default {
   align-items: center;
   padding: 24px;
   border-bottom: 2px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
+  border-radius: 16px 16px 0 0;
 }
 
 .modal-header h2 {
@@ -1076,6 +1104,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .close-btn:hover {
@@ -1157,6 +1186,7 @@ export default {
   width: 20px;
   height: 20px;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .checkbox-text {
@@ -1178,6 +1208,7 @@ export default {
   margin-top: 24px;
   padding-top: 24px;
   border-top: 2px solid #e2e8f0;
+  flex-wrap: wrap;
 }
 
 /* Equipment Modal */
@@ -1201,12 +1232,14 @@ export default {
   padding: 60px 20px;
   font-size: 18px;
   color: #667eea;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
 }
 
 .loading-spinner i {
   font-size: 32px;
-  display: block;
-  margin-bottom: 12px;
 }
 
 .no-data {
@@ -1248,47 +1281,489 @@ export default {
   transform: scale(0.9);
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
-  .filter-section {
-    grid-template-columns: 1fr 1fr;
+/* ===== Responsive Design ===== */
+
+/* Large Tablets and Small Laptops (1024px - 1200px) */
+@media (max-width: 1200px) {
+  .classroom-management {
+    padding: 20px;
+  }
+
+  .page-title {
+    font-size: 26px;
   }
 
   .stats-cards {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .filter-section {
+    grid-template-columns: 2fr 1fr 1fr 1fr;
   }
 }
 
-@media (max-width: 768px) {
+/* Tablets (768px - 1023px) */
+@media (max-width: 1023px) {
+  .classroom-management {
+    padding: 16px;
+  }
+
   .header-section {
     flex-direction: column;
     align-items: stretch;
   }
 
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .page-title {
+    font-size: 24px;
+  }
+
+  .stats-cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
   .filter-section {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .search-box {
+    grid-column: 1 / -1;
+  }
+
+  .capacity-filter {
+    grid-column: 1 / -1;
   }
 
   .form-row {
     grid-template-columns: 1fr;
   }
 
-  .classrooms-table {
-    font-size: 12px;
+  .modal-header h2 {
+    font-size: 20px;
   }
 
-  .classrooms-table th,
-  .classrooms-table td {
-    padding: 12px 8px;
-  }
-
-  .page-title {
-    font-size: 22px;
-  }
-
-  .equipment-cell {
-    max-width: 150px;
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
 
+/* Mobile Devices (481px - 767px) */
+@media (max-width: 767px) {
+  .classroom-management {
+    padding: 12px;
+  }
+
+  .header-section {
+    margin-bottom: 20px;
+    gap: 16px;
+  }
+
+  .page-title {
+    font-size: 20px;
+    gap: 8px;
+  }
+
+  .page-title i {
+    font-size: 20px;
+  }
+
+  .stats-cards {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .stat-card {
+    padding: 16px;
+  }
+
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+
+  .stat-value {
+    font-size: 24px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+
+  .filter-section {
+    grid-template-columns: 1fr;
+    padding: 14px;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .search-input {
+    padding: 10px 14px 10px 42px;
+    font-size: 13px;
+  }
+
+  .filter-select {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .capacity-input {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  /* Mobile Table - Card Style */
+  .classrooms-table {
+    min-width: 100%;
+  }
+
+  .classrooms-table thead {
+    display: none;
+  }
+
+  .classrooms-table tbody {
+    display: block;
+  }
+
+  .table-row {
+    display: block;
+    margin-bottom: 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    background: white;
+  }
+
+  .table-row:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .classrooms-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f5f9;
+    text-align: right;
+  }
+
+  .classrooms-table td:last-child {
+    border-bottom: none;
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 2px solid #f1f5f9;
+  }
+
+  .classrooms-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #475569;
+    text-align: left;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .classrooms-table td[data-label="Actions"] {
+    justify-content: center;
+  }
+
+  .classrooms-table td[data-label="Actions"]::before {
+    display: none;
+  }
+
+  .classroom-name {
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+  }
+
+  .equipment-cell {
+    max-width: none;
+  }
+
+  .actions {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .btn-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .pagination {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .pagination-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .pagination-info {
+    font-size: 13px;
+  }
+
+  /* Modal Mobile */
+  .modal-overlay {
+    padding: 10px;
+    align-items: flex-start;
+  }
+
+  .modal-content {
+    max-height: 95vh;
+    margin-top: 10px;
+  }
+
+  .modal-header {
+    padding: 16px;
+  }
+
+  .modal-header h2 {
+    font-size: 18px;
+  }
+
+  .close-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .modal-body {
+    padding: 16px;
+  }
+
+  .form-group label {
+    font-size: 13px;
+  }
+
+  .form-control {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .modal-footer {
+    padding-top: 16px;
+    margin-top: 16px;
+  }
+
+  .modal-footer .btn {
+    flex: 1;
+    min-width: auto;
+  }
+
+  .loading-spinner {
+    padding: 40px 15px;
+    font-size: 16px;
+  }
+
+  .loading-spinner i {
+    font-size: 28px;
+  }
+}
+
+/* Small Mobile Devices (320px - 480px) */
+@media (max-width: 480px) {
+  .classroom-management {
+    padding: 10px;
+  }
+
+  .page-title {
+    font-size: 18px;
+  }
+
+  .stat-card {
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .stat-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+
+  .stat-value {
+    font-size: 20px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+  }
+
+  .btn {
+    padding: 9px 16px;
+    font-size: 12px;
+  }
+
+  .btn-text {
+    display: none;
+  }
+
+  .btn i {
+    margin: 0;
+  }
+
+  .filter-section {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .search-input,
+  .filter-select,
+  .capacity-input {
+    font-size: 12px;
+  }
+
+  .table-row {
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+
+  .classrooms-table td {
+    padding: 8px 0;
+    font-size: 13px;
+  }
+
+  .classrooms-table td::before {
+    font-size: 11px;
+  }
+
+  .status-badge {
+    padding: 4px 10px;
+    font-size: 11px;
+  }
+
+  .capacity-badge {
+    padding: 4px 10px;
+    font-size: 11px;
+  }
+
+  .btn-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 13px;
+  }
+
+  .pagination {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .pagination-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+
+  .pagination-info {
+    font-size: 12px;
+  }
+
+  .modal-header {
+    padding: 14px;
+  }
+
+  .modal-header h2 {
+    font-size: 16px;
+  }
+
+  .modal-body {
+    padding: 14px;
+  }
+
+  .form-group {
+    margin-bottom: 12px;
+  }
+
+  .form-control {
+    padding: 9px 12px;
+    font-size: 12px;
+  }
+
+  .checkbox-label {
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  .checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+  }
+
+  .modal-footer {
+    gap: 8px;
+    flex-direction: column;
+  }
+
+  .modal-footer .btn {
+    width: 100%;
+  }
+
+  .equipment-details h3 {
+    font-size: 16px;
+  }
+
+  .equipment-text {
+    font-size: 13px;
+  }
+}
+
+/* Extra Small Devices (below 360px) */
+@media (max-width: 359px) {
+  .classroom-management {
+    padding: 8px;
+  }
+
+  .page-title {
+    font-size: 16px;
+  }
+
+  .page-title span {
+    display: none;
+  }
+
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+
+  .stat-value {
+    font-size: 18px;
+  }
+
+  .filter-section {
+    padding: 10px;
+  }
+
+  .table-row {
+    padding: 10px;
+  }
+
+  .classrooms-table td {
+    font-size: 12px;
+  }
+
+  .btn-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .actions {
+    gap: 6px;
+  }
+}
 </style>

@@ -73,7 +73,7 @@
           </h3>
           <button @click="resetFilters" class="btn-reset">
             <i class="fas fa-redo"></i>
-            Reset
+            <span class="reset-text">Reset</span>
           </button>
         </div>
 
@@ -144,12 +144,12 @@
     </div>
 
     <!-- Students Table -->
-    <div v-else class="data-table-section" style="max-width: 1450px;">
+    <div v-else class="data-table-section">
       <div class="table-card">
         <div class="table-header">
           <h3 class="table-title">
             <i class="fas fa-list"></i>
-            Student Records
+            <span>Student Records</span>
           </h3>
           <div class="table-actions">
             <button class="btn-icon-action" title="Export to Excel">
@@ -171,7 +171,7 @@
               <th @click="sortBy('student_id_number')" class="sortable">
                 <div class="th-content">
                   <i class="fas fa-id-badge"></i>
-                  Student ID
+                  <span class="th-text">Student ID</span>
                   <span class="sort-indicator" v-if="sortField === 'student_id_number'">
                       <i :class="sortOrder === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>
                     </span>
@@ -180,7 +180,7 @@
               <th @click="sortBy('name')" class="sortable">
                 <div class="th-content">
                   <i class="fas fa-user"></i>
-                  Student Name
+                  <span class="th-text">Student Name</span>
                   <span class="sort-indicator" v-if="sortField === 'name'">
                       <i :class="sortOrder === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>
                     </span>
@@ -189,61 +189,55 @@
               <th>
                 <div class="th-content">
                   <i class="fas fa-hashtag"></i>
-                  Roll No
+                  <span class="th-text">Roll No</span>
                 </div>
               </th>
               <th>
                 <div class="th-content">
                   <i class="fas fa-building"></i>
-                  Department
+                  <span class="th-text">Department</span>
                 </div>
               </th>
               <th>
                 <div class="th-content">
                   <i class="fas fa-layer-group"></i>
-                  Year
+                  <span class="th-text">Year</span>
                 </div>
               </th>
               <th>
                 <div class="th-content">
                   <i class="fas fa-calendar"></i>
-                  Semester
+                  <span class="th-text">Semester</span>
                 </div>
               </th>
-<!--              <th>-->
-<!--                <div class="th-content">-->
-<!--                  <i class="fas fa-envelope"></i>-->
-<!--                  Email-->
-<!--                </div>-->
-<!--              </th>-->
               <th>
                 <div class="th-content">
                   <i class="fas fa-phone"></i>
-                  Mobile
+                  <span class="th-text">Mobile</span>
                 </div>
               </th>
               <th>
                 <div class="th-content">
                   <i class="fas fa-info-circle"></i>
-                  Status
+                  <span class="th-text">Status</span>
                 </div>
               </th>
               <th class="text-center">
                 <div class="th-content">
                   <i class="fas fa-cog"></i>
-                  Actions
+                  <span class="th-text">Actions</span>
                 </div>
               </th>
             </tr>
             </thead>
             <tbody>
             <tr v-for="student in students.data" :key="student.id" class="table-row">
-              <td>
+              <td data-label="Student ID">
                 <div class="student-id-badge">
                   {{ student.student_id_number }}
                 </div>
               </td>
-              <td>
+              <td data-label="Name">
                 <div class="student-profile">
                   <div class="student-avatar">
                     {{ getInitials(student.name) }}
@@ -254,39 +248,36 @@
                   </div>
                 </div>
               </td>
-              <td>
+              <td data-label="Roll No">
                 <span class="roll-number">{{ student.roll_no }}</span>
               </td>
-              <td>
+              <td data-label="Department">
                   <span class="department-name">
                     {{ student.department ? student.department.name : 'N/A' }}
                   </span>
               </td>
-              <td>
+              <td data-label="Year">
                   <span class="year-badge">
                     <i class="fas fa-graduation-cap"></i>
                     {{ student.year }}
                   </span>
               </td>
-              <td>
+              <td data-label="Semester">
                   <span class="semester-badge">
                     <i class="fas fa-book"></i>
                     {{ student.semester }}
                   </span>
               </td>
-<!--              <td>-->
-<!--                <span class="email-text">{{ student.email || 'N/A' }}</span>-->
-<!--              </td>-->
-              <td>
+              <td data-label="Mobile">
                 <span class="mobile-text">{{ student.mobile || 'N/A' }}</span>
               </td>
-              <td>
+              <td data-label="Status">
                   <span :class="['status-pill', student.status === 'Y' ? 'status-active' : 'status-inactive']">
                     <i :class="student.status === 'Y' ? 'fas fa-check-circle' : 'fas fa-times-circle'"></i>
                     {{ student.status === 'Y' ? 'Active' : 'Inactive' }}
                   </span>
               </td>
-              <td>
+              <td data-label="Actions">
                 <div class="action-buttons-group">
                   <button @click="viewStudent(student.id)" class="action-btn view-btn" title="View Details">
                     <i class="fas fa-eye"></i>
@@ -308,7 +299,9 @@
         <div class="pagination-wrapper">
           <div class="pagination-info">
             <i class="fas fa-info-circle"></i>
-            Showing <strong>{{ students.from }}</strong> to <strong>{{ students.to }}</strong> of <strong>{{ students.total }}</strong> students
+            <span class="pagination-text">
+              Showing <strong>{{ students.from }}</strong> to <strong>{{ students.to }}</strong> of <strong>{{ students.total }}</strong> students
+            </span>
           </div>
           <div class="pagination-controls">
             <button
@@ -317,7 +310,7 @@
                 class="pagination-btn prev-btn"
             >
               <i class="fas fa-chevron-left"></i>
-              Previous
+              <span class="btn-text">Previous</span>
             </button>
 
             <div class="page-numbers">
@@ -336,7 +329,7 @@
                 :disabled="!students.next_page_url"
                 class="pagination-btn next-btn"
             >
-              Next
+              <span class="btn-text">Next</span>
               <i class="fas fa-chevron-right"></i>
             </button>
           </div>
@@ -612,6 +605,7 @@ export default {
   align-items: center;
   justify-content: center;
   font-size: 28px;
+  flex-shrink: 0;
 }
 
 .stat-primary .stat-icon {
@@ -636,6 +630,7 @@ export default {
 
 .stat-info {
   flex: 1;
+  min-width: 0;
 }
 
 .stat-label {
@@ -732,6 +727,7 @@ export default {
   font-size: 14px;
   transition: all 0.3s ease;
   background: white;
+  width: 100%;
 }
 
 .filter-input:focus,
@@ -745,7 +741,7 @@ export default {
 .loading-wrapper {
   background: white;
   border-radius: 16px;
-  padding: 80px;
+  padding: 80px 20px;
   text-align: center;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
@@ -789,6 +785,8 @@ export default {
   padding: 20px 24px;
   border-bottom: 2px solid #f1f5f9;
   background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .table-title {
@@ -829,11 +827,13 @@ export default {
 
 .table-container {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .data-table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 900px;
 }
 
 .data-table thead {
@@ -925,6 +925,7 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
 }
 
 .student-name {
@@ -957,6 +958,7 @@ export default {
   border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .year-badge {
@@ -984,6 +986,7 @@ export default {
   border-radius: 20px;
   font-size: 13px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .status-active {
@@ -1002,6 +1005,7 @@ export default {
   display: flex;
   gap: 8px;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .action-btn {
@@ -1015,6 +1019,7 @@ export default {
   justify-content: center;
   font-size: 14px;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .view-btn {
@@ -1064,6 +1069,8 @@ export default {
   padding: 20px 24px;
   border-top: 2px solid #f1f5f9;
   background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
 .pagination-info {
@@ -1083,6 +1090,7 @@ export default {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .pagination-btn {
@@ -1114,6 +1122,7 @@ export default {
 .page-numbers {
   display: flex;
   gap: 6px;
+  flex-wrap: wrap;
 }
 
 .page-btn {
@@ -1127,6 +1136,7 @@ export default {
   color: #64748b;
   cursor: pointer;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .page-btn:hover {
@@ -1143,9 +1153,29 @@ export default {
 }
 
 /* ===== Responsive Design ===== */
-@media (max-width: 1024px) {
+
+/* Large Tablets and Small Laptops (1024px - 1200px) */
+@media (max-width: 1200px) {
+  .student-management {
+    padding: 20px;
+  }
+
+  .main-title {
+    font-size: 28px;
+  }
+
+  .icon-wrapper {
+    width: 42px;
+    height: 42px;
+    font-size: 20px;
+  }
+
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stat-value {
+    font-size: 24px;
   }
 
   .filter-grid {
@@ -1153,31 +1183,533 @@ export default {
   }
 }
 
-@media (max-width: 768px) {
+/* Tablets (768px - 1023px) */
+@media (max-width: 1023px) {
   .student-management {
-    padding: 15px;
+    padding: 16px;
   }
 
   .header-content {
     flex-direction: column;
+    align-items: stretch;
     gap: 16px;
+  }
+
+  .btn-add-new {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .main-title {
+    font-size: 24px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .stat-card {
+    padding: 18px;
+  }
+
+  .stat-icon {
+    width: 52px;
+    height: 52px;
+    font-size: 24px;
+  }
+
+  .stat-value {
+    font-size: 22px;
+  }
+
+  .filter-card {
+    padding: 20px;
+  }
+
+  .filter-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .table-header {
+    padding: 16px 20px;
+  }
+
+  .table-title {
+    font-size: 16px;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 14px 16px;
+    font-size: 13px;
+  }
+
+  .pagination-wrapper {
+    padding: 16px 20px;
+  }
+
+  .page-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 13px;
+  }
+}
+
+/* Mobile Devices (481px - 767px) */
+@media (max-width: 767px) {
+  .student-management {
+    padding: 12px;
+  }
+
+  .main-title {
+    font-size: 20px;
+    gap: 8px;
+  }
+
+  .icon-wrapper {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+    border-radius: 8px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+  }
+
+  .btn-add-new {
+    padding: 12px 20px;
+    font-size: 14px;
   }
 
   .stats-grid {
     grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .stat-card {
+    padding: 16px;
+    gap: 14px;
+  }
+
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+
+  .stat-label {
+    font-size: 13px;
+  }
+
+  .stat-value {
+    font-size: 20px;
+  }
+
+  .filter-card {
+    padding: 16px;
+  }
+
+  .filter-header {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+  }
+
+  .filter-title {
+    font-size: 16px;
+  }
+
+  .btn-reset {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  .reset-text {
+    display: none;
   }
 
   .filter-grid {
     grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .filter-input,
+  .filter-select {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .loading-wrapper {
+    padding: 50px 20px;
+  }
+
+  .table-header {
+    padding: 14px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .table-title {
+    font-size: 15px;
+    width: 100%;
+  }
+
+  .table-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .btn-icon-action {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+
+  /* Mobile Table Styling */
+  .data-table {
+    min-width: 100%;
+  }
+
+  .data-table thead {
+    display: none;
+  }
+
+  .data-table tbody tr {
+    display: block;
+    margin-bottom: 16px;
+    border: 2px solid #f1f5f9;
+    border-radius: 12px;
+    padding: 16px;
+    background: white;
+  }
+
+  .data-table tbody tr:hover {
+    background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .data-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f5f9;
+    text-align: right;
+  }
+
+  .data-table td:last-child {
+    border-bottom: none;
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 2px solid #f1f5f9;
+  }
+
+  .data-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #475569;
+    text-align: left;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .data-table td[data-label="Actions"] {
+    justify-content: center;
+  }
+
+  .data-table td[data-label="Actions"]::before {
+    display: none;
+  }
+
+  .student-profile {
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+  }
+
+  .student-avatar {
+    width: 38px;
+    height: 38px;
+    font-size: 13px;
+  }
+
+  .student-details {
+    align-items: flex-end;
+  }
+
+  .student-name {
+    font-size: 13px;
+  }
+
+  .student-session {
+    font-size: 11px;
+  }
+
+  .action-buttons-group {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .action-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  /* Pagination Mobile */
+  .pagination-wrapper {
+    flex-direction: column;
+    padding: 14px 16px;
+    gap: 12px;
+  }
+
+  .pagination-info {
+    width: 100%;
+    justify-content: center;
+    font-size: 13px;
+  }
+
+  .pagination-controls {
+    width: 100%;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+  }
+
+  .pagination-btn {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .btn-text {
+    display: none;
+  }
+
+  .page-numbers {
+    gap: 4px;
+  }
+
+  .page-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+}
+
+/* Small Mobile Devices (320px - 480px) */
+@media (max-width: 480px) {
+  .student-management {
+    padding: 10px;
+  }
+
+  .main-title {
+    font-size: 18px;
+    gap: 6px;
+  }
+
+  .icon-wrapper {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+
+  .subtitle {
+    font-size: 12px;
+  }
+
+  .btn-add-new {
+    padding: 10px 16px;
+    font-size: 13px;
+    gap: 6px;
+  }
+
+  .stat-card {
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .stat-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+  }
+
+  .stat-value {
+    font-size: 18px;
+  }
+
+  .filter-card {
+    padding: 14px;
+  }
+
+  .filter-title {
+    font-size: 15px;
+    gap: 6px;
+  }
+
+  .btn-reset {
+    padding: 6px 10px;
+  }
+
+  .filter-label {
+    font-size: 13px;
+  }
+
+  .filter-input,
+  .filter-select {
+    padding: 9px 12px;
+    font-size: 13px;
+  }
+
+  .loading-wrapper {
+    padding: 40px 15px;
+  }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border-width: 4px;
+  }
+
+  .table-card {
+    border-radius: 12px;
+  }
+
+  .table-header {
+    padding: 12px 14px;
+  }
+
+  .table-title {
+    font-size: 14px;
+  }
+
+  .btn-icon-action {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+
+  .data-table tbody tr {
+    padding: 14px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+  }
+
+  .data-table td {
+    padding: 8px 0;
+    font-size: 13px;
+  }
+
+  .data-table td::before {
+    font-size: 11px;
+  }
+
+  .student-id-badge {
+    padding: 4px 10px;
+    font-size: 11px;
+  }
+
+  .student-avatar {
+    width: 34px;
+    height: 34px;
+    font-size: 12px;
+  }
+
+  .year-badge,
+  .semester-badge {
+    padding: 4px 10px;
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  .status-pill {
+    padding: 4px 10px;
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  .action-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 13px;
   }
 
   .pagination-wrapper {
-    flex-direction: column;
-    gap: 16px;
+    padding: 12px 14px;
   }
 
-  .table-container {
-    overflow-x: scroll;
+  .pagination-info {
+    font-size: 12px;
+  }
+
+  .pagination-btn {
+    padding: 7px 10px;
+    font-size: 12px;
+  }
+
+  .page-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 11px;
+  }
+}
+
+/* Extra Small Devices (below 360px) */
+@media (max-width: 359px) {
+  .student-management {
+    padding: 8px;
+  }
+
+  .main-title {
+    font-size: 16px;
+  }
+
+  .icon-wrapper {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+
+  .btn-add-new {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+
+  .stat-value {
+    font-size: 16px;
+  }
+
+  .filter-title {
+    font-size: 14px;
+  }
+
+  .table-title span {
+    display: none;
+  }
+
+  .action-buttons-group {
+    gap: 6px;
+  }
+
+  .action-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .page-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 10px;
   }
 }
 </style>

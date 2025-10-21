@@ -3,10 +3,12 @@
     <!-- Header -->
     <div class="header-section">
       <h1 class="page-title">
-        <i class="fas fa-book"></i> Subject Management
+        <i class="fas fa-book"></i>
+        <span>Subject Management</span>
       </h1>
       <button @click="openModal()" class="btn btn-primary">
-        <i class="fas fa-plus"></i> Add New Subject
+        <i class="fas fa-plus"></i>
+        <span class="btn-text">Add New Subject</span>
       </button>
     </div>
 
@@ -49,7 +51,8 @@
     <!-- Table -->
     <div class="table-container">
       <div v-if="loading" class="loading-spinner">
-        <i class="fas fa-spinner fa-spin"></i> Loading...
+        <i class="fas fa-spinner fa-spin"></i>
+        <span>Loading...</span>
       </div>
 
       <table v-else class="subjects-table">
@@ -73,20 +76,22 @@
           <td colspan="10" class="no-data">No subjects found</td>
         </tr>
         <tr v-for="subject in subjects" :key="subject.id" class="table-row">
-          <td><span class="status-badge status-active">{{subject.code}}</span></td>
-          <td class="subject-name">{{ subject.name }}</td>
-          <td>{{ subject.department ? subject.department.name : 'N/A' }}</td>
-          <td>{{ subject.year }}</td>
-          <td>{{ subject.semester }}</td>
-          <td>{{ subject.credit_hours }}</td>
-          <td>{{ subject.theory_hours }}</td>
-          <td>{{ subject.practical_hours }}</td>
-          <td>
+          <td data-label="Code">
+            <span class="status-badge status-active">{{subject.code}}</span>
+          </td>
+          <td data-label="Name" class="subject-name">{{ subject.name }}</td>
+          <td data-label="Department">{{ subject.department ? subject.department.name : 'N/A' }}</td>
+          <td data-label="Year">{{ subject.year }}</td>
+          <td data-label="Semester">{{ subject.semester }}</td>
+          <td data-label="Credits">{{ subject.credit_hours }}</td>
+          <td data-label="Theory">{{ subject.theory_hours }}</td>
+          <td data-label="Practical">{{ subject.practical_hours }}</td>
+          <td data-label="Status">
               <span :class="['status-badge', subject.is_active ? 'status-active' : 'status-inactive']">
                 {{ subject.is_active ? 'Active' : 'Inactive' }}
               </span>
           </td>
-          <td class="actions">
+          <td data-label="Actions" class="actions">
             <button @click="openModal(subject)" class="btn-icon btn-edit" title="Edit">
               <i class="fas fa-edit"></i>
             </button>
@@ -228,11 +233,11 @@
 
             <div class="modal-footer">
               <button type="button" @click="closeModal" class="btn btn-secondary">
-                Cancel
+                <span>Cancel</span>
               </button>
               <button type="submit" class="btn btn-primary" :disabled="saving">
                 <i class="fas fa-save"></i>
-                {{ saving ? 'Saving...' : 'Save Subject' }}
+                <span>{{ saving ? 'Saving...' : 'Save Subject' }}</span>
               </button>
             </div>
           </form>
@@ -458,8 +463,6 @@ export default {
     },
 
     showError(message) {
-      // You can integrate with a toast library like vue-toastification
-      // For now using alert, but replace with your preferred notification method
       alert(message);
     }
   }
@@ -467,6 +470,8 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
 .subject-management {
   padding: 24px;
   background: #f8f9fa;
@@ -577,6 +582,7 @@ export default {
   cursor: pointer;
   transition: all 0.3s ease;
   background: white;
+  width: 100%;
 }
 
 .filter-select:focus {
@@ -595,6 +601,7 @@ export default {
 .subjects-table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 900px;
 }
 
 .subjects-table thead {
@@ -609,6 +616,7 @@ export default {
   font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .subjects-table td {
@@ -660,6 +668,8 @@ export default {
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
+  white-space: nowrap;
+  display: inline-block;
 }
 
 .status-active {
@@ -676,6 +686,8 @@ export default {
 .actions {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
 }
 
 .btn-icon {
@@ -688,6 +700,7 @@ export default {
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
+  flex-shrink: 0;
 }
 
 .btn-edit {
@@ -737,6 +750,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .pagination-btn:hover:not(:disabled) {
@@ -753,6 +767,7 @@ export default {
 .pagination-info {
   font-weight: 600;
   color: #475569;
+  white-space: nowrap;
 }
 
 /* Modal */
@@ -768,6 +783,7 @@ export default {
   justify-content: center;
   z-index: 1000;
   padding: 20px;
+  overflow-y: auto;
 }
 
 .modal-content {
@@ -778,6 +794,7 @@ export default {
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  margin: auto;
 }
 
 .modal-header {
@@ -786,6 +803,11 @@ export default {
   align-items: center;
   padding: 24px;
   border-bottom: 2px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
+  border-radius: 16px 16px 0 0;
 }
 
 .modal-header h2 {
@@ -806,6 +828,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .close-btn:hover {
@@ -888,6 +911,7 @@ export default {
   margin-top: 24px;
   padding-top: 24px;
   border-top: 2px solid #e2e8f0;
+  flex-wrap: wrap;
 }
 
 /* Loading & No Data */
@@ -896,12 +920,14 @@ export default {
   padding: 60px 20px;
   font-size: 18px;
   color: #667eea;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
 }
 
 .loading-spinner i {
   font-size: 32px;
-  display: block;
-  margin-bottom: 12px;
 }
 
 .no-data {
@@ -909,6 +935,71 @@ export default {
   padding: 60px 20px;
   color: #94a3b8;
   font-size: 16px;
+}
+
+/* Toast Notifications */
+.toast-wrapper {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modern-toast {
+  min-width: 300px;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+}
+
+.toast-success {
+  border-left: 4px solid #10b981;
+}
+
+.toast-error {
+  border-left: 4px solid #ef4444;
+}
+
+.toast-warning {
+  border-left: 4px solid #f59e0b;
+}
+
+.toast-info {
+  border-left: 4px solid #3b82f6;
+}
+
+.toast-icon-wrapper {
+  font-size: 20px;
+}
+
+.toast-success .toast-icon-wrapper {
+  color: #10b981;
+}
+
+.toast-error .toast-icon-wrapper {
+  color: #ef4444;
+}
+
+.toast-warning .toast-icon-wrapper {
+  color: #f59e0b;
+}
+
+.toast-info .toast-icon-wrapper {
+  color: #3b82f6;
+}
+
+.toast-message {
+  margin: 0;
+  font-size: 14px;
+  color: #1a202c;
+  font-weight: 500;
 }
 
 /* Animations */
@@ -932,38 +1023,433 @@ export default {
   transform: scale(0.9);
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
+.toast-slide-enter-active,
+.toast-slide-leave-active {
+  transition: all 0.3s ease;
+}
+
+.toast-slide-enter,
+.toast-slide-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+/* ===== Responsive Design ===== */
+
+/* Large Tablets and Small Laptops (1024px - 1200px) */
+@media (max-width: 1200px) {
+  .subject-management {
+    padding: 20px;
+  }
+
+  .page-title {
+    font-size: 26px;
+  }
+
   .filter-section {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
   }
 }
 
-@media (max-width: 768px) {
+/* Tablets (768px - 1023px) */
+@media (max-width: 1023px) {
+  .subject-management {
+    padding: 16px;
+  }
+
   .header-section {
     flex-direction: column;
     align-items: stretch;
   }
 
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .page-title {
+    font-size: 24px;
+  }
+
   .filter-section {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .search-box {
+    grid-column: 1 / -1;
   }
 
   .form-row {
     grid-template-columns: 1fr;
   }
 
-  .subjects-table {
-    font-size: 12px;
+  .modal-header h2 {
+    font-size: 20px;
   }
 
-  .subjects-table th,
-  .subjects-table td {
-    padding: 12px 8px;
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Mobile Devices (481px - 767px) */
+@media (max-width: 767px) {
+  .subject-management {
+    padding: 12px;
+  }
+
+  .header-section {
+    margin-bottom: 20px;
   }
 
   .page-title {
-    font-size: 22px;
+    font-size: 20px;
+    gap: 8px;
+  }
+
+  .page-title i {
+    font-size: 20px;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+
+  .filter-section {
+    grid-template-columns: 1fr;
+    padding: 14px;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .search-input {
+    padding: 10px 14px 10px 42px;
+    font-size: 13px;
+  }
+
+  .filter-select {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  /* Mobile Table - Card Style */
+  .subjects-table {
+    min-width: 100%;
+  }
+
+  .subjects-table thead {
+    display: none;
+  }
+
+  .subjects-table tbody {
+    display: block;
+  }
+
+  .table-row {
+    display: block;
+    margin-bottom: 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    background: white;
+  }
+
+  .table-row:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .subjects-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f5f9;
+    text-align: right;
+  }
+
+  .subjects-table td:last-child {
+    border-bottom: none;
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 2px solid #f1f5f9;
+  }
+
+  .subjects-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #475569;
+    text-align: left;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .subjects-table td[data-label="Actions"] {
+    justify-content: center;
+  }
+
+  .subjects-table td[data-label="Actions"]::before {
+    display: none;
+  }
+
+  .actions {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .btn-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .pagination {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .pagination-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .pagination-info {
+    font-size: 13px;
+  }
+
+  /* Modal Mobile */
+  .modal-overlay {
+    padding: 10px;
+    align-items: flex-start;
+  }
+
+  .modal-content {
+    max-height: 95vh;
+    margin-top: 10px;
+  }
+
+  .modal-header {
+    padding: 16px;
+  }
+
+  .modal-header h2 {
+    font-size: 18px;
+  }
+
+  .close-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .modal-body {
+    padding: 16px;
+  }
+
+  .form-group label {
+    font-size: 13px;
+  }
+
+  .form-control {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .modal-footer {
+    padding-top: 16px;
+    margin-top: 16px;
+  }
+
+  .modal-footer .btn {
+    flex: 1;
+    min-width: auto;
+  }
+
+  .loading-spinner {
+    padding: 40px 15px;
+    font-size: 16px;
+  }
+
+  .loading-spinner i {
+    font-size: 28px;
+  }
+
+  /* Toast Mobile */
+  .toast-wrapper {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+  }
+
+  .modern-toast {
+    min-width: auto;
+    width: 100%;
+  }
+}
+
+/* Small Mobile Devices (320px - 480px) */
+@media (max-width: 480px) {
+  .subject-management {
+    padding: 10px;
+  }
+
+  .page-title {
+    font-size: 18px;
+  }
+
+  .btn {
+    padding: 9px 16px;
+    font-size: 12px;
+  }
+
+  .btn-text {
+    display: none;
+  }
+
+  .btn i {
+    margin: 0;
+  }
+
+  .filter-section {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .search-input {
+    font-size: 12px;
+  }
+
+  .filter-select {
+    font-size: 12px;
+  }
+
+  .table-row {
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+
+  .subjects-table td {
+    padding: 8px 0;
+    font-size: 13px;
+  }
+
+  .subjects-table td::before {
+    font-size: 11px;
+  }
+
+  .status-badge {
+    padding: 4px 10px;
+    font-size: 11px;
+  }
+
+  .btn-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 13px;
+  }
+
+  .pagination {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .pagination-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+
+  .pagination-info {
+    font-size: 12px;
+  }
+
+  .modal-header {
+    padding: 14px;
+  }
+
+  .modal-header h2 {
+    font-size: 16px;
+  }
+
+  .modal-body {
+    padding: 14px;
+  }
+
+  .form-group {
+    margin-bottom: 12px;
+  }
+
+  .form-control {
+    padding: 9px 12px;
+    font-size: 12px;
+  }
+
+  .checkbox-label {
+    font-size: 13px;
+  }
+
+  .checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+  }
+
+  .modal-footer {
+    gap: 8px;
+    flex-direction: column;
+  }
+
+  .modal-footer .btn {
+    width: 100%;
+  }
+
+  .modern-toast {
+    padding: 12px;
+  }
+
+  .toast-message {
+    font-size: 13px;
+  }
+}
+
+/* Extra Small Devices (below 360px) */
+@media (max-width: 359px) {
+  .subject-management {
+    padding: 8px;
+  }
+
+  .page-title {
+    font-size: 16px;
+  }
+
+  .page-title span {
+    display: none;
+  }
+
+  .btn {
+    padding: 8px 12px;
+  }
+
+  .filter-section {
+    padding: 10px;
+  }
+
+  .table-row {
+    padding: 10px;
+  }
+
+  .subjects-table td {
+    font-size: 12px;
+  }
+
+  .btn-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .actions {
+    gap: 6px;
   }
 }
 </style>
