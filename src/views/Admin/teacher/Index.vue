@@ -105,7 +105,7 @@
     </div>
 
     <!-- Modern Table -->
-    <div class="table-card">
+    <div class="table-card" style="max-width: 1176px">
       <div class="table-wrapper">
         <table class="modern-table">
           <thead>
