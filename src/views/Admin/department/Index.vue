@@ -120,7 +120,7 @@
             </div>
             <div class="dept-title-section">
               <h3 class="dept-title">{{ dept.name }}</h3>
-              <span class="dept-badge">{{ dept.code }}</span>
+              <span class="dept-badge">{{ dept.code }} - {{ dept.phase ? dept.phase.name : '' }}</span>
             </div>
           </div>
 
@@ -209,6 +209,24 @@
                 </div>
                 <span v-if="errors.name" class="input-error">{{ errors.name[0] }}</span>
               </div>
+
+              <div class="input-group">
+                <label class="input-label">
+                  Phase
+                  <span class="required-star">*</span>
+                </label>
+                <div class="input-wrapper">
+                  <i class="fas fa-building input-icon"></i>
+                  <select v-model="form.phase_id" class="modern-input" :class="{ 'error': errors.name }">
+                    <option value="">Select Type</option>
+                    <option v-for="phase in phases" :key="phase.id" :value="phase.id">
+                      {{ phase.name }}
+                    </option>
+                  </select>
+                </div>
+                <span v-if="errors.name" class="input-error">{{ errors.name[0] }}</span>
+              </div>
+
 
               <div class="form-grid">
                 <div class="input-group">
@@ -345,6 +363,7 @@ export default {
   data() {
     return {
       departments: [],
+      phases: [],
       loading: false,
       searchQuery: '',
       filterStatus: 'all',
@@ -358,6 +377,7 @@ export default {
         id: null,
         name: '',
         code: '',
+        phase_id: '',
         head_teacher_id: null,
         description: '',
         is_active: true
@@ -399,6 +419,7 @@ export default {
 
   mounted() {
     this.fetchDepartments();
+    this.fetchPhase();
   },
 
   methods: {
@@ -427,6 +448,7 @@ export default {
         id: dept.id,
         name: dept.name,
         code: dept.code,
+        phase_id: dept.phase_id,
         head_teacher_id: dept.head_teacher_id,
         description: dept.description || '',
         is_active: dept.is_active
@@ -499,6 +521,15 @@ export default {
         this.fetchDepartments();
       } catch (error) {
         this.showToast('Failed to update status', 'error');
+      }
+    },
+
+    async fetchPhase() {
+      try {
+        const response = await this.$api.get('/get-phases');
+        this.phases = response.data;
+      } catch (error) {
+        console.error('Error fetching departments:', error);
       }
     },
 
