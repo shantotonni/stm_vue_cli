@@ -170,6 +170,23 @@
 
         <div class="form-grid">
           <div class="form-group">
+            <label class="form-label required">Phase</label>
+            <div class="input-wrapper">
+              <select v-model="form.phase_id" class="form-input" :class="{ 'input-error': errors.phase_id }">
+                <option value="">Select phase</option>
+                <option v-for="phase in phases" :key="phase.id" :value="phase.id">
+                  {{ phase.name }}
+                </option>
+              </select>
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <span v-if="errors.phase_id" class="error-message">{{ errors.phase_id[0] }}</span>
+          </div>
+
+          <div class="form-group">
             <label class="form-label required">Program</label>
             <div class="input-wrapper">
               <select v-model="form.program_id" class="form-input" :class="{ 'input-error': errors.program_id }">
@@ -522,6 +539,7 @@ export default {
         mobile: '',
         session_id: '',
         category_id: '',
+        phase_id: '',
         program_id: '',
         year: '',
         semester: '',
@@ -541,6 +559,7 @@ export default {
       departments: [],
       categories: [],
       programs: [],
+      phases: [],
       users: [],
       sessions: [],
       bloodGroups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'],
@@ -555,9 +574,18 @@ export default {
     this.fetchSession();
     this.fetchCategory();
     this.loadProgram();
+    this.fetchPhase();
   },
 
   methods: {
+    async fetchPhase() {
+      try {
+        const response = await this.$api.get('/get-phases');
+        this.phases = response.data;
+      } catch (error) {
+        console.error('Error fetching departments:', error);
+      }
+    },
     async fetchDepartments() {
       try {
         const response = await this.$api.get('/get-departments');

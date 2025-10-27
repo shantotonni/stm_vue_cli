@@ -164,7 +164,7 @@
           </div>
         </div>
 
-        <div class="table-container" style="max-width: 1176px">
+        <div class="table-container" >
           <table class="data-table">
             <thead>
             <tr>

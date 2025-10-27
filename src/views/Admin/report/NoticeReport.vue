@@ -27,16 +27,6 @@
             </option>
           </select>
         </div>
-
-        <div class="filter-item">
-          <select v-model="filters.priority" @change="fetchNotices" class="filter-select">
-            <option value="">All Priorities</option>
-            <option value="urgent">Urgent</option>
-            <option value="high">High</option>
-            <option value="normal">Normal</option>
-            <option value="low">Low</option>
-          </select>
-        </div>
       </div>
     </div>
 
@@ -55,16 +45,6 @@
           :class="{ 'urgent-notice': notice.is_urgent }"
           @click="viewNotice(notice)"
       >
-        <!-- Date Badge -->
-        <div class="date-badge" :class="getPriorityClass(notice.priority)">
-          <div class="badge-day">{{ formatDay(notice.publish_date) }}</div>
-          <div class="badge-month">{{ formatMonth(notice.publish_date) }}</div>
-        </div>
-
-        <!-- Priority Badge -->
-        <div v-if="notice.is_urgent" class="urgent-badge">
-          🔥 URGENT
-        </div>
 
         <!-- Notice Content -->
         <div class="notice-content">
@@ -164,7 +144,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 
 export default {
   name: 'NoticeReport',
@@ -176,7 +155,6 @@ export default {
       filters: {
         search: '',
         department_id: '',
-        priority: '',
       },
       currentPage: 1,
       lastPage: 1,
@@ -191,8 +169,8 @@ export default {
   methods: {
     async fetchDepartments() {
       try {
-        const response = await axios.get('/api/departments');
-        this.departments = response.data.data;
+        const response = await this.$api.get('/get-departments');
+        this.departments = response.data;
       } catch (error) {
         console.error('Error fetching departments:', error);
       }
@@ -204,7 +182,7 @@ export default {
           page: this.currentPage,
           ...this.filters,
         };
-        const response = await axios.get('/api/reports/notices', { params });
+        const response = await this.$api.get('/reports/notices', { params });
         this.notices = response.data.data.data;
         this.currentPage = response.data.data.current_page;
         this.lastPage = response.data.data.last_page;
@@ -223,7 +201,7 @@ export default {
     },
     async viewNotice(notice) {
       try {
-        const response = await axios.get(`/api/reports/notices/${notice.id}`);
+        const response = await this.$api.get(`/reports/notices/${notice.id}`);
         this.selectedNotice = response.data.data;
       } catch (error) {
         console.error('Error fetching notice details:', error);
@@ -249,9 +227,6 @@ export default {
         day: 'numeric',
       });
     },
-    getPriorityClass(priority) {
-      return `priority-${priority}`;
-    },
     previousPage() {
       if (this.currentPage > 1) {
         this.currentPage--;
@@ -272,8 +247,8 @@ export default {
 /* Main Container */
 .report-container {
   padding: 30px;
-  max-width: 1400px;
-  margin: 0 auto;
+  /*max-width: 1400px;*/
+  /*margin: 0 auto;*/
   background: #f5f7fa;
   min-height: 100vh;
 }

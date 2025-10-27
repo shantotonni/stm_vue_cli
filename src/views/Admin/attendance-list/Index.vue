@@ -264,7 +264,7 @@ export default {
       return statusMap[status] || status;
     },
 
-    // Show toast
+    // Show toast.js
     showToast(message, type = 'success') {
       this.toast = {
         show: true,

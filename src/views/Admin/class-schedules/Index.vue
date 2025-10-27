@@ -79,7 +79,7 @@
         <p>Loading Schedules...</p>
       </div>
 
-      <div v-else class="table-wrapper" style="max-width: 1176px">
+      <div v-else class="table-wrapper">
         <table class="schedules-table">
           <thead>
           <tr>

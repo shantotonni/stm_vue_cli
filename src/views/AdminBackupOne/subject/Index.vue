@@ -459,7 +459,7 @@ export default {
     },
 
     showError(message) {
-      // You can integrate with a toast library like vue-toastification
+      // You can integrate with a toast.js library like vue-toastification
       // For now using alert, but replace with your preferred notification method
       alert(message);
     }

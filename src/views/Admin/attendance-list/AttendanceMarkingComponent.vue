@@ -332,7 +332,7 @@ export default {
       }
     },
 
-    // Show toast notification
+    // Show toast.js notification
     showToast(message, type = 'success') {
       this.toast = {
         show: true,

@@ -32,6 +32,37 @@ import NoticeList from './views/Admin/notice/Index';
 import BookList from './views/Admin/book/Index';
 import BookCard from './views/Admin/book/Show';
 
+
+// Dashboard
+// import StudentDashboard from '@/components/Dashboard/Dashboard.vue'
+
+
+// Card Types
+import CardTypeList from '@/components/CardTypes/CardTypeList.vue'
+import CardTypeForm from '@/components/CardTypes/CardTypeForm.vue'
+import CardTypeView from '@/components/CardTypes/CardTypeView.vue'
+import CardStructureBuilder from '@/components/CardTypes/CardStructureBuilder.vue'
+
+// Student Cards
+import StudentCardList from '@/components/StudentCards/StudentCardList.vue'
+import StudentCardView from '@/components/StudentCards/StudentCardView.vue'
+import StudentCardAssign from '@/components/StudentCards/StudentCardAssign.vue'
+import ProgressTracker from '@/components/StudentCards/ProgressTracker.vue'
+import CardReport from '@/components/StudentCards/CardReport.vue'
+
+// Attendance
+import StudentAttendanceList from '@/components/Attendance/AttendanceList.vue'
+import AttendanceForm from '@/components/Attendance/AttendanceForm.vue'
+import AttendanceView from '@/components/Attendance/AttendanceView.vue'
+
+// Term Exams
+import TermExamList from '@/components/TermExams/TermExamList.vue'
+import TermExamForm from '@/components/TermExams/TermExamForm.vue'
+import TermExamResults from '@/components/TermExams/TermExamResults.vue'
+
+// Reports
+import ReportsDashboard from '@/components/Reports/ReportsDashboard.vue'
+
 //report
 import ResultReport from './views/Admin/report/ResultReport.vue';
 import AttendanceReport from './views/Admin/report/AttendanceReport.vue';
@@ -100,6 +131,138 @@ const router = new Router({
                         role: ['admin'],
                         title: 'Attendance Reports'
                     }
+                },
+
+                // Dashboard
+                // {
+                //     path: '',
+                //     name: 'dashboard',
+                //     component: StudentDashboard,
+                //     meta: { title: 'Dashboard' }
+                // },
+
+                // Card Types
+                {
+                    path: 'card-types',
+                    name: 'card-types',
+                    component: CardTypeList,
+                    meta: { title: 'Card Types' }
+                },
+                {
+                    path: 'card-types/create',
+                    name: 'card-types-create',
+                    component: CardTypeForm,
+                    meta: { title: 'Create Card Type' }
+                },
+                {
+                    path: 'card-types/:id',
+                    name: 'card-types-view',
+                    component: CardTypeView,
+                    meta: { title: 'Card Type Details' }
+                },
+                {
+                    path: 'card-types/:id/edit',
+                    name: 'card-types-edit',
+                    component: CardTypeForm,
+                    meta: { title: 'Edit Card Type' }
+                },
+                {
+                    path: 'card-types/:id/structure',
+                    name: 'card-types-structure',
+                    component: CardStructureBuilder,
+                    meta: { title: 'Build Card Structure' }
+                },
+
+                // Student Cards
+                {
+                    path: 'student-cards',
+                    name: 'student-cards',
+                    component: StudentCardList,
+                    meta: { title: 'Student Cards' }
+                },
+                {
+                    path: 'student-cards/assign',
+                    name: 'student-cards-assign',
+                    component: StudentCardAssign,
+                    meta: { title: 'Assign Cards' }
+                },
+                {
+                    path: 'student-cards/:id',
+                    name: 'student-cards-view',
+                    component: StudentCardView,
+                    meta: { title: 'Student Card Details' }
+                },
+                {
+                    path: 'student-cards/:id/progress',
+                    name: 'student-cards-progress',
+                    component: ProgressTracker,
+                    meta: { title: 'Track Progress' }
+                },
+                {
+                    path: 'student-cards/:id/report',
+                    name: 'student-cards-report',
+                    component: CardReport,
+                    meta: { title: 'Card Report' }
+                },
+
+                // Attendance
+                {
+                    path: 'attendance',
+                    name: 'attendance',
+                    component: StudentAttendanceList,
+                    meta: { title: 'Attendance' }
+                },
+                {
+                    path: 'attendance/mark',
+                    name: 'attendance-mark',
+                    component: AttendanceForm,
+                    meta: { title: 'Mark Attendance' }
+                },
+                {
+                    path: 'attendance/:id',
+                    name: 'attendance-view',
+                    component: AttendanceView,
+                    meta: { title: 'Attendance Details' }
+                },
+                {
+                    path: 'attendance/:id/edit',
+                    name: 'attendance-edit',
+                    component: AttendanceForm,
+                    meta: { title: 'Edit Attendance' }
+                },
+
+                // Term Exams
+                {
+                    path: 'term-exams',
+                    name: 'term-exams',
+                    component: TermExamList,
+                    meta: { title: 'Term Exams' }
+                },
+                {
+                    path: 'term-exams/create',
+                    name: 'term-exams-create',
+                    component: TermExamForm,
+                    meta: { title: 'Create Term Exam' }
+                },
+                {
+                    path: 'term-exams/:id/edit',
+                    name: 'term-exams-edit',
+                    component: TermExamForm,
+                    meta: { title: 'Edit Term Exam' }
+                },
+                {
+                    path: 'term-exams/:id/results',
+                    name: 'term-exams-results',
+                    component: TermExamResults,
+                    meta: { title: 'Manage Results' }
+                },
+
+                // Reports
+                {
+                    path: 'reports',
+                    name: 'reports',
+                    component: ReportsDashboard,
+                    meta: { title: 'Reports & Analytics' }
                 },
 
                 //report

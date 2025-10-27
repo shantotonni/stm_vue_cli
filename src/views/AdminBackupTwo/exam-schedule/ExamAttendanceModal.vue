@@ -369,12 +369,12 @@ export default {
     //
     //       // যদি কোন enrolled student না থাকে
     //       if (this.students.length === 0) {
-    //         this.$toast.warning('No students enrolled in this exam');
+    //         this.$toast.js.warning('No students enrolled in this exam');
     //       }
     //     }
     //   } catch (error) {
     //     console.error('Error fetching attendance:', error);
-    //     this.$toast.error('Failed to load attendance data');
+    //     this.$toast.js.error('Failed to load attendance data');
     //   } finally {
     //     this.loading = false;
     //   }
