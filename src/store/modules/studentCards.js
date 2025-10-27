@@ -52,7 +52,7 @@ export default {
         async fetchStudentCards({ commit }, params = {}) {
             commit('SET_LOADING', true)
             try {
-                const response = await Vue.prototype.$http.get('/student-cards', { params })
+                const response = await this.$api.get('/student-cards', { params })
                 commit('SET_STUDENT_CARDS', response.data)
                 return response.data
             } catch (error) {
@@ -66,7 +66,7 @@ export default {
         async fetchStudentCard({ commit }, id) {
             commit('SET_LOADING', true)
             try {
-                const response = await Vue.prototype.$http.get(`/student-cards/${id}`)
+                const response = await this.$api.get(`/student-cards/${id}`)
                 commit('SET_CURRENT_CARD', response.data.data)
                 return response.data.data
             } catch (error) {
@@ -80,7 +80,7 @@ export default {
         async createStudentCard({ commit }, data) {
             commit('SET_LOADING', true)
             try {
-                const response = await Vue.prototype.$http.post('/student-cards', data)
+                const response = await this.$api.post('/student-cards', data)
                 commit('ADD_STUDENT_CARD', response.data.data)
                 return response.data
             } catch (error) {
@@ -94,7 +94,7 @@ export default {
         async updateStudentCard({ commit }, { id, data }) {
             commit('SET_LOADING', true)
             try {
-                const response = await Vue.prototype.$http.put(`/student-cards/${id}`, data)
+                const response = await this.$api.put(`/student-cards/${id}`, data)
                 commit('UPDATE_STUDENT_CARD', response.data.data)
                 return response.data
             } catch (error) {
@@ -108,7 +108,7 @@ export default {
         async deleteStudentCard({ commit }, id) {
             commit('SET_LOADING', true)
             try {
-                await Vue.prototype.$http.delete(`/student-cards/${id}`)
+                await this.$api.delete(`/student-cards/${id}`)
                 commit('REMOVE_STUDENT_CARD', id)
             } catch (error) {
                 console.error('Error deleting student card:', error)
@@ -121,7 +121,7 @@ export default {
         async bulkAssignStudents({ commit }, data) {
             commit('SET_LOADING', true)
             try {
-                const response = await Vue.prototype.$http.post('/student-cards/bulk-assign', data)
+                const response = await this.$api.post('/student-cards/bulk-assign', data)
                 return response.data
             } catch (error) {
                 console.error('Error in bulk assign:', error)
@@ -134,7 +134,7 @@ export default {
         async fetchCardReport({ commit }, id) {
             commit('SET_LOADING', true)
             try {
-                const response = await Vue.prototype.$http.get(`/student-cards/${id}/report`)
+                const response = await this.$api.get(`/student-cards/${id}/report`)
                 return response.data.data
             } catch (error) {
                 console.error('Error fetching card report:', error)

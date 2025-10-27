@@ -1,73 +1,67 @@
 <template>
-  <div class="card-type-list p-6">
+  <div class="card-type-list">
     <!-- Page Header -->
-    <div class="mb-6">
-      <div class="flex items-center justify-between mb-2">
-        <h1 class="text-3xl font-bold text-gray-900">Card Types</h1>
-        <router-link
-            to="/card-types/create"
-            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
-        >
+    <div class="page-header">
+      <div class="header-content">
+        <div class="header-left">
+          <h1 class="page-title">
+            <i class="fas fa-id-card"></i>
+            Card Types Management
+          </h1>
+          <p class="page-subtitle">Manage card types for different departments and academic years</p>
+        </div>
+        <router-link to="/card-types/create" class="btn-primary">
           <i class="fas fa-plus"></i>
           Create Card Type
         </router-link>
       </div>
-      <p class="text-gray-600">Manage card types for different departments and years</p>
     </div>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-      <div class="bg-white p-6 rounded-lg shadow">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-gray-600">Total Cards</p>
-            <p class="text-2xl font-bold text-gray-900">{{ stats.total }}</p>
-          </div>
-          <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-            <i class="fas fa-id-card text-blue-600 text-xl"></i>
-          </div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon bg-blue">
+          <i class="fas fa-id-card"></i>
+        </div>
+        <div class="stat-details">
+          <h3 class="stat-value">{{ stats.total }}</h3>
+          <p class="stat-label">Total Cards</p>
         </div>
       </div>
 
-      <div class="bg-white p-6 rounded-lg shadow">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-gray-600">Active</p>
-            <p class="text-2xl font-bold text-green-600">{{ stats.active }}</p>
-          </div>
-          <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-            <i class="fas fa-check-circle text-green-600 text-xl"></i>
-          </div>
+      <div class="stat-card">
+        <div class="stat-icon bg-green">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="stat-details">
+          <h3 class="stat-value">{{ stats.active }}</h3>
+          <p class="stat-label">Active Cards</p>
         </div>
       </div>
 
-      <div class="bg-white p-6 rounded-lg shadow">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-gray-600">Departments</p>
-            <p class="text-2xl font-bold text-gray-900">{{ stats.departments }}</p>
-          </div>
-          <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-            <i class="fas fa-building text-purple-600 text-xl"></i>
-          </div>
+      <div class="stat-card">
+        <div class="stat-icon bg-purple">
+          <i class="fas fa-building"></i>
+        </div>
+        <div class="stat-details">
+          <h3 class="stat-value">{{ stats.departments }}</h3>
+          <p class="stat-label">Departments</p>
         </div>
       </div>
 
-      <div class="bg-white p-6 rounded-lg shadow">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-gray-600">With Structure</p>
-            <p class="text-2xl font-bold text-gray-900">{{ stats.withStructure }}</p>
-          </div>
-          <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
-            <i class="fas fa-sitemap text-yellow-600 text-xl"></i>
-          </div>
+      <div class="stat-card">
+        <div class="stat-icon bg-orange">
+          <i class="fas fa-sitemap"></i>
+        </div>
+        <div class="stat-details">
+          <h3 class="stat-value">{{ stats.withStructure }}</h3>
+          <p class="stat-label">With Structure</p>
         </div>
       </div>
     </div>
 
-    <!-- Data Table -->
-    <div class="bg-white rounded-lg shadow">
+    <!-- Main Content Card -->
+    <div class="content-card">
       <data-table
           :columns="columns"
           :items="cardTypes"
@@ -79,108 +73,84 @@
           @page-change="handlePageChange"
           @per-page-change="handlePerPageChange"
       >
-        <!-- REMOVED DUPLICATE ACTIONS SLOT (was lines 83-91) -->
-
         <!-- Filters Slot -->
         <template #filters>
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Department</label>
-              <select
-                  v-model="filters.department_id"
-                  @change="applyFilters"
-                  class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">All Departments</option>
-                <option
-                    v-for="dept in departments"
-                    :key="dept.id"
-                    :value="dept.id"
-                >
-                  {{ dept.name }}
-                </option>
-              </select>
-            </div>
+          <div class="filters-wrapper">
+            <div class="filters-row">
+              <div class="filter-item">
+                <label>Department</label>
+                <select v-model="filters.department_id" @change="applyFilters">
+                  <option value="">All Departments</option>
+                  <option v-for="dept in departments" :key="dept.id" :value="dept.id">
+                    {{ dept.name }}
+                  </option>
+                </select>
+              </div>
 
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Year</label>
-              <select
-                  v-model="filters.applicable_year"
-                  @change="applyFilters"
-                  class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">All Years</option>
-                <option value="1">1st Year</option>
-                <option value="2">2nd Year</option>
-                <option value="3">3rd Year</option>
-                <option value="4">4th Year</option>
-                <option value="5">5th Year</option>
-              </select>
-            </div>
+              <div class="filter-item">
+                <label>Year</label>
+                <select v-model="filters.applicable_year" @change="applyFilters">
+                  <option value="">All Years</option>
+                  <option value="1">1st Year</option>
+                  <option value="2">2nd Year</option>
+                  <option value="3">3rd Year</option>
+                  <option value="4">4th Year</option>
+                  <option value="5">5th Year</option>
+                </select>
+              </div>
 
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
-              <select
-                  v-model="filters.card_category"
-                  @change="applyFilters"
-                  class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">All Categories</option>
-                <option value="practical">Practical</option>
-                <option value="dissection">Dissection</option>
-                <option value="lab">Lab</option>
-                <option value="clinical">Clinical</option>
-                <option value="theory">Theory</option>
-                <option value="assessment">Assessment</option>
-              </select>
-            </div>
+              <div class="filter-item">
+                <label>Category</label>
+                <select v-model="filters.card_category" @change="applyFilters">
+                  <option value="">All Categories</option>
+                  <option value="practical">Practical</option>
+                  <option value="dissection">Dissection</option>
+                  <option value="lab">Lab</option>
+                  <option value="clinical">Clinical</option>
+                  <option value="theory">Theory</option>
+                  <option value="assessment">Assessment</option>
+                </select>
+              </div>
 
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-              <select
-                  v-model="filters.is_active"
-                  @change="applyFilters"
-                  class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">All Status</option>
-                <option value="1">Active</option>
-                <option value="0">Inactive</option>
-              </select>
-            </div>
-          </div>
+              <div class="filter-item">
+                <label>Status</label>
+                <select v-model="filters.is_active" @change="applyFilters">
+                  <option value="">All Status</option>
+                  <option value="1">Active</option>
+                  <option value="0">Inactive</option>
+                </select>
+              </div>
 
-          <div class="mt-4 flex justify-end gap-2">
-            <button
-                @click="refreshData"
-                class="px-4 py-2 border rounded-lg hover:bg-gray-50"
-                title="Refresh"
-            >
-              <i class="fas fa-sync-alt"></i> Refresh
-            </button>
-            <button
-                @click="clearFilters"
-                class="px-4 py-2 text-gray-600 hover:text-gray-900"
-            >
-              Clear Filters
-            </button>
+              <div class="filter-item filter-actions-item">
+                <label>&nbsp;</label>
+                <div class="action-buttons-group">
+                  <button @click="applyFilters" class="btn-apply">
+                    <i class="fas fa-search"></i> Apply
+                  </button>
+                  <button @click="clearFilters" class="btn-clear">
+                    <i class="fas fa-times"></i> Clear
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </template>
 
         <!-- Custom Columns -->
         <template #cell-card_name="{ item }">
-          <div>
+          <div class="name-cell">
             <router-link
                 :to="`/card-types/${item.id}`"
-                class="font-medium text-blue-600 hover:text-blue-800"
+                class="name-link"
             >
               {{ item.card_name }}
             </router-link>
-            <p class="text-xs text-gray-500">{{ item.card_code }}</p>
+            <span class="code-text">{{ item.card_code }}</span>
           </div>
         </template>
 
         <template #cell-department="{ item }">
-          <span class="px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
+          <span class="badge badge-purple">
             {{ item.department.name }}
           </span>
         </template>
@@ -192,45 +162,50 @@
         </template>
 
         <template #cell-structure_type="{ item }">
-          <div class="flex items-center gap-2">
+          <div class="structure-info">
             <i :class="getStructureIcon(item.structure_type)"></i>
             {{ formatStructureType(item.structure_type) }}
           </div>
         </template>
 
         <template #cell-applicable_year="{ item }">
-          <span class="font-medium">{{ getYearText(item.applicable_year) }}</span>
+          <span class="year-badge">
+            {{ getYearText(item.applicable_year) }}
+          </span>
         </template>
 
         <template #cell-total_marks="{ item }">
-          <div class="text-center">
-            <div class="font-semibold">{{ item.total_marks }}</div>
-            <div class="text-xs text-gray-500">Pass: {{ item.pass_marks }}</div>
+          <div class="marks-info">
+            <div class="total-marks">{{ item.total_marks }}</div>
+            <div class="pass-marks">Pass: {{ item.pass_marks }}</div>
           </div>
         </template>
 
         <template #cell-features="{ item }">
-          <div class="flex gap-1">
+          <div class="features-tags">
             <span
                 v-if="item.has_term_exams"
-                class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded"
+                class="feature-tag tag-blue"
                 title="Has Term Exams"
             >
-              <i class="fas fa-file-alt"></i> Exams
+              <i class="fas fa-file-alt"></i>
+              Exams
             </span>
             <span
                 v-if="item.has_attendance"
-                class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded"
+                class="feature-tag tag-green"
                 title="Has Attendance"
             >
-              <i class="fas fa-user-check"></i> Attendance
+              <i class="fas fa-user-check"></i>
+              Attendance
             </span>
             <span
                 v-if="item.requires_cadaver"
-                class="px-2 py-1 text-xs bg-red-100 text-red-800 rounded"
+                class="feature-tag tag-red"
                 title="Requires Cadaver"
             >
-              <i class="fas fa-procedures"></i> Cadaver
+              <i class="fas fa-procedures"></i>
+              Cadaver
             </span>
           </div>
         </template>
@@ -238,47 +213,33 @@
         <template #cell-is_active="{ item }">
           <button
               @click="toggleActive(item)"
-              :class="[
-              'px-3 py-1 text-xs font-semibold rounded-full',
-              item.is_active
-                ? 'bg-green-100 text-green-800'
-                : 'bg-gray-100 text-gray-800'
-            ]"
+              :class="['toggle-status', item.is_active ? 'active' : 'inactive']"
           >
             {{ item.is_active ? 'Active' : 'Inactive' }}
           </button>
         </template>
 
-        <!-- Row Actions (only one #actions slot allowed) -->
-        <template #actions="{ item }">
-          <div class="flex items-center gap-2">
-            <router-link
-                :to="`/card-types/${item.id}`"
-                class="text-blue-600 hover:text-blue-800"
-                title="View Details"
+        <template #cell-actions="{ item }">
+          <div class="action-btns">
+            <button
+                @click="$router.push(`/card-types/${item.id}`)"
+                class="action-btn btn-view"
+                title="View"
             >
               <i class="fas fa-eye"></i>
-            </router-link>
+            </button>
 
-            <router-link
-                :to="`/card-types/${item.id}/structure`"
-                class="text-purple-600 hover:text-purple-800"
-                title="Edit Structure"
-            >
-              <i class="fas fa-sitemap"></i>
-            </router-link>
-
-            <router-link
-                :to="`/card-types/${item.id}/edit`"
-                class="text-green-600 hover:text-green-800"
+            <button
+                @click="$router.push(`/card-types/${item.id}/edit`)"
+                class="action-btn btn-edit"
                 title="Edit"
             >
               <i class="fas fa-edit"></i>
-            </router-link>
+            </button>
 
             <button
                 @click="duplicateCard(item)"
-                class="text-green-600 hover:text-green-800"
+                class="action-btn btn-copy"
                 title="Duplicate"
             >
               <i class="fas fa-copy"></i>
@@ -286,7 +247,7 @@
 
             <button
                 @click="confirmDelete(item)"
-                class="text-red-600 hover:text-red-800"
+                class="action-btn btn-delete"
                 title="Delete"
             >
               <i class="fas fa-trash"></i>
@@ -469,12 +430,12 @@ export default {
 
     getCategoryClass(category) {
       const classes = {
-        practical: 'px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800',
-        dissection: 'px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800',
-        lab: 'px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800',
-        clinical: 'px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800',
-        theory: 'px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800',
-        assessment: 'px-2 py-1 text-xs font-semibold rounded-full bg-pink-100 text-pink-800'
+        practical: 'badge badge-blue',
+        dissection: 'badge badge-red',
+        lab: 'badge badge-green',
+        clinical: 'badge badge-purple',
+        theory: 'badge badge-yellow',
+        assessment: 'badge badge-pink'
       }
       return classes[category] || classes.practical
     },
@@ -485,10 +446,10 @@ export default {
 
     getStructureIcon(type) {
       const icons = {
-        item_based: 'fas fa-list text-blue-600',
-        topic_based: 'fas fa-layer-group text-green-600',
-        module_based: 'fas fa-cube text-purple-600',
-        hybrid: 'fas fa-project-diagram text-orange-600'
+        item_based: 'fas fa-list text-blue',
+        topic_based: 'fas fa-layer-group text-green',
+        module_based: 'fas fa-cube text-purple',
+        hybrid: 'fas fa-project-diagram text-orange'
       }
       return icons[type] || icons.item_based
     },
@@ -514,8 +475,657 @@ export default {
 </script>
 
 <style scoped>
+/* ==========================================
+   Base Styles
+   ========================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .card-type-list {
   min-height: 100vh;
-  background-color: #f9fafb;
+  background-color: #f5f7fa;
+  padding: 30px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ==========================================
+   Page Header
+   ========================================== */
+.page-header {
+  margin-bottom: 30px;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.header-left {
+  flex: 1;
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.page-title i {
+  color: #4299e1;
+}
+
+.page-subtitle {
+  color: #718096;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* ==========================================
+   Primary Button
+   ========================================== */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background-color: #4299e1;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(66, 153, 225, 0.2);
+}
+
+.btn-primary:hover {
+  background-color: #3182ce;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(66, 153, 225, 0.3);
+}
+
+/* ==========================================
+   Stats Cards
+   ========================================== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.stat-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: white;
+}
+
+.stat-icon.bg-blue {
+  background-color: #4299e1;
+}
+
+.stat-icon.bg-green {
+  background-color: #48bb78;
+}
+
+.stat-icon.bg-purple {
+  background-color: #9f7aea;
+}
+
+.stat-icon.bg-orange {
+  background-color: #ed8936;
+}
+
+.stat-details {
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0 0 4px 0;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #718096;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* ==========================================
+   Content Card
+   ========================================== */
+.content-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.content-card >>> table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.content-card >>> thead th {
+  background-color: #f8fafc;
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.content-card >>> tbody td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 14px;
+  color: #334155;
+}
+
+.content-card >>> tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+.content-card >>> tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ==========================================
+   Filters Section
+   ========================================== */
+.filters-wrapper {
+  padding: 20px;
+  background-color: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.filters-row {
+  display: flex;
+  gap: 15px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.filter-item {
+  flex: 1;
+  min-width: 180px;
+}
+
+.filter-item label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a5568;
+  margin-bottom: 6px;
+}
+
+.filter-item select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #2d3748;
+  background-color: white;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.filter-item select:hover {
+  border-color: #a0aec0;
+}
+
+.filter-item select:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.filter-actions-item {
+  flex: 0 0 auto;
+  min-width: auto;
+}
+
+.action-buttons-group {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-apply {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  background-color: #4299e1;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-apply:hover {
+  background-color: #3182ce;
+}
+
+.btn-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  background-color: white;
+  color: #718096;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-clear:hover {
+  background-color: #f7fafc;
+  color: #e53e3e;
+  border-color: #e53e3e;
+}
+
+/* ==========================================
+   Table Cell Styles
+   ========================================== */
+.name-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.name-link {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+  transition: color 0.2s ease;
+}
+
+.name-link:hover {
+  color: #1e40af;
+}
+
+.code-text {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+/* ==========================================
+   Badges
+   ========================================== */
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.badge-purple {
+  background-color: #ede9fe;
+  color: #6b21a8;
+}
+
+.badge-blue {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.badge-red {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.badge-green {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.badge-yellow {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.badge-pink {
+  background-color: #fce7f3;
+  color: #831843;
+}
+
+/* ==========================================
+   Structure Info
+   ========================================== */
+.structure-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #475569;
+}
+
+.text-blue { color: #2563eb; }
+.text-green { color: #16a34a; }
+.text-purple { color: #7c3aed; }
+.text-orange { color: #ea580c; }
+
+/* ==========================================
+   Year Badge
+   ========================================== */
+.year-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background-color: #e0f2fe;
+  color: #075985;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* ==========================================
+   Marks Info
+   ========================================== */
+.marks-info {
+  text-align: center;
+}
+
+.total-marks {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 2px;
+}
+
+.pass-marks {
+  font-size: 11px;
+  color: #64748b;
+}
+
+/* ==========================================
+   Features Tags
+   ========================================== */
+.features-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.feature-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.tag-blue {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.tag-green {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.tag-red {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* ==========================================
+   Toggle Status Button
+   ========================================== */
+.toggle-status {
+  padding: 5px 14px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toggle-status.active {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.toggle-status.active:hover {
+  background-color: #a7f3d0;
+}
+
+.toggle-status.inactive {
+  background-color: #f1f5f9;
+  color: #64748b;
+}
+
+.toggle-status.inactive:hover {
+  background-color: #e2e8f0;
+}
+
+/* ==========================================
+   Action Buttons
+   ========================================== */
+.action-btns {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+.action-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 13px;
+}
+
+.btn-view {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.btn-view:hover {
+  background-color: #bfdbfe;
+}
+
+.btn-edit {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.btn-edit:hover {
+  background-color: #a7f3d0;
+}
+
+.btn-copy {
+  background-color: #fed7aa;
+  color: #92400e;
+}
+
+.btn-copy:hover {
+  background-color: #fdba74;
+}
+
+.btn-delete {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.btn-delete:hover {
+  background-color: #fecaca;
+}
+
+/* ==========================================
+   Responsive Design
+   ========================================== */
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .filters-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-item {
+    min-width: 100%;
+  }
+
+  .filter-actions-item {
+    flex: 1;
+  }
+
+  .action-buttons-group {
+    width: 100%;
+  }
+
+  .btn-apply,
+  .btn-clear {
+    flex: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .card-type-list {
+    padding: 20px;
+  }
+
+  .page-title {
+    font-size: 24px;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filters-wrapper {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-type-list {
+    padding: 16px;
+  }
+
+  .page-title {
+    font-size: 20px;
+  }
+
+  .stat-card {
+    padding: 16px;
+  }
+
+  .stat-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+
+  .stat-value {
+    font-size: 24px;
+  }
+
+  .features-tags {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .action-btns {
+    gap: 4px;
+  }
+
+  .action-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+}
+
+/* ==========================================
+   Print Styles
+   ========================================== */
+@media print {
+  .btn-primary,
+  .action-btns,
+  .filter-actions {
+    display: none !important;
+  }
+
+  .card-type-list {
+    background: white;
+    padding: 0;
+  }
+
+  .stat-card,
+  .content-card {
+    box-shadow: none;
+    border: 1px solid #e2e8f0;
+  }
 }
 </style>

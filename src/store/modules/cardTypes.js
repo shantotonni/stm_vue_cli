@@ -1,4 +1,6 @@
 import Vue from 'vue'
+import api from '@/plugins/axios'
+
 
 export default {
     namespaced: true,
@@ -52,7 +54,7 @@ export default {
         async fetchCardTypes({ commit }, params = {}) {
             commit('SET_LOADING', true)
             try {
-                const response = await Vue.prototype.$http.get('/card-types', { params })
+                const response = await api.get('/card-types', { params })
                 commit('SET_CARD_TYPES', response.data)
                 return response.data
             } catch (error) {
@@ -66,7 +68,7 @@ export default {
         async fetchCardType({ commit }, id) {
             commit('SET_LOADING', true)
             try {
-                const response = await Vue.prototype.$http.get(`/card-types/${id}`)
+                const response = await this.$api.get(`/card-types/${id}`)
                 commit('SET_CURRENT_CARD_TYPE', response.data.data)
                 return response.data.data
             } catch (error) {
@@ -80,7 +82,7 @@ export default {
         async createCardType({ commit }, data) {
             commit('SET_LOADING', true)
             try {
-                const response = await Vue.prototype.$http.post('/card-types', data)
+                const response = await this.$api.post('/card-types', data)
                 commit('ADD_CARD_TYPE', response.data.data)
                 return response.data
             } catch (error) {
@@ -94,7 +96,7 @@ export default {
         async updateCardType({ commit }, { id, data }) {
             commit('SET_LOADING', true)
             try {
-                const response = await Vue.prototype.$http.put(`/card-types/${id}`, data)
+                const response = await this.$api.put(`/card-types/${id}`, data)
                 commit('UPDATE_CARD_TYPE', response.data.data)
                 return response.data
             } catch (error) {
@@ -108,7 +110,7 @@ export default {
         async deleteCardType({ commit }, id) {
             commit('SET_LOADING', true)
             try {
-                await Vue.prototype.$http.delete(`/card-types/${id}`)
+                await this.$api.delete(`/card-types/${id}`)
                 commit('REMOVE_CARD_TYPE', id)
             } catch (error) {
                 console.error('Error deleting card type:', error)
@@ -120,7 +122,7 @@ export default {
 
         async toggleActive({ commit }, id) {
             try {
-                const response = await Vue.prototype.$http.post(`/card-types/${id}/toggle-active`)
+                const response = await this.$api.post(`/card-types/${id}/toggle-active`)
                 commit('UPDATE_CARD_TYPE', response.data.data)
                 return response.data
             } catch (error) {
@@ -132,7 +134,7 @@ export default {
         async duplicateCardType({ commit }, id) {
             commit('SET_LOADING', true)
             try {
-                const response = await Vue.prototype.$http.post(`/card-types/${id}/duplicate`)
+                const response = await this.$api.post(`/card-types/${id}/duplicate`)
                 commit('ADD_CARD_TYPE', response.data.data)
                 return response.data
             } catch (error) {

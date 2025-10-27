@@ -34,7 +34,7 @@ export default {
         async fetchProgress({ commit }, studentCardRecordId) {
             commit('SET_LOADING', true)
             try {
-                const response = await Vue.prototype.$http.get(`/progress/record/${studentCardRecordId}`)
+                const response = await this.$api.get(`/progress/record/${studentCardRecordId}`)
                 commit('SET_PROGRESS_ITEMS', response.data.data)
                 return response.data.data
             } catch (error) {
@@ -48,7 +48,7 @@ export default {
         async updateProgress({ commit }, { id, data }) {
             commit('SET_LOADING', true)
             try {
-                const response = await Vue.prototype.$http.put(`/progress/${id}`, data)
+                const response = await this.$api.put(`/progress/${id}`, data)
                 commit('UPDATE_PROGRESS_ITEM', response.data.data)
                 return response.data
             } catch (error) {
@@ -62,7 +62,7 @@ export default {
         async bulkUpdateProgress({ commit }, data) {
             commit('SET_LOADING', true)
             try {
-                const response = await Vue.prototype.$http.post('/progress/bulk-update', data)
+                const response = await this.$api.post('/progress/bulk-update', data)
                 return response.data
             } catch (error) {
                 console.error('Error in bulk update:', error)
@@ -75,7 +75,7 @@ export default {
         async markStarted({ commit }, { id, data }) {
             commit('SET_LOADING', true)
             try {
-                const response = await Vue.prototype.$http.post(`/progress/${id}/mark-started`, data)
+                const response = await this.$api.post(`/progress/${id}/mark-started`, data)
                 commit('UPDATE_PROGRESS_ITEM', response.data.data)
                 return response.data
             } catch (error) {
@@ -89,7 +89,7 @@ export default {
         async markCompleted({ commit }, { id, data }) {
             commit('SET_LOADING', true)
             try {
-                const response = await Vue.prototype.$http.post(`/progress/${id}/mark-completed`, data)
+                const response = await this.$api.post(`/progress/${id}/mark-completed`, data)
                 commit('UPDATE_PROGRESS_ITEM', response.data.data)
                 return response.data
             } catch (error) {
@@ -102,7 +102,7 @@ export default {
 
         async fetchStatistics({ commit }, studentCardRecordId) {
             try {
-                const response = await Vue.prototype.$http.get(`/progress/statistics/${studentCardRecordId}`)
+                const response = await this.$api.get(`/progress/statistics/${studentCardRecordId}`)
                 commit('SET_STATISTICS', response.data.data)
                 return response.data.data
             } catch (error) {
