@@ -1,22 +1,10 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import api from "../plugins/api";
-import cardTypes from './modules/cardTypes'
-import studentCards from './modules/studentCards'
-import progress from './modules/progress'
-import attendance from './modules/attendance'
-import termExams from './modules/termExams'
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-    modules: {
-        cardTypes,
-        studentCards,
-        progress,
-        attendance,
-        termExams
-    },
     state: {
         token: localStorage.getItem('token') || null,
         user: null,

@@ -12,11 +12,6 @@ import Toasted from 'vue-toasted'
 import { ValidationObserver, ValidationProvider, extend } from 'vee-validate'
 import * as rules from 'vee-validate/dist/rules'
 
-// Global Components
-import LoadingSpinner from './components/Common/LoadingSpinner.vue'
-import ConfirmDialog from './components/Common/ConfirmDialog.vue'
-import DataTable from './components/Common/DataTable.vue'
-import FileUpload from './components/Common/FileUpload.vue'
 
 // Global CSS
 import '@/assets/css/main.css'
@@ -29,10 +24,6 @@ Object.keys(rules).forEach(rule => {
 // 🔹 Register global components
 Vue.component('ValidationObserver', ValidationObserver)
 Vue.component('ValidationProvider', ValidationProvider)
-Vue.component('LoadingSpinner', LoadingSpinner)
-Vue.component('ConfirmDialog', ConfirmDialog)
-Vue.component('DataTable', DataTable)
-Vue.component('FileUpload', FileUpload)
 
 // 🔹 Use Toasted plugin
 Vue.use(Toasted, {

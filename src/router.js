@@ -32,37 +32,6 @@ import NoticeList from './views/Admin/notice/Index';
 import BookList from './views/Admin/book/Index';
 import BookCard from './views/Admin/book/Show';
 
-
-// Dashboard
-// import StudentDashboard from '@/components/Dashboard/Dashboard.vue'
-
-
-// Card Types
-import CardTypeList from '@/components/CardTypes/CardTypeList.vue'
-import CardTypeForm from '@/components/CardTypes/CardTypeForm.vue'
-import CardTypeView from '@/components/CardTypes/CardTypeView.vue'
-import CardStructureBuilder from '@/components/CardTypes/CardStructureBuilder.vue'
-
-// Student Cards
-import StudentCardList from '@/components/StudentCards/StudentCardList.vue'
-import StudentCardView from '@/components/StudentCards/StudentCardView.vue'
-import StudentCardAssign from '@/components/StudentCards/StudentCardAssign.vue'
-import ProgressTracker from '@/components/StudentCards/ProgressTracker.vue'
-import CardReport from '@/components/StudentCards/CardReport.vue'
-
-// Attendance
-import StudentAttendanceList from '@/components/Attendance/AttendanceList.vue'
-import AttendanceForm from '@/components/Attendance/AttendanceForm.vue'
-import AttendanceView from '@/components/Attendance/AttendanceView.vue'
-
-// Term Exams
-import TermExamList from '@/components/TermExams/TermExamList.vue'
-import TermExamForm from '@/components/TermExams/TermExamForm.vue'
-import TermExamResults from '@/components/TermExams/TermExamResults.vue'
-
-// Reports
-import ReportsDashboard from '@/components/Reports/ReportsDashboard.vue'
-
 //report
 import ResultReport from './views/Admin/report/ResultReport.vue';
 import AttendanceReport from './views/Admin/report/AttendanceReport.vue';
@@ -70,6 +39,38 @@ import ClassScheduleReport from './views/Admin/report/ClassScheduleReport.vue';
 import NoticeReport from './views/Admin/report/NoticeReport.vue';
 import ExamScheduleReport from './views/Admin/report/ExamScheduleReport.vue';
 import StudentSemesterReport from './views/Admin/report/StudentSemesterReport.vue';
+
+//card
+import CardType from './views/Admin/card-type/CardType.vue';
+import Cadavers from './views/Admin/cadaver/CadaverManagement.vue';
+import Specimens from './views/Admin/specimens/SpecimenIndex.vue';
+
+// Card Structure Levels
+import CardStructureLevelList from '@/views/CardStructureLevels/List.vue';
+import CardStructureLevelForm from '@/views/CardStructureLevels/Form.vue';
+
+// Student Card Records
+import StudentCardRecordList from '@/views/StudentCardRecords/List.vue';
+import StudentCardRecordForm from '@/views/StudentCardRecords/Form.vue';
+import StudentCardRecordView from '@/views/StudentCardRecords/View.vue';
+
+// Student Structure Progress
+import StudentStructureProgressList from '@/views/StudentStructureProgress/List.vue';
+import StudentStructureProgressForm from '@/views/StudentStructureProgress/Form.vue';
+
+// Attendance
+import StudentCardAttendanceList from '@/views/Attendance/List.vue';
+import AttendanceForm from '@/views/Attendance/Form.vue';
+import AttendanceBulkMark from '@/views/Attendance/BulkMark.vue';
+
+// Term Exams
+import TermExamList from '@/views/TermExams/List.vue';
+import TermExamForm from '@/views/TermExams/Form.vue';
+
+// Term Exam Results
+import TermExamResultList from '@/views/TermExamResults/List.vue';
+import TermExamResultForm from '@/views/TermExamResults/Form.vue';
+import TermExamResultBulk from '@/views/TermExamResults/BulkForm.vue';
 
 // settings
 import Profile from './views/settings/Profile'
@@ -111,21 +112,145 @@ const router = new Router({
                 { path: 'notice-list', name: 'NoticeList', component: NoticeList },
                 { path: 'book-list', name: 'BookList', component: BookList },
                 { path: 'e-library', name: 'BookCard', component: BookCard },
+
+                //card
+                { path: 'card-types', name: 'CardType', component: CardType },
+                { path: 'cadavers', name: 'Cadavers', component: Cadavers },
+                { path: 'specimens', name: 'Specimens', component: Specimens },
+
+                // Card Structure Levels Routes
                 {
-                    path: '/attendance/mark/:classId',
-                    name: 'MarkAttendance',
-                    component: AttendanceMarkingComponent,
-                    props: true,
+                    path: '/card-structure-levels',
+                    name: 'CardStructureLevelList',
+                    component: CardStructureLevelList
+                },
+                {
+                    path: '/card-structure-levels/create',
+                    name: 'CardStructureLevelCreate',
+                    component: CardStructureLevelForm
+                },
+                {
+                    path: '/card-structure-levels/:id/edit',
+                    name: 'CardStructureLevelEdit',
+                    component: CardStructureLevelForm,
+                    props: true
+                },
+
+                // Student Card Records Routes
+                {
+                    path: '/student-card-records',
+                    name: 'StudentCardRecordList',
+                    component: StudentCardRecordList
+                },
+                {
+                    path: '/student-card-records/create',
+                    name: 'StudentCardRecordCreate',
+                    component: StudentCardRecordForm
+                },
+                {
+                    path: '/student-card-records/:id',
+                    name: 'StudentCardRecordView',
+                    component: StudentCardRecordView,
+                    props: true
+                },
+                {
+                    path: '/student-card-records/:id/edit',
+                    name: 'StudentCardRecordEdit',
+                    component: StudentCardRecordForm,
+                    props: true
+                },
+
+                // Student Structure Progress Routes
+                {
+                    path: '/student-structure-progress',
+                    name: 'StudentStructureProgressList',
+                    component: StudentStructureProgressList
+                },
+                {
+                    path: '/student-structure-progress/create',
+                    name: 'StudentStructureProgressCreate',
+                    component: StudentStructureProgressForm
+                },
+                {
+                    path: '/student-structure-progress/:id/edit',
+                    name: 'StudentStructureProgressEdit',
+                    component: StudentStructureProgressForm,
+                    props: true
+                },
+
+                // Attendance Routes
+                {
+                    path: '/attendance',
+                    name: 'AttendanceList',
+                    component: StudentCardAttendanceList
+                },
+                {
+                    path: '/attendance/create',
+                    name: 'AttendanceCreate',
+                    component: AttendanceForm
+                },
+                {
+                    path: '/attendance/:id/edit',
+                    name: 'AttendanceEdit',
+                    component: AttendanceForm,
+                    props: true
+                },
+                {
+                    path: '/attendance/bulk-mark',
+                    name: 'AttendanceBulkMark',
+                    component: AttendanceBulkMark
+                },
+
+                // Term Exams Routes
+                {
+                    path: '/term-exams',
+                    name: 'TermExamList',
+                    component: TermExamList
+                },
+                {
+                    path: '/term-exams/create',
+                    name: 'TermExamCreate',
+                    component: TermExamForm
+                },
+                {
+                    path: '/term-exams/:id/edit',
+                    name: 'TermExamEdit',
+                    component: TermExamForm,
+                    props: true
+                },
+
+                // Term Exam Results Routes
+                {
+                    path: '/term-exam-results',
+                    name: 'TermExamResultList',
+                    component: TermExamResultList
+                },
+                {
+                    path: '/term-exam-results/create',
+                    name: 'TermExamResultCreate',
+                    component: TermExamResultForm
+                },
+                {
+                    path: '/term-exam-results/:id/edit',
+                    name: 'TermExamResultEdit',
+                    component: TermExamResultForm,
+                    props: true
+                },
+                {
+                    path: '/term-exam-results/bulk',
+                    name: 'TermExamResultBulk',
+                    component: TermExamResultBulk
+                },
+
+
+                {path: '/attendance/mark/:classId', name: 'MarkAttendance', component: AttendanceMarkingComponent, props: true,
                     meta: {
                         requiresAuth: true,
                         role: ['teacher', 'admin'],
                         title: 'Mark Attendance'
                     }
                 },
-                {
-                    path: '/attendance/reports',
-                    name: 'AttendanceReports',
-                    component: AttendanceReportComponent,
+                {path: '/attendance/reports', name: 'AttendanceReports', component: AttendanceReportComponent,
                     meta: {
                         requiresAuth: true,
                         role: ['admin'],
@@ -133,193 +258,43 @@ const router = new Router({
                     }
                 },
 
-                // Dashboard
-                // {
-                //     path: '',
-                //     name: 'dashboard',
-                //     component: StudentDashboard,
-                //     meta: { title: 'Dashboard' }
-                // },
-
-                // Card Types
-                {
-                    path: 'card-types',
-                    name: 'card-types',
-                    component: CardTypeList,
-                    meta: { title: 'Card Types' }
-                },
-                {
-                    path: 'card-types/create',
-                    name: 'card-types-create',
-                    component: CardTypeForm,
-                    meta: { title: 'Create Card Type' }
-                },
-                {
-                    path: 'card-types/:id',
-                    name: 'card-types-view',
-                    component: CardTypeView,
-                    meta: { title: 'Card Type Details' }
-                },
-                {
-                    path: 'card-types/:id/edit',
-                    name: 'card-types-edit',
-                    component: CardTypeForm,
-                    meta: { title: 'Edit Card Type' }
-                },
-                {
-                    path: 'card-types/:id/structure',
-                    name: 'card-types-structure',
-                    component: CardStructureBuilder,
-                    meta: { title: 'Build Card Structure' }
-                },
-
-                // Student Cards
-                {
-                    path: 'student-cards',
-                    name: 'student-cards',
-                    component: StudentCardList,
-                    meta: { title: 'Student Cards' }
-                },
-                {
-                    path: 'student-cards/assign',
-                    name: 'student-cards-assign',
-                    component: StudentCardAssign,
-                    meta: { title: 'Assign Cards' }
-                },
-                {
-                    path: 'student-cards/:id',
-                    name: 'student-cards-view',
-                    component: StudentCardView,
-                    meta: { title: 'Student Card Details' }
-                },
-                {
-                    path: 'student-cards/:id/progress',
-                    name: 'student-cards-progress',
-                    component: ProgressTracker,
-                    meta: { title: 'Track Progress' }
-                },
-                {
-                    path: 'student-cards/:id/report',
-                    name: 'student-cards-report',
-                    component: CardReport,
-                    meta: { title: 'Card Report' }
-                },
-
-                // Attendance
-                {
-                    path: 'attendance',
-                    name: 'attendance',
-                    component: StudentAttendanceList,
-                    meta: { title: 'Attendance' }
-                },
-                {
-                    path: 'attendance/mark',
-                    name: 'attendance-mark',
-                    component: AttendanceForm,
-                    meta: { title: 'Mark Attendance' }
-                },
-                {
-                    path: 'attendance/:id',
-                    name: 'attendance-view',
-                    component: AttendanceView,
-                    meta: { title: 'Attendance Details' }
-                },
-                {
-                    path: 'attendance/:id/edit',
-                    name: 'attendance-edit',
-                    component: AttendanceForm,
-                    meta: { title: 'Edit Attendance' }
-                },
-
-                // Term Exams
-                {
-                    path: 'term-exams',
-                    name: 'term-exams',
-                    component: TermExamList,
-                    meta: { title: 'Term Exams' }
-                },
-                {
-                    path: 'term-exams/create',
-                    name: 'term-exams-create',
-                    component: TermExamForm,
-                    meta: { title: 'Create Term Exam' }
-                },
-                {
-                    path: 'term-exams/:id/edit',
-                    name: 'term-exams-edit',
-                    component: TermExamForm,
-                    meta: { title: 'Edit Term Exam' }
-                },
-                {
-                    path: 'term-exams/:id/results',
-                    name: 'term-exams-results',
-                    component: TermExamResults,
-                    meta: { title: 'Manage Results' }
-                },
-
-                // Reports
-                {
-                    path: 'reports',
-                    name: 'reports',
-                    component: ReportsDashboard,
-                    meta: { title: 'Reports & Analytics' }
-                },
-
                 //report
-                {
-                    path: 'report/results',
-                    name: 'StudentResults',
-                    component: ResultReport,
+                {path: 'report/results', name: 'StudentResults', component: ResultReport,
                     meta: {
                         requiresAuth: true,
                         roles: ['admin', 'department_head', 'teacher', 'student'],
                         title: 'Student Results',
                     },
                 },
-                {
-                    path: 'report/attendance',
-                    name: 'StudentAttendance',
-                    component: AttendanceReport,
+                {path: 'report/attendance', name: 'StudentAttendance', component: AttendanceReport,
                     meta: {
                         requiresAuth: true,
                         roles: ['admin', 'department_head', 'teacher', 'student'],
                         title: 'Student Attendance',
                     },
                 },
-                {
-                    path: 'report/class-schedule',
-                    name: 'ClassSchedule',
-                    component: ClassScheduleReport,
+                {path: 'report/class-schedule', name: 'ClassSchedule', component: ClassScheduleReport,
                     meta: {
                         requiresAuth: true,
                         roles: ['admin', 'department_head', 'teacher', 'student'],
                         title: 'Class Schedule',
                     },
                 },
-                {
-                    path: 'report/notices',
-                    name: 'Notices',
-                    component: NoticeReport,
+                {path: 'report/notices', name: 'Notices', component: NoticeReport,
                     meta: {
                         requiresAuth: true,
                         roles: ['admin', 'department_head', 'teacher', 'student'],
                         title: 'Notices',
                     },
                 },
-                {
-                    path: 'report/exam-schedule',
-                    name: 'ExamSchedule',
-                    component: ExamScheduleReport,
+                {path: 'report/exam-schedule', name: 'ExamSchedule', component: ExamScheduleReport,
                     meta: {
                         requiresAuth: true,
                         roles: ['admin', 'department_head', 'teacher', 'student'],
                         title: 'Exam Schedule',
                     },
                 },
-                {
-                    path: 'student-semester-report',
-                    name: 'StudentSemesterReport',
-                    component: StudentSemesterReport,
+                {path: 'student-semester-report', name: 'StudentSemesterReport', component: StudentSemesterReport,
                     meta: {
                         requiresAuth: true,
                         roles: ['admin', 'department_head', 'teacher', 'student'],
