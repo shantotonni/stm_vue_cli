@@ -17,6 +17,10 @@
           <i class="fas fa-plus-circle"></i>
           <span>Add New Student</span>
         </button>
+        <button @click="importStudent" class="btn-add-new" style="margin-left: 5px">
+          <i class="fas fa-plus-circle"></i>
+          <span>Import Student</span>
+        </button>
       </div>
 
       <!-- Quick Stats Cards -->
@@ -461,6 +465,10 @@ export default {
       this.$router.push({ name: 'StudentCreate' });
     },
 
+    importStudent() {
+      this.$router.push({ name: 'StudentImport' });
+    },
+
     viewStudent(id) {
       this.$router.push({ name: 'StudentShow', params: { id } });
     },
@@ -472,7 +480,7 @@ export default {
     async confirmDelete(id) {
       if (confirm('Are you sure you want to delete this student?')) {
         try {
-          await this.$api.delete(`/api/students/${id}`);
+          await this.$api.delete(`/students/${id}`);
           this.$toasted.success('Student deleted successfully');
           this.fetchStudents();
         } catch (error) {

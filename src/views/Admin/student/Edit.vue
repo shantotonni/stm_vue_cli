@@ -1,1184 +1,1065 @@
 <template>
-  <div class="student-management">
-    <!-- Top Header with Stats -->
-    <div class="page-header-section">
+  <div class="student-edit-container">
+    <!-- Header Section -->
+    <div class="page-header">
       <div class="header-content">
-        <div class="title-area">
-          <h1 class="main-title">
-            <span class="icon-wrapper">
-              <i class="fas fa-users"></i>
-            </span>
-            Students Management
-          </h1>
-          <p class="subtitle">Manage and monitor all student records</p>
+        <div class="header-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
         </div>
-
-        <button @click="openCreateModal" class="btn-add-new">
-          <i class="fas fa-plus-circle"></i>
-          <span>Add New Student</span>
-        </button>
-      </div>
-
-      <!-- Quick Stats Cards -->
-      <div class="stats-grid">
-        <div class="stat-card stat-primary">
-          <div class="stat-icon">
-            <i class="fas fa-user-graduate"></i>
-          </div>
-          <div class="stat-info">
-            <p class="stat-label">Total Students</p>
-            <h3 class="stat-value">{{ students.total || 0 }}</h3>
-          </div>
-        </div>
-
-        <div class="stat-card stat-success">
-          <div class="stat-icon">
-            <i class="fas fa-check-circle"></i>
-          </div>
-          <div class="stat-info">
-            <p class="stat-label">Active Students</p>
-            <h3 class="stat-value">{{ activeCount }}</h3>
-          </div>
-        </div>
-
-        <div class="stat-card stat-info">
-          <div class="stat-icon">
-            <i class="fas fa-building"></i>
-          </div>
-          <div class="stat-info">
-            <p class="stat-label">Departments</p>
-            <h3 class="stat-value">{{ departments.length }}</h3>
-          </div>
-        </div>
-
-        <div class="stat-card stat-warning">
-          <div class="stat-icon">
-            <i class="fas fa-calendar-alt"></i>
-          </div>
-          <div class="stat-info">
-            <p class="stat-label">Current Session</p>
-            <h3 class="stat-value">2024-25</h3>
-          </div>
+        <div>
+          <h1 class="page-title">Edit Student</h1>
+          <p class="page-subtitle">Update student information</p>
         </div>
       </div>
-    </div>
-
-    <!-- Search and Filter Section -->
-    <div class="filter-section">
-      <div class="filter-card">
-        <div class="filter-header">
-          <h3 class="filter-title">
-            <i class="fas fa-filter"></i>
-            Search & Filter
-          </h3>
-          <button @click="resetFilters" class="btn-reset">
-            <i class="fas fa-redo"></i>
-            Reset
-          </button>
-        </div>
-
-        <div class="filter-grid">
-          <div class="filter-group">
-            <label class="filter-label">
-              <i class="fas fa-search"></i>
-              Search Students
-            </label>
-            <input
-                v-model="filters.search"
-                @input="debounceSearch"
-                type="text"
-                class="filter-input"
-                placeholder="Search by name, ID, roll number..."
-            />
-          </div>
-
-          <div class="filter-group">
-            <label class="filter-label">
-              <i class="fas fa-building"></i>
-              Department
-            </label>
-            <select v-model="filters.department_id" @change="fetchStudents" class="filter-select">
-              <option value="">All Departments</option>
-              <option v-for="dept in departments" :key="dept.id" :value="dept.id">
-                {{ dept.name }}
-              </option>
-            </select>
-          </div>
-
-          <div class="filter-group">
-            <label class="filter-label">
-              <i class="fas fa-graduation-cap"></i>
-              Academic Year
-            </label>
-            <select v-model="filters.year" @change="fetchStudents" class="filter-select">
-              <option value="">All Years</option>
-              <option value="1st">1st Year</option>
-              <option value="2nd">2nd Year</option>
-              <option value="3rd">3rd Year</option>
-              <option value="4th">4th Year</option>
-              <option value="5th">5th Year</option>
-            </select>
-          </div>
-
-          <div class="filter-group">
-            <label class="filter-label">
-              <i class="fas fa-toggle-on"></i>
-              Status
-            </label>
-            <select v-model="filters.status" @change="fetchStudents" class="filter-select">
-              <option value="">All Status</option>
-              <option value="Y">Active</option>
-              <option value="N">Inactive</option>
-            </select>
-          </div>
-        </div>
-      </div>
+      <button @click="goBack" class="btn-back">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="19" y1="12" x2="5" y2="12"/>
+          <polyline points="12 19 5 12 12 5"/>
+        </svg>
+        Back to List
+      </button>
     </div>
 
     <!-- Loading State -->
-    <div v-if="loading" class="loading-wrapper">
-      <div class="loading-spinner">
-        <div class="spinner"></div>
-        <p>Loading students data...</p>
-      </div>
+    <div v-if="loading" class="loading-container">
+      <div class="spinner-large"></div>
+      <p>Loading student data...</p>
     </div>
 
-    <!-- Students Table -->
-    <div v-else class="data-table-section" style="max-width: 1450px;">
-      <div class="table-card">
-        <div class="table-header">
-          <h3 class="table-title">
-            <i class="fas fa-list"></i>
-            Student Records
-          </h3>
-          <div class="table-actions">
-            <button class="btn-icon-action" title="Export to Excel">
-              <i class="fas fa-file-excel"></i>
-            </button>
-            <button class="btn-icon-action" title="Export to PDF">
-              <i class="fas fa-file-pdf"></i>
-            </button>
-            <button class="btn-icon-action" title="Print">
-              <i class="fas fa-print"></i>
-            </button>
+    <!-- Form Container -->
+    <form v-else @submit.prevent="submitForm" class="student-form">
+
+      <!-- Personal Information -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
           </div>
+          <h2 class="section-title">Personal Information</h2>
         </div>
 
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-            <tr>
-              <th @click="sortBy('student_id_number')" class="sortable">
-                <div class="th-content">
-                  <i class="fas fa-id-badge"></i>
-                  Student ID
-                  <span class="sort-indicator" v-if="sortField === 'student_id_number'">
-                      <i :class="sortOrder === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>
-                    </span>
-                </div>
-              </th>
-              <th @click="sortBy('name')" class="sortable">
-                <div class="th-content">
-                  <i class="fas fa-user"></i>
-                  Student Name
-                  <span class="sort-indicator" v-if="sortField === 'name'">
-                      <i :class="sortOrder === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>
-                    </span>
-                </div>
-              </th>
-              <th>
-                <div class="th-content">
-                  <i class="fas fa-hashtag"></i>
-                  Roll No
-                </div>
-              </th>
-              <th>
-                <div class="th-content">
-                  <i class="fas fa-building"></i>
-                  Department
-                </div>
-              </th>
-              <th>
-                <div class="th-content">
-                  <i class="fas fa-layer-group"></i>
-                  Year
-                </div>
-              </th>
-              <th>
-                <div class="th-content">
-                  <i class="fas fa-calendar"></i>
-                  Semester
-                </div>
-              </th>
-<!--              <th>-->
-<!--                <div class="th-content">-->
-<!--                  <i class="fas fa-envelope"></i>-->
-<!--                  Email-->
-<!--                </div>-->
-<!--              </th>-->
-              <th>
-                <div class="th-content">
-                  <i class="fas fa-phone"></i>
-                  Mobile
-                </div>
-              </th>
-              <th>
-                <div class="th-content">
-                  <i class="fas fa-info-circle"></i>
-                  Status
-                </div>
-              </th>
-              <th class="text-center">
-                <div class="th-content">
-                  <i class="fas fa-cog"></i>
-                  Actions
-                </div>
-              </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="student in students.data" :key="student.id" class="table-row">
-              <td>
-                <div class="student-id-badge">
-                  {{ student.student_id_number }}
-                </div>
-              </td>
-              <td>
-                <div class="student-profile">
-                  <div class="student-avatar">
-                    {{ getInitials(student.name) }}
-                  </div>
-                  <div class="student-details">
-                    <span class="student-name">{{ student.name }}</span>
-                    <span class="student-session">{{ student.session }}</span>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <span class="roll-number">{{ student.roll_no }}</span>
-              </td>
-              <td>
-                  <span class="department-name">
-                    {{ student.department ? student.department.name : 'N/A' }}
-                  </span>
-              </td>
-              <td>
-                  <span class="year-badge">
-                    <i class="fas fa-graduation-cap"></i>
-                    {{ student.year }}
-                  </span>
-              </td>
-              <td>
-                  <span class="semester-badge">
-                    <i class="fas fa-book"></i>
-                    {{ student.semester }}
-                  </span>
-              </td>
-<!--              <td>-->
-<!--                <span class="email-text">{{ student.email || 'N/A' }}</span>-->
-<!--              </td>-->
-              <td>
-                <span class="mobile-text">{{ student.mobile || 'N/A' }}</span>
-              </td>
-              <td>
-                  <span :class="['status-pill', student.status === 'Y' ? 'status-active' : 'status-inactive']">
-                    <i :class="student.status === 'Y' ? 'fas fa-check-circle' : 'fas fa-times-circle'"></i>
-                    {{ student.status === 'Y' ? 'Active' : 'Inactive' }}
-                  </span>
-              </td>
-              <td>
-                <div class="action-buttons-group">
-                  <button @click="viewStudent(student.id)" class="action-btn view-btn" title="View Details">
-                    <i class="fas fa-eye"></i>
-                  </button>
-                  <button @click="editStudent(student.id)" class="action-btn edit-btn" title="Edit Student">
-                    <i class="fas fa-edit"></i>
-                  </button>
-                  <button @click="confirmDelete(student.id)" class="action-btn delete-btn" title="Delete Student">
-                    <i class="fas fa-trash-alt"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Pagination -->
-        <div class="pagination-wrapper">
-          <div class="pagination-info">
-            <i class="fas fa-info-circle"></i>
-            Showing <strong>{{ students.from }}</strong> to <strong>{{ students.to }}</strong> of <strong>{{ students.total }}</strong> students
-          </div>
-          <div class="pagination-controls">
-            <button
-                @click="changePage(students.current_page - 1)"
-                :disabled="!students.prev_page_url"
-                class="pagination-btn prev-btn"
-            >
-              <i class="fas fa-chevron-left"></i>
-              Previous
-            </button>
-
-            <div class="page-numbers">
-              <button
-                  v-for="page in paginationPages"
-                  :key="page"
-                  @click="changePage(page)"
-                  :class="['page-btn', { 'active': page === students.current_page }]"
-              >
-                {{ page }}
-              </button>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label required">User</label>
+            <div class="input-wrapper">
+              <select v-model="form.user_id" class="form-input" :class="{ 'input-error': errors.user_id }">
+                <option value="">Select User</option>
+                <option v-for="user in users" :key="user.id" :value="user.id">
+                  {{ user.name }} ({{ user.login_code }})
+                </option>
+              </select>
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
             </div>
+            <span v-if="errors.user_id" class="error-message">{{ errors.user_id[0] }}</span>
+          </div>
 
-            <button
-                @click="changePage(students.current_page + 1)"
-                :disabled="!students.next_page_url"
-                class="pagination-btn next-btn"
-            >
-              Next
-              <i class="fas fa-chevron-right"></i>
-            </button>
+          <div class="form-group">
+            <label class="form-label required">Full Name</label>
+            <div class="input-wrapper">
+              <input
+                  v-model="form.name"
+                  type="text"
+                  class="form-input"
+                  :class="{ 'input-error': errors.name }"
+                  placeholder="Enter full name"
+              />
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <span v-if="errors.name" class="error-message">{{ errors.name[0] }}</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required">Date of Birth</label>
+            <div class="input-wrapper">
+              <input
+                  v-model="form.date_of_birth"
+                  type="date"
+                  class="form-input"
+                  :class="{ 'input-error': errors.date_of_birth }"
+              />
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            </div>
+            <span v-if="errors.date_of_birth" class="error-message">{{ errors.date_of_birth[0] }}</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required">Blood Group</label>
+            <div class="input-wrapper">
+              <select v-model="form.blood_group" class="form-input" :class="{ 'input-error': errors.blood_group }">
+                <option value="">Select Blood Group</option>
+                <option v-for="bg in bloodGroups" :key="bg" :value="bg">{{ bg }}</option>
+              </select>
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+            </div>
+            <span v-if="errors.blood_group" class="error-message">{{ errors.blood_group[0] }}</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">NID Number</label>
+            <div class="input-wrapper">
+              <input
+                  v-model="form.nid"
+                  type="text"
+                  class="form-input"
+                  placeholder="National ID Number"
+              />
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <path d="M7 15h0M2 9.5h20"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label class="form-label">Nationality</label>
+            <div class="input-wrapper">
+              <input
+                  v-model="form.nationality"
+                  type="text"
+                  class="form-input"
+                  placeholder="Enter nationality"
+              />
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="2" y1="12" x2="22" y2="12"/>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label class="form-label">Address</label>
+            <div class="input-wrapper">
+              <textarea
+                  v-model="form.address"
+                  class="form-textarea"
+                  rows="3"
+                  placeholder="Enter full address"
+              ></textarea>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      <!-- Academic Information -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+              <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+            </svg>
+          </div>
+          <h2 class="section-title">Academic Information</h2>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label required">Phase</label>
+            <div class="input-wrapper">
+              <select v-model="form.phase_id" class="form-input" :class="{ 'input-error': errors.phase_id }">
+                <option value="">Select phase</option>
+                <option v-for="phase in phases" :key="phase.id" :value="phase.id">
+                  {{ phase.name }}
+                </option>
+              </select>
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <span v-if="errors.phase_id" class="error-message">{{ errors.phase_id[0] }}</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required">Program</label>
+            <div class="input-wrapper">
+              <select v-model="form.program_id" class="form-input" :class="{ 'input-error': errors.program_id }">
+                <option value="">Select Program</option>
+                <option v-for="program in programs" :key="program.id" :value="program.id">
+                  {{ program.name }}
+                </option>
+              </select>
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <span v-if="errors.program_id" class="error-message">{{ errors.program_id[0] }}</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required">Session</label>
+            <div class="input-wrapper">
+              <select v-model="form.session_id" class="form-input" :class="{ 'input-error': errors.session_id }">
+                <option value="">Select Session</option>
+                <option v-for="session in sessions" :key="session.id" :value="session.id">
+                  {{ session.name }}
+                </option>
+              </select>
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <span v-if="errors.session_id" class="error-message">{{ errors.session_id[0] }}</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required">Category</label>
+            <div class="input-wrapper">
+              <select v-model="form.category_id" class="form-input" :class="{ 'input-error': errors.category_id }">
+                <option value="">Select Category</option>
+                <option v-for="category in categories" :key="category.id" :value="category.id">
+                  {{ category.name }}
+                </option>
+              </select>
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <span v-if="errors.category_id" class="error-message">{{ errors.category_id[0] }}</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required">Student ID</label>
+            <div class="input-wrapper">
+              <input
+                  v-model="form.student_id_number"
+                  type="text"
+                  class="form-input"
+                  :class="{ 'input-error': errors.student_id_number }"
+                  placeholder="e.g., 2024001"
+              />
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+            </div>
+            <span v-if="errors.student_id_number" class="error-message">{{ errors.student_id_number[0] }}</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required">Roll Number</label>
+            <div class="input-wrapper">
+              <input
+                  v-model="form.roll_no"
+                  type="text"
+                  class="form-input"
+                  :class="{ 'input-error': errors.roll_no }"
+                  placeholder="Enter roll number"
+              />
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+              </svg>
+            </div>
+            <span v-if="errors.roll_no" class="error-message">{{ errors.roll_no[0] }}</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required">Department</label>
+            <div class="input-wrapper">
+              <select v-model="form.department_id" class="form-input" :class="{ 'input-error': errors.department_id }">
+                <option value="">Select Department</option>
+                <option v-for="dept in departments" :key="dept.id" :value="dept.id">
+                  {{ dept.name }}
+                </option>
+              </select>
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              </svg>
+            </div>
+            <span v-if="errors.department_id" class="error-message">{{ errors.department_id[0] }}</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required">Year</label>
+            <div class="input-wrapper">
+              <select v-model="form.year" class="form-input" :class="{ 'input-error': errors.year }">
+                <option value="">Select Year</option>
+                <option value="1st">1st Year</option>
+                <option value="2nd">2nd Year</option>
+                <option value="3rd">3rd Year</option>
+                <option value="4th">4th Year</option>
+                <option value="5th">5th Year</option>
+              </select>
+            </div>
+            <span v-if="errors.year" class="error-message">{{ errors.year[0] }}</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required">Semester</label>
+            <div class="input-wrapper">
+              <select v-model="form.semester" class="form-input" :class="{ 'input-error': errors.semester }">
+                <option value="">Select Semester</option>
+                <option value="1st">1st Semester</option>
+                <option value="2nd">2nd Semester</option>
+              </select>
+            </div>
+            <span v-if="errors.semester" class="error-message">{{ errors.semester[0] }}</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Batch</label>
+            <div class="input-wrapper">
+              <input
+                  v-model="form.batch"
+                  type="number"
+                  class="form-input"
+                  placeholder="e.g., 2023"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required">Admission Date</label>
+            <div class="input-wrapper">
+              <input
+                  v-model="form.admission_date"
+                  type="date"
+                  class="form-input"
+                  :class="{ 'input-error': errors.admission_date }"
+              />
+            </div>
+            <span v-if="errors.admission_date" class="error-message">{{ errors.admission_date[0] }}</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Hostel Resident</label>
+            <div class="input-wrapper">
+              <select v-model="form.is_hostel" class="form-input">
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Information -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+          </div>
+          <h2 class="section-title">Contact Information</h2>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <div class="input-wrapper">
+              <input
+                  v-model="form.email"
+                  type="email"
+                  class="form-input"
+                  :class="{ 'input-error': errors.email }"
+                  placeholder="student@example.com"
+              />
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </div>
+            <span v-if="errors.email" class="error-message">{{ errors.email[0] }}</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Mobile Number</label>
+            <div class="input-wrapper">
+              <input
+                  v-model="form.mobile"
+                  type="text"
+                  class="form-input"
+                  placeholder="+880 1xxx-xxxxxx"
+              />
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                <line x1="12" y1="18" x2="12.01" y2="18"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required">Guardian Name</label>
+            <div class="input-wrapper">
+              <input
+                  v-model="form.guardian_name"
+                  type="text"
+                  class="form-input"
+                  :class="{ 'input-error': errors.guardian_name }"
+                  placeholder="Enter guardian name"
+              />
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            </div>
+            <span v-if="errors.guardian_name" class="error-message">{{ errors.guardian_name[0] }}</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required">Guardian Phone</label>
+            <div class="input-wrapper">
+              <input
+                  v-model="form.guardian_phone"
+                  type="text"
+                  class="form-input"
+                  :class="{ 'input-error': errors.guardian_phone }"
+                  placeholder="Guardian contact number"
+              />
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            </div>
+            <span v-if="errors.guardian_phone" class="error-message">{{ errors.guardian_phone[0] }}</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required">Emergency Contact</label>
+            <div class="input-wrapper">
+              <input
+                  v-model="form.emergency_contact"
+                  type="text"
+                  class="form-input"
+                  :class="{ 'input-error': errors.emergency_contact }"
+                  placeholder="Emergency contact number"
+              />
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+            </div>
+            <span v-if="errors.emergency_contact" class="error-message">{{ errors.emergency_contact[0] }}</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <div class="input-wrapper">
+              <select v-model="form.status" class="form-input">
+                <option value="Y">Active</option>
+                <option value="N">Inactive</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button type="button" @click="goBack" class="btn-cancel">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+          Cancel
+        </button>
+        <button type="submit" :disabled="submitting" class="btn-submit">
+          <svg v-if="!submitting" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          <svg v-else class="spinner" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="2" x2="12" y2="6"/>
+            <line x1="12" y1="18" x2="12" y2="22"/>
+            <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/>
+            <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/>
+            <line x1="2" y1="12" x2="6" y2="12"/>
+            <line x1="18" y1="12" x2="22" y2="12"/>
+            <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/>
+            <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/>
+          </svg>
+          <span v-if="submitting">Updating...</span>
+          <span v-else>Update Student</span>
+        </button>
+      </div>
+    </form>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'StudentCreate',
+  name: 'StudentEdit',
 
   data() {
     return {
-      students: {
-        data: [],
-        total: 0,
-        current_page: 1,
-        last_page: 1,
-        from: 0,
-        to: 0
+      studentId: null,
+      loading: true,
+      form: {
+        user_id: '',
+        department_id: '',
+        name: '',
+        student_id_number: '',
+        roll_no: '',
+        email: '',
+        mobile: '',
+        session_id: '',
+        category_id: '',
+        phase_id: '',
+        program_id: '',
+        year: '',
+        semester: '',
+        is_hostel: '',
+        nationality: '',
+        address: '',
+        nid: '',
+        date_of_birth: '',
+        batch: null,
+        blood_group: '',
+        guardian_name: '',
+        guardian_phone: '',
+        emergency_contact: '',
+        admission_date: '',
+        status: 'Y'
       },
       departments: [],
-      loading: false,
-      filters: {
-        search: '',
-        department_id: '',
-        year: '',
-        status: ''
-      },
-      sortField: 'created_at',
-      sortOrder: 'desc',
-      debounceTimer: null
+      categories: [],
+      programs: [],
+      phases: [],
+      users: [],
+      sessions: [],
+      bloodGroups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'],
+      errors: {},
+      submitting: false
     };
   },
-
-  computed: {
-    paginationPages() {
-      const pages = [];
-      const current = this.students.current_page;
-      const last = this.students.last_page;
-
-      for (let i = Math.max(1, current - 2); i <= Math.min(last, current + 2); i++) {
-        pages.push(i);
-      }
-
-      return pages;
-    },
-
-    activeCount() {
-      return this.students.data.filter(s => s.status === 'Y').length;
-    }
+  created() {
+    this.studentId = this.$route.params.id;
+    console.log(this.studentId)
   },
-
   mounted() {
-    this.fetchStudents();
-    this.fetchDepartments();
+    this.fetchDependencies();
   },
 
   methods: {
-    async fetchStudents(page = 1) {
-      this.loading = true;
+    async fetchDependencies() {
       try {
-        const params = {
-          page,
-          search: this.filters.search,
-          department_id: this.filters.department_id,
-          year: this.filters.year,
-          status: this.filters.status,
-          sort_by: this.sortField,
-          sort_order: this.sortOrder,
-          per_page: 15
-        };
-
-        const response = await this.$api.get('/students', { params });
-        this.students = response.data;
+        await Promise.all([
+          this.fetchDepartments(),
+          this.fetchUsers(),
+          this.fetchSession(),
+          this.fetchCategory(),
+          this.loadProgram(),
+          this.fetchPhase()
+        ]);
+        await this.fetchStudent();
       } catch (error) {
-        console.error('Error fetching students:', error);
-        this.$toasted.error('Failed to load students');
-      } finally {
-        this.loading = false;
+        console.error('Error loading dependencies:', error);
+        this.$toasted.error('Failed to load form data');
       }
+    },
+
+    async fetchStudent() {
+      try {
+        const response = await this.$api.get(`/students/${this.studentId}`);
+        this.form = { ...this.form, ...response.data };
+        this.loading = false;
+      } catch (error) {
+        console.error('Error fetching student:', error);
+        this.$toasted.error('Failed to load student data');
+        this.goBack();
+      }
+    },
+
+    async fetchPhase() {
+      const response = await this.$api.get('/get-phases');
+      this.phases = response.data;
     },
 
     async fetchDepartments() {
+      const response = await this.$api.get('/get-departments');
+      this.departments = response.data;
+    },
+
+    async loadProgram() {
+      const response = await this.$api.get('/get-program');
+      this.programs = response.data;
+    },
+
+    async fetchSession() {
+      const response = await this.$api.get('/get-session');
+      this.sessions = response.data;
+    },
+
+    async fetchCategory() {
+      const response = await this.$api.get('/get-category');
+      this.categories = response.data;
+    },
+
+    async fetchUsers() {
+      const response = await this.$api.get('/student-users');
+      this.users = response.data;
+    },
+
+    async submitForm() {
+      this.submitting = true;
+      this.errors = {};
+
       try {
-        const response = await this.$api.get('/departments');
-        this.departments = response.data;
+        console.log(this.studentId)
+        await this.$api.put(`/students/${this.studentId}`, this.form);
+        this.$toasted.success('Student updated successfully!');
+        this.$router.push({ name: 'StudentList' });
       } catch (error) {
-        console.error('Error fetching departments:', error);
-      }
-    },
-
-    debounceSearch() {
-      clearTimeout(this.debounceTimer);
-      this.debounceTimer = setTimeout(() => {
-        this.fetchStudents();
-      }, 500);
-    },
-
-    sortBy(field) {
-      if (this.sortField === field) {
-        this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
-      } else {
-        this.sortField = field;
-        this.sortOrder = 'asc';
-      }
-      this.fetchStudents();
-    },
-
-    changePage(page) {
-      if (page >= 1 && page <= this.students.last_page) {
-        this.fetchStudents(page);
-      }
-    },
-
-    resetFilters() {
-      this.filters = {
-        search: '',
-        department_id: '',
-        year: '',
-        status: ''
-      };
-      this.fetchStudents();
-    },
-
-    openCreateModal() {
-      this.$router.push({ name: 'student-create' });
-    },
-
-    viewStudent(id) {
-      this.$router.push({ name: 'student-show', params: { id } });
-    },
-
-    editStudent(id) {
-      this.$router.push({ name: 'student-edit', params: { id } });
-    },
-
-    async confirmDelete(id) {
-      if (confirm('Are you sure you want to delete this student?')) {
-        try {
-          await this.$api.delete(`/api/students/${id}`);
-          this.$toasted.success('Student deleted successfully');
-          this.fetchStudents();
-        } catch (error) {
-          console.error('Error deleting student:', error);
-          this.$toasted.error('Failed to delete student');
+        if (error.response && error.response.status === 422) {
+          this.errors = error.response.data.errors;
+          this.$toasted.error('Please check the form for errors');
+        } else {
+          this.$toasted.error('Failed to update student');
         }
+        console.error('Error updating student:', error);
+      } finally {
+        this.submitting = false;
       }
     },
 
-    getInitials(name) {
-      return name
-          .split(' ')
-          .map(n => n[0])
-          .join('')
-          .toUpperCase()
-          .slice(0, 2);
+    goBack() {
+      this.$router.push({ name: 'StudentList' });
     }
   }
 };
 </script>
 
 <style scoped>
-/* Font Awesome Icons - Add this in your index.html */
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
-
-.student-management {
-  padding: 30px;
-  background: #f8f9fa;
-  min-height: 100vh;
+* {
+  box-sizing: border-box;
 }
 
-/* ===== Page Header Section ===== */
-.page-header-section {
-  margin-bottom: 30px;
+.student-edit-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 24px;
+}
+
+/* Loading State */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.spinner-large {
+  width: 60px;
+  height: 60px;
+  border: 4px solid #e2e8f0;
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+.loading-container p {
+  font-size: 16px;
+  color: #718096;
+  font-weight: 500;
+}
+
+/* Header */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
 .header-content {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 25px;
-}
-
-.title-area {
-  flex: 1;
-}
-
-.main-title {
-  font-size: 32px;
-  font-weight: 700;
-  color: #1a202c;
-  margin: 0 0 8px 0;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.icon-wrapper {
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 24px;
-}
-
-.subtitle {
-  font-size: 15px;
-  color: #718096;
-  margin: 0;
-}
-
-.btn-add-new {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  padding: 14px 28px;
-  border-radius: 12px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-}
-
-.btn-add-new:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-}
-
-/* ===== Stats Grid ===== */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-}
-
-.stat-card {
-  background: white;
-  border-radius: 16px;
-  padding: 24px;
-  display: flex;
   align-items: center;
   gap: 20px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
-  border-left: 4px solid;
 }
 
-.stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-}
-
-.stat-primary { border-left-color: #667eea; }
-.stat-success { border-left-color: #10b981; }
-.stat-info { border-left-color: #3b82f6; }
-.stat-warning { border-left-color: #f59e0b; }
-
-.stat-icon {
+.header-icon {
   width: 64px;
   height: 64px;
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
+  color: white;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
-.stat-primary .stat-icon {
-  background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
-  color: #667eea;
-}
-
-.stat-success .stat-icon {
-  background: linear-gradient(135deg, #10b98120 0%, #10b98120 100%);
-  color: #10b981;
-}
-
-.stat-info .stat-icon {
-  background: linear-gradient(135deg, #3b82f620 0%, #3b82f620 100%);
-  color: #3b82f6;
-}
-
-.stat-warning .stat-icon {
-  background: linear-gradient(135deg, #f59e0b20 0%, #f59e0b20 100%);
-  color: #f59e0b;
-}
-
-.stat-info {
-  flex: 1;
-}
-
-.stat-label {
-  font-size: 14px;
-  color: #64748b;
-  margin: 0 0 6px 0;
-  font-weight: 500;
-}
-
-.stat-value {
-  font-size: 28px;
+.page-title {
+  font-size: 32px;
   font-weight: 700;
-  color: #1e293b;
+  color: white;
   margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* ===== Filter Section ===== */
-.filter-section {
-  margin-bottom: 30px;
+.page-subtitle {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 6px 0 0 0;
 }
 
-.filter-card {
-  background: white;
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-}
-
-.filter-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 2px solid #f1f5f9;
-}
-
-.filter-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1e293b;
-  margin: 0;
+.btn-back {
   display: flex;
   align-items: center;
-  gap: 10px;
-}
-
-.btn-reset {
-  background: #f1f5f9;
-  color: #64748b;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 8px;
+  gap: 8px;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  color: white;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s ease;
-}
-
-.btn-reset:hover {
-  background: #e2e8f0;
-  color: #475569;
-}
-
-.filter-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-}
-
-.filter-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.filter-label {
-  font-size: 14px;
-  font-weight: 600;
-  color: #475569;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.filter-input,
-.filter-select {
-  padding: 12px 16px;
-  border: 2px solid #e2e8f0;
-  border-radius: 10px;
-  font-size: 14px;
   transition: all 0.3s ease;
+}
+
+.btn-back:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Form */
+.student-form {
   background: white;
-}
-
-.filter-input:focus,
-.filter-select:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-}
-
-/* ===== Loading State ===== */
-.loading-wrapper {
-  background: white;
-  border-radius: 16px;
-  padding: 80px;
-  text-align: center;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-}
-
-.loading-spinner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-}
-
-.spinner {
-  width: 50px;
-  height: 50px;
-  border: 5px solid #f1f5f9;
-  border-top-color: #667eea;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* ===== Data Table Section ===== */
-.data-table-section {
-  margin-bottom: 30px;
-}
-
-.table-card {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   overflow: hidden;
 }
 
-.table-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 24px;
-  border-bottom: 2px solid #f1f5f9;
-  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+.form-section {
+  padding: 40px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
-.table-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1e293b;
-  margin: 0;
+.form-section:last-of-type {
+  border-bottom: none;
+}
+
+/* Section Header */
+.section-header {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 16px;
+  margin-bottom: 32px;
 }
 
-.table-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.btn-icon-action {
-  width: 40px;
-  height: 40px;
-  border: 2px solid #e2e8f0;
-  background: white;
-  border-radius: 10px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  color: #64748b;
-  transition: all 0.2s ease;
-}
-
-.btn-icon-action:hover {
-  background: #f8fafc;
-  border-color: #667eea;
-  color: #667eea;
-}
-
-.table-container {
-  overflow-x: auto;
-}
-
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.data-table thead {
-  background: linear-gradient(135deg, #f8f9fa 0%, #f1f5f9 100%);
-}
-
-.data-table th {
-  padding: 16px 20px;
-  text-align: left;
-  font-size: 13px;
-  font-weight: 700;
-  color: #475569;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
-  border-bottom: 2px solid #e2e8f0;
-}
-
-.th-content {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.sortable {
-  cursor: pointer;
-  user-select: none;
-  transition: background 0.2s ease;
-}
-
-.sortable:hover {
-  background: #e2e8f0;
-}
-
-.sort-indicator {
-  color: #667eea;
-  font-size: 14px;
-}
-
-.data-table tbody tr {
-  border-bottom: 1px solid #f1f5f9;
-  transition: all 0.2s ease;
-}
-
-.data-table tbody tr:hover {
-  background: #f8fafc;
-}
-
-.data-table td {
-  padding: 18px 20px;
-  font-size: 14px;
-  color: #334155;
-}
-
-.student-id-badge {
-  display: inline-block;
-  padding: 6px 14px;
-  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-  color: #667eea;
-  font-weight: 700;
-  font-size: 13px;
-  border-radius: 8px;
-  font-family: 'Courier New', monospace;
-  border: 2px solid #667eea30;
-}
-
-.student-profile {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.student-avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
+.section-icon {
+  width: 48px;
+  height: 48px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 15px;
-  flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  color: white;
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
 }
 
-.student-details {
+.section-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0;
+}
+
+/* Form Grid */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group {
   display: flex;
   flex-direction: column;
-  gap: 4px;
 }
 
-.student-name {
-  font-weight: 600;
-  color: #1e293b;
+.form-label {
   font-size: 14px;
-}
-
-.student-session {
-  font-size: 12px;
-  color: #94a3b8;
-}
-
-.roll-number {
   font-weight: 600;
-  color: #475569;
+  color: #2d3748;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
 }
 
-.department-name {
-  color: #64748b;
+.form-label.required::after {
+  content: '*';
+  color: #e53e3e;
+  margin-left: 4px;
+  font-size: 16px;
+}
+
+/* Input Wrapper */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  right: 14px;
+  color: #a0aec0;
+  pointer-events: none;
+  transition: color 0.3s ease;
+}
+
+.form-input:focus ~ .input-icon,
+.form-textarea:focus ~ .input-icon {
+  color: #667eea;
+}
+
+/* Inputs */
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 14px 46px 14px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 15px;
+  color: #2d3748;
+  background: #f7fafc;
+  transition: all 0.3s ease;
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: #a0aec0;
+}
+
+.form-input:hover,
+.form-textarea:hover {
+  border-color: #cbd5e0;
+  background: white;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 100px;
+  padding-right: 16px;
+  font-family: inherit;
+}
+
+.input-error {
+  border-color: #e53e3e !important;
+  background: #fff5f5 !important;
+}
+
+.input-error:focus {
+  box-shadow: 0 0 0 4px rgba(229, 62, 62, 0.1) !important;
+}
+
+.error-message {
+  color: #e53e3e;
+  font-size: 13px;
+  margin-top: 6px;
   font-weight: 500;
 }
 
-.year-badge,
-.semester-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.year-badge {
-  background: linear-gradient(135deg, #10b98115 0%, #10b98115 100%);
-  color: #059669;
-  border: 2px solid #10b98130;
-}
-
-.semester-badge {
-  background: linear-gradient(135deg, #f59e0b15 0%, #f59e0b15 100%);
-  color: #d97706;
-  border: 2px solid #f59e0b30;
-}
-
-.email-text,
-.mobile-text {
-  color: #64748b;
-}
-
-.status-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.status-active {
-  background: linear-gradient(135deg, #10b98115 0%, #10b98115 100%);
-  color: #059669;
-  border: 2px solid #10b98130;
-}
-
-.status-inactive {
-  background: linear-gradient(135deg, #ef444415 0%, #ef444415 100%);
-  color: #dc2626;
-  border: 2px solid #ef444430;
-}
-
-.action-buttons-group {
+/* Form Actions */
+.form-actions {
   display: flex;
-  gap: 8px;
-  justify-content: center;
+  justify-content: flex-end;
+  gap: 16px;
+  padding: 32px 40px;
+  background: linear-gradient(to bottom, #f7fafc 0%, #edf2f7 100%);
 }
 
-.action-btn {
-  width: 36px;
-  height: 36px;
+.btn-cancel,
+.btn-submit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
   border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  transition: all 0.2s ease;
-}
-
-.view-btn {
-  background: linear-gradient(135deg, #3b82f615 0%, #3b82f615 100%);
-  color: #2563eb;
-  border: 2px solid #3b82f630;
-}
-
-.view-btn:hover {
-  background: #3b82f6;
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-}
-
-.edit-btn {
-  background: linear-gradient(135deg, #f59e0b15 0%, #f59e0b15 100%);
-  color: #d97706;
-  border: 2px solid #f59e0b30;
-}
-
-.edit-btn:hover {
-  background: #f59e0b;
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-}
-
-.delete-btn {
-  background: linear-gradient(135deg, #ef444415 0%, #ef444415 100%);
-  color: #dc2626;
-  border: 2px solid #ef444430;
-}
-
-.delete-btn:hover {
-  background: #ef4444;
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-}
-
-/* ===== Pagination ===== */
-.pagination-wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 24px;
-  border-top: 2px solid #f1f5f9;
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-}
-
-.pagination-info {
-  font-size: 14px;
-  color: #64748b;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.pagination-info strong {
-  color: #1e293b;
-  font-weight: 700;
-}
-
-.pagination-controls {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.pagination-btn {
-  padding: 10px 18px;
-  border: 2px solid #e2e8f0;
-  background: white;
-  border-radius: 10px;
-  font-size: 14px;
+  border-radius: 12px;
+  font-size: 15px;
   font-weight: 600;
-  color: #64748b;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
-.pagination-btn:hover:not(:disabled) {
-  background: #f8fafc;
-  border-color: #667eea;
-  color: #667eea;
-}
-
-.pagination-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.page-numbers {
-  display: flex;
-  gap: 6px;
-}
-
-.page-btn {
-  width: 40px;
-  height: 40px;
-  border: 2px solid #e2e8f0;
+.btn-cancel {
   background: white;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #64748b;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  color: #4a5568;
+  border: 2px solid #e2e8f0;
 }
 
-.page-btn:hover {
-  background: #f8fafc;
-  border-color: #667eea;
-  color: #667eea;
+.btn-cancel:hover {
+  background: #f7fafc;
+  border-color: #cbd5e0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-.page-btn.active {
+.btn-submit {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  border-color: transparent;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
 }
 
-/* ===== Responsive Design ===== */
-@media (max-width: 1024px) {
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.btn-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(102, 126, 234, 0.5);
+}
 
-  .filter-grid {
-    grid-template-columns: repeat(2, 1fr);
+.btn-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 
+/* Responsive Design */
 @media (max-width: 768px) {
-  .student-management {
-    padding: 15px;
+  .student-edit-container {
+    padding: 16px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .header-content {
     flex-direction: column;
-    gap: 16px;
+    align-items: flex-start;
+    gap: 12px;
   }
 
-  .stats-grid {
+  .header-icon {
+    width: 56px;
+    height: 56px;
+  }
+
+  .page-title {
+    font-size: 26px;
+  }
+
+  .page-subtitle {
+    font-size: 14px;
+  }
+
+  .btn-back {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .form-section {
+    padding: 24px;
+  }
+
+  .form-grid {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
 
-  .filter-grid {
-    grid-template-columns: 1fr;
+  .section-header {
+    flex-direction: row;
+    gap: 12px;
   }
 
-  .pagination-wrapper {
+  .section-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .section-title {
+    font-size: 19px;
+  }
+
+  .form-actions {
     flex-direction: column;
-    gap: 16px;
+    padding: 24px;
   }
 
-  .table-container {
-    overflow-x: scroll;
+  .btn-cancel,
+  .btn-submit {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-title {
+    font-size: 22px;
+  }
+
+  .form-section {
+    padding: 20px;
+  }
+
+  .section-title {
+    font-size: 17px;
+  }
+
+  .form-input,
+  .form-textarea {
+    font-size: 14px;
+    padding: 12px 42px 12px 14px;
+  }
+
+  .form-label {
+    font-size: 13px;
   }
 }
 </style>

@@ -631,9 +631,8 @@ export default {
       this.errors = {};
 
       try {
-        const response = await this.$api.post('/students', this.form);
+         await this.$api.post('/students', this.form);
         this.$toasted.success('Student created successfully!');
-        console.log(response)
         this.$router.push({ name: 'student-list' });
       } catch (error) {
         if (error.response && error.response.status === 422) {

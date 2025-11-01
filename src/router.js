@@ -17,6 +17,7 @@ import StudentList from './views/Admin/student/Index'
 import StudentCreate from './views/Admin/student/Create'
 import StudentEdit from './views/Admin/student/Edit'
 import StudentShow from './views/Admin/student/Show'
+import StudentImport from './views/Admin/student/Import'
 import DepartmentList from './views/Admin/department/Index'
 import SubjectList from './views/Admin/subject/Index'
 import ClassRoomList from './views/Admin/class-room/Index'
@@ -100,6 +101,7 @@ const router = new Router({
                 { path: 'student-create', name: 'StudentCreate', component: StudentCreate },
                 { path: 'student-edit', name: 'StudentEdit', component: StudentEdit },
                 { path: 'student-show', name: 'StudentShow', component: StudentShow },
+                { path: 'student-import', name: 'StudentImport', component: StudentImport },
                 { path: 'department-list', name: 'DepartmentList', component: DepartmentList },
                 { path: 'subject-list', name: 'SubjectList', component: SubjectList },
                 { path: 'class-room-list', name: 'ClassRoomList', component: ClassRoomList },
@@ -181,7 +183,7 @@ const router = new Router({
                 // Attendance Routes
                 {
                     path: '/attendance',
-                    name: 'AttendanceList',
+                    name: 'StudentCardAttendanceList',
                     component: StudentCardAttendanceList
                 },
                 {
