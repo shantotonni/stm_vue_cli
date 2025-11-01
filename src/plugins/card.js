@@ -90,34 +90,38 @@ export default {
         },
         markCompleted(id, data) {
             return api.post(`/student-structure-progress/${id}/complete`, data);
-        }
+        },
     },
 
     // Attendance
     attendance: {
         getAll(params = {}) {
-            return api.get('/attendance', { params });
+            return api.get('/card-attendance', { params });
         },
         getById(id) {
-            return api.get(`/attendance/${id}`);
+            return api.get(`/card-attendance/${id}`);
         },
         create(data) {
-            return api.post('/attendance', data);
+            return api.post('/card-attendance', data);
         },
         update(id, data) {
-            return api.put(`/attendance/${id}`, data);
+            return api.put(`/card-attendance/${id}`, data);
         },
         delete(id) {
-            return api.delete(`/attendance/${id}`);
+            return api.delete(`/card-attendance/${id}`);
         },
         bulkMark(data) {
-            return api.post('/attendance/bulk-mark', data);
+            return api.post('/card-attendance/bulk-mark', data);
         },
         getSummary(params) {
-            return api.get('/attendance/summary/stats', { params });
+            return api.get('/card-attendance/summary/stats', { params });
         }
     },
-
+    students: {
+        getByCardType(cardTypeId) {
+            return api.get(`/card-attendance/students/by-card-type/${cardTypeId}`);
+        },
+    },
     // Term Exams
     termExams: {
         getAll(params = {}) {
