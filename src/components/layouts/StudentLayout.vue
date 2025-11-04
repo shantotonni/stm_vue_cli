@@ -103,10 +103,13 @@ export default {
     },
   },
   async created() {
-    await this.fetchUserMenus()
+
     //await this.loadUser()
   },
   mounted() {
+     setTimeout(()=>{
+       this.fetchUserMenus()
+     },1000)
     //this.loadScript()
   },
   methods: {

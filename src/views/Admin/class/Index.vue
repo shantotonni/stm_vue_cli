@@ -87,13 +87,7 @@
             Search
           </label>
           <div class="input-wrapper">
-            <input
-                v-model="filters.search"
-                @input="debouncedSearch"
-                type="text"
-                placeholder="Search classes..."
-                class="filter-input"
-            />
+            <input v-model="filters.search" @input="debouncedSearch" type="text" placeholder="Search classes..." class="filter-input"/>
             <i class="fas fa-search input-icon"></i>
           </div>
         </div>
@@ -188,7 +182,7 @@
             <td>
               <div class="schedule-cell">
                 <i class="fas fa-list-alt"></i>
-                <span>{{ getScheduleName(classItem) }}</span>
+                <span>{{ getScheduleDisplayName(classItem.schedule) }}</span>
               </div>
             </td>
             <td>
@@ -227,9 +221,9 @@
             </td>
             <td>
               <div class="action-buttons">
-                <button @click="viewClass(classItem)" class="btn-action btn-view" title="View">
-                  <i class="fas fa-eye"></i>
-                </button>
+<!--                <button @click="viewClass(classItem)" class="btn-action btn-view" title="View">-->
+<!--                  <i class="fas fa-eye"></i>-->
+<!--                </button>-->
                 <button @click="editClass(classItem)" class="btn-action btn-edit" title="Edit">
                   <i class="fas fa-pen"></i>
                 </button>
@@ -626,6 +620,7 @@ export default {
         };
 
         const response = await this.$api.get('/classes', { params });
+        console.log(response)
         this.classes = response.data.data;
 
         this.pagination = {
@@ -654,7 +649,7 @@ export default {
     },
     getScheduleName(classItem) {
       if (!classItem) return 'N/A';
-
+      console.log(classItem)
       if (classItem.schedule) {
         return classItem.schedule.title ||
             classItem.schedule.course_name ||
@@ -785,7 +780,6 @@ export default {
         this.fetchClasses();
       } catch (error) {
         this.showToast('Failed to delete class', 'error');
-        console.error(error);
       } finally {
         this.deleting = false;
       }

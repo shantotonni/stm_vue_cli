@@ -24,7 +24,7 @@
           <div class="form-group">
             <label for="loginId">Login ID</label>
             <div class="input-wrapper">
-              <input type="text" id="loginId" v-model="loginId" class="form-input" placeholder="Enter your loginId" required autocomplete="loginId">
+              <input type="text" id="loginId" v-model="loginId" class="form-input" placeholder="Enter your loginId" required autocomplete="loginId" :disabled="isLoading">
               <span class="input-icon">🆔</span>
             </div>
           </div>
@@ -32,19 +32,19 @@
           <div class="form-group">
             <label for="password">Password</label>
             <div class="input-wrapper">
-              <input type="password" id="password" v-model="password" class="form-input" placeholder="Enter your password" required>
+              <input type="password" id="password" v-model="password" class="form-input" placeholder="Enter your password" required :disabled="isLoading">
               <span class="input-icon">🔐</span>
             </div>
           </div>
 
-          <button type="submit" class="login-btn">
-            <span class="loading"></span>
-            <span class="btn-text">Login</span>
+          <button type="submit" class="login-btn" :disabled="isLoading">
+            <span class="loading" :class="{ active: isLoading }"></span>
+            <span class="btn-text">{{ isLoading ? 'Logging in...' : 'Login' }}</span>
           </button>
 
-<!--          <div class="forgot-password">-->
-<!--            <a href="#" id="forgotPassword">Forgot your password?</a>-->
-<!--          </div>-->
+          <!--          <div class="forgot-password">-->
+          <!--            <a href="#" id="forgotPassword">Forgot your password?</a>-->
+          <!--          </div>-->
         </form>
 
         <div class="footer">
@@ -63,6 +63,7 @@ export default {
       loginId: "",
       password: "",
       errorMessage: "",
+      isLoading: false,
     };
   },
   mounted() {
@@ -71,11 +72,14 @@ export default {
   methods: {
     async handleLogin() {
       this.errorMessage = "";
+      this.isLoading = true;
+
       try {
         const res = await this.$store.dispatch("login", {
           loginId: this.loginId,
           password: this.password,
         });
+
         if (res && res.token) {
           await this.$store.dispatch("loadUser");
           const is_change_password = localStorage.getItem("is_change_password");
@@ -86,6 +90,7 @@ export default {
           }
         } else {
           this.errorMessage = res.response.data.message || "Login failed!";
+          this.isLoading = false;
         }
       } catch (err) {
         if (err.response) {
@@ -93,6 +98,7 @@ export default {
         } else {
           this.errorMessage = "Server not responding!";
         }
+        this.isLoading = false;
       }
     },
     createParticles() {
@@ -372,6 +378,11 @@ body {
   color: #667eea;
 }
 
+.form-input:disabled {
+  background: rgba(229, 231, 235, 0.5);
+  cursor: not-allowed;
+}
+
 .login-btn {
   width: 100%;
   padding: 16px;
@@ -385,15 +396,24 @@ body {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-.login-btn:hover {
+.login-btn:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
 }
 
-.login-btn:active {
+.login-btn:active:not(:disabled) {
   transform: translateY(0);
+}
+
+.login-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .login-btn::before {
@@ -407,7 +427,7 @@ body {
   transition: left 0.5s;
 }
 
-.login-btn:hover::before {
+.login-btn:hover:not(:disabled)::before {
   left: 100%;
 }
 
@@ -444,7 +464,10 @@ body {
   border-top: 2px solid white;
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  margin-right: 8px;
+}
+
+.loading.active {
+  display: inline-block;
 }
 
 @keyframes spin {

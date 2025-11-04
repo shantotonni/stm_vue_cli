@@ -41,22 +41,22 @@
         </div>
 
         <div class="form-grid">
-          <div class="form-group">
-            <label class="form-label required">User</label>
-            <div class="input-wrapper">
-              <select v-model="form.user_id" class="form-input" :class="{ 'input-error': errors.user_id }">
-                <option value="">Select User</option>
-                <option v-for="user in users" :key="user.id" :value="user.id">
-                  {{ user.name }} ({{ user.login_code }})
-                </option>
-              </select>
-              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
-              </svg>
-            </div>
-            <span v-if="errors.user_id" class="error-message">{{ errors.user_id[0] }}</span>
-          </div>
+<!--          <div class="form-group">-->
+<!--            <label class="form-label required">User</label>-->
+<!--            <div class="input-wrapper">-->
+<!--              <select v-model="form.user_id" class="form-input" :class="{ 'input-error': errors.user_id }">-->
+<!--                <option value="">Select User</option>-->
+<!--                <option v-for="user in users" :key="user.id" :value="user.id">-->
+<!--                  {{ user.name }} ({{ user.login_code }})-->
+<!--                </option>-->
+<!--              </select>-->
+<!--              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">-->
+<!--                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>-->
+<!--                <circle cx="12" cy="7" r="4"/>-->
+<!--              </svg>-->
+<!--            </div>-->
+<!--            <span v-if="errors.user_id" class="error-message">{{ errors.user_id[0] }}</span>-->
+<!--          </div>-->
 
           <div class="form-group">
             <label class="form-label required">Full Name</label>
@@ -252,6 +252,23 @@
               </svg>
             </div>
             <span v-if="errors.student_id_number" class="error-message">{{ errors.student_id_number[0] }}</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required">Student Login Id</label>
+            <div class="input-wrapper">
+              <input
+                  v-model="form.login_id"
+                  type="text"
+                  class="form-input"
+                  :class="{ 'input-error': errors.login_id }"
+                  placeholder="e.g., 2024001"
+              />
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+            </div>
+            <span v-if="errors.login_id" class="error-message">{{ errors.login_id[0] }}</span>
           </div>
 
           <div class="form-group">
@@ -530,7 +547,8 @@ export default {
   data() {
     return {
       form: {
-        user_id: '',
+        // user_id: '',
+        login_id: '',
         department_id: '',
         name: '',
         student_id_number: '',
@@ -570,7 +588,7 @@ export default {
 
   mounted() {
     this.fetchDepartments();
-    this.fetchUsers();
+    // this.fetchUsers();
     this.fetchSession();
     this.fetchCategory();
     this.loadProgram();
@@ -633,7 +651,7 @@ export default {
       try {
          await this.$api.post('/students', this.form);
         this.$toasted.success('Student created successfully!');
-        this.$router.push({ name: 'student-list' });
+        this.$router.push({ name: 'StudentList' });
       } catch (error) {
         if (error.response && error.response.status === 422) {
           this.errors = error.response.data.errors;

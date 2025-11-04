@@ -452,7 +452,6 @@ export default {
 
   watch: {
     show(val) {
-      console.log(this.exam)
       if (val && this.exam) {
         this.fetchResults();
         this.fetchStudents();
@@ -506,7 +505,7 @@ export default {
 
     async saveBulkResults() {
       this.submitting = true;
-
+      console.log(this.bulkResults)
       try {
         const response = await this.$api.post('/results/bulk', {
           exam_id: this.exam.id,
@@ -629,10 +628,10 @@ export default {
 .modal-header-results {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 2rem;
+  padding: 1rem;
   position: relative;
   border-radius: 24px 24px 0 0;
-  overflow: hidden;
+  /*overflow: hidden;*/
 }
 
 .modal-header-results::before {

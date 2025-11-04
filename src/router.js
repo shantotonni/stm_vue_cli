@@ -41,6 +41,10 @@ import NoticeReport from './views/Admin/report/NoticeReport.vue';
 import ExamScheduleReport from './views/Admin/report/ExamScheduleReport.vue';
 import StudentSemesterReport from './views/Admin/report/StudentSemesterReport.vue';
 
+import StudentProgressCardReport from './views/report/StudentProgressCardReport.vue';
+
+//StudentProgressCardReport
+
 //card
 import CardType from './views/Admin/card-type/CardType.vue';
 import Cadavers from './views/Admin/cadaver/CadaverManagement.vue';
@@ -73,6 +77,9 @@ import TermExamResultList from '@/views/TermExamResults/List.vue';
 import TermExamResultForm from '@/views/TermExamResults/Form.vue';
 import TermExamResultBulk from '@/views/TermExamResults/BulkForm.vue';
 
+//calender
+import AcademicCalender from '@/views/Admin/academic-calendar/Academiccalendar';
+
 // settings
 import Profile from './views/settings/Profile'
 
@@ -99,7 +106,7 @@ const router = new Router({
                 { path: 'teachers-list', name: 'TeacherList', component: TeacherList },
                 { path: 'students-list', name: 'StudentList', component: StudentList },
                 { path: 'student-create', name: 'StudentCreate', component: StudentCreate },
-                { path: 'student-edit', name: 'StudentEdit', component: StudentEdit },
+                { path: 'student-edit/:id', name: 'StudentEdit', component: StudentEdit },
                 { path: 'student-show', name: 'StudentShow', component: StudentShow },
                 { path: 'student-import', name: 'StudentImport', component: StudentImport },
                 { path: 'department-list', name: 'DepartmentList', component: DepartmentList },
@@ -114,6 +121,7 @@ const router = new Router({
                 { path: 'notice-list', name: 'NoticeList', component: NoticeList },
                 { path: 'book-list', name: 'BookList', component: BookList },
                 { path: 'e-library', name: 'BookCard', component: BookCard },
+                { path: 'academic-calender', name: 'AcademicCalender', component: AcademicCalender },
 
                 //card
                 { path: 'card-types', name: 'CardType', component: CardType },
@@ -248,15 +256,11 @@ const router = new Router({
                 {path: '/attendance/mark/:classId', name: 'MarkAttendance', component: AttendanceMarkingComponent, props: true,
                     meta: {
                         requiresAuth: true,
-                        role: ['teacher', 'admin'],
-                        title: 'Mark Attendance'
                     }
                 },
                 {path: '/attendance/reports', name: 'AttendanceReports', component: AttendanceReportComponent,
                     meta: {
                         requiresAuth: true,
-                        role: ['admin'],
-                        title: 'Attendance Reports'
                     }
                 },
 
@@ -264,43 +268,36 @@ const router = new Router({
                 {path: 'report/results', name: 'StudentResults', component: ResultReport,
                     meta: {
                         requiresAuth: true,
-                        roles: ['admin', 'department_head', 'teacher', 'student'],
-                        title: 'Student Results',
                     },
                 },
                 {path: 'report/attendance', name: 'StudentAttendance', component: AttendanceReport,
                     meta: {
                         requiresAuth: true,
-                        roles: ['admin', 'department_head', 'teacher', 'student'],
-                        title: 'Student Attendance',
                     },
                 },
                 {path: 'report/class-schedule', name: 'ClassSchedule', component: ClassScheduleReport,
                     meta: {
                         requiresAuth: true,
-                        roles: ['admin', 'department_head', 'teacher', 'student'],
-                        title: 'Class Schedule',
                     },
                 },
                 {path: 'report/notices', name: 'Notices', component: NoticeReport,
                     meta: {
                         requiresAuth: true,
-                        roles: ['admin', 'department_head', 'teacher', 'student'],
-                        title: 'Notices',
                     },
                 },
                 {path: 'report/exam-schedule', name: 'ExamSchedule', component: ExamScheduleReport,
                     meta: {
                         requiresAuth: true,
-                        roles: ['admin', 'department_head', 'teacher', 'student'],
-                        title: 'Exam Schedule',
                     },
                 },
                 {path: 'student-semester-report', name: 'StudentSemesterReport', component: StudentSemesterReport,
                     meta: {
                         requiresAuth: true,
-                        roles: ['admin', 'department_head', 'teacher', 'student'],
-                        title: 'Student Semester Report',
+                    },
+                },
+                {path: 'student-progress-card-report', name: 'StudentProgressCardReport', component: StudentProgressCardReport,
+                    meta: {
+                        requiresAuth: true,
                     },
                 },
 

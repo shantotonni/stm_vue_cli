@@ -1,7 +1,7 @@
 import axios from "axios";
 import router from "@/router";
 const api = axios.create({
-    //baseURL: "https://backendevaluation.mcwh.online/api/",
+    //baseURL: "https://apistm.mcwh.online/api/",
      baseURL: "http://127.0.0.1:8000/api/",
     timeout: 10000,
 });
