@@ -12,6 +12,10 @@ import Toasted from 'vue-toasted'
 import { ValidationObserver, ValidationProvider, extend } from 'vee-validate'
 import * as rules from 'vee-validate/dist/rules'
 
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+Vue.use(ElementUI)
+
 
 // Global CSS
 import '@/assets/css/main.css'

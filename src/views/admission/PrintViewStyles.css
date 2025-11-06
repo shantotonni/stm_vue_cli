@@ -1,0 +1,499 @@
+/* Print View Styles - Exact PDF Matching */
+
+.print-view {
+    max-width: 210mm;
+    margin: 0 auto;
+    padding: 15mm;
+    background: white;
+    font-family: Arial, sans-serif;
+    font-size: 10pt;
+    line-height: 1.3;
+}
+
+/* Header */
+.print-header {
+    border-bottom: 2px solid #000;
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 9pt;
+}
+
+.classroom-field,
+.name-field {
+    font-weight: normal;
+}
+
+.college-header {
+    display: flex;
+    align-items: flex-start;
+}
+
+.logo-section {
+    width: 70px;
+    margin-right: 15px;
+}
+
+.logo-placeholder {
+    width: 70px;
+    height: 70px;
+    border: 1px solid #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14pt;
+    background: #f5f5f5;
+}
+
+.college-details {
+    flex: 1;
+    text-align: center;
+}
+
+.college-details h1 {
+    font-size: 16pt;
+    font-weight: bold;
+    margin-bottom: 5px;
+    line-height: 1.2;
+    letter-spacing: 0.5px;
+}
+
+.college-details p {
+    font-size: 8pt;
+    margin: 1px 0;
+    line-height: 1.3;
+}
+
+/* Form Title */
+.form-title-print {
+    text-align: center;
+    border: 2px solid #000;
+    padding: 8px;
+    margin-bottom: 10px;
+}
+
+.form-title-print h2 {
+    font-size: 12pt;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.form-note {
+    font-size: 8pt;
+    font-style: italic;
+}
+
+/* Category Section */
+.category-section {
+    margin-bottom: 10px;
+    padding: 5px 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.category-item {
+    margin-left: 15px;
+    font-size: 9pt;
+}
+
+/* Print Sections */
+.print-section {
+    border: 1px solid #000;
+    padding: 10px;
+    margin-bottom: 10px;
+    page-break-inside: avoid;
+}
+
+.section-header {
+    font-weight: bold;
+    font-size: 10pt;
+    background: #f0f0f0;
+    padding: 5px 8px;
+    margin: -10px -10px 10px -10px;
+    border-bottom: 1px solid #000;
+    text-transform: uppercase;
+}
+
+/* Info Grid (Admission Test Section) */
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 140px;
+    gap: 10px;
+}
+
+.info-column {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.info-row {
+    display: flex;
+    flex-direction: column;
+    font-size: 9pt;
+}
+
+.info-row .label {
+    font-weight: normal;
+    margin-bottom: 2px;
+}
+
+.info-row .value {
+    border-bottom: 1px solid #000;
+    min-height: 20px;
+    padding: 2px 4px;
+}
+
+/* Photo Box */
+.photo-box {
+    border-left: 1px solid #ccc;
+    padding-left: 10px;
+    text-align: center;
+}
+
+.photo-label {
+    font-size: 8pt;
+    margin-bottom: 5px;
+}
+
+.photo-container {
+    width: 120px;
+    height: 150px;
+    border: 1px solid #000;
+    margin: 0 auto;
+}
+
+.photo-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.photo-placeholder {
+    width: 120px;
+    height: 150px;
+    border: 1px solid #000;
+    margin: 0 auto;
+    background: #fafafa;
+}
+
+/* Detail Rows */
+.detail-row {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 6px;
+    font-size: 9pt;
+    gap: 5px;
+}
+
+.detail-row.full-width {
+    flex-direction: column;
+}
+
+.detail-row .label {
+    font-weight: normal;
+    white-space: nowrap;
+}
+
+.detail-row .value {
+    flex: 1;
+    border-bottom: 1px solid #000;
+    min-height: 18px;
+    padding: 0 4px;
+}
+
+.detail-row .value-small {
+    border-bottom: 1px solid #000;
+    min-height: 18px;
+    padding: 0 4px;
+    min-width: 100px;
+}
+
+.detail-row.full-width .value {
+    margin-top: 3px;
+    min-height: 40px;
+}
+
+/* Education Table */
+.edu-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 5px;
+}
+
+.edu-table th,
+.edu-table td {
+    border: 1px solid #000;
+    padding: 5px;
+    text-align: center;
+    font-size: 8pt;
+}
+
+.edu-table th {
+    background: #f0f0f0;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+.edu-table td {
+    min-height: 25px;
+}
+
+.edu-table td:first-child {
+    text-align: left;
+    font-size: 7pt;
+    line-height: 1.2;
+}
+
+/* Text Content */
+.text-content {
+    min-height: 50px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    background: #fafafa;
+    font-size: 9pt;
+}
+
+/* Referees */
+.note {
+    font-size: 7pt;
+    font-style: italic;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.referee-item {
+    display: flex;
+    margin-bottom: 12px;
+    padding: 8px;
+    background: #fafafa;
+    border: 1px solid #ddd;
+}
+
+.referee-number {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.referee-content {
+    flex: 1;
+}
+
+.referee-address {
+    min-height: 40px;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+    font-size: 9pt;
+}
+
+.referee-contact {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8pt;
+}
+
+/* Declaration Text */
+.declaration-text {
+    font-size: 8pt;
+    text-align: justify;
+    line-height: 1.5;
+    padding: 8px;
+    background: #fafafa;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+}
+
+/* Signature Section */
+.signature-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.signature-section > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.signature-section .label {
+    font-size: 8pt;
+    margin-bottom: 3px;
+}
+
+.signature-line {
+    border-bottom: 1px solid #000;
+    min-height: 25px;
+    padding: 2px 4px;
+    font-size: 9pt;
+}
+
+/* ID Section */
+.id-section {
+    background: #e8f5e9;
+    border-color: #4CAF50;
+    border-width: 2px;
+}
+
+.id-display {
+    text-align: center;
+    padding: 10px;
+}
+
+.id-display h3 {
+    font-size: 14pt;
+    color: #2e7d32;
+    margin-bottom: 5px;
+}
+
+.id-display p {
+    font-size: 10pt;
+    color: #1b5e20;
+    margin: 3px 0;
+}
+
+/* Page Break */
+.page-break {
+    page-break-before: always;
+}
+
+/* Print Actions */
+.print-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid #ddd;
+}
+
+.btn-print,
+.btn-back {
+    padding: 12px 30px;
+    font-size: 11pt;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-print {
+    background: #4CAF50;
+    color: white;
+}
+
+.btn-print:hover {
+    background: #45a049;
+}
+
+.btn-back {
+    background: #757575;
+    color: white;
+}
+
+.btn-back:hover {
+    background: #616161;
+}
+
+/* Print Media Query */
+@media print {
+    .print-view {
+        padding: 0;
+        max-width: 100%;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+    .print-section {
+        page-break-inside: avoid;
+    }
+
+    .page-break {
+        page-break-before: always;
+    }
+
+    /* Ensure backgrounds print */
+    .section-header,
+    .id-section,
+    .text-content,
+    .referee-item,
+    .declaration-text {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* Remove screen-only borders */
+    .print-view {
+        box-shadow: none;
+    }
+
+    /* Ensure proper page margins */
+    @page {
+        margin: 15mm;
+        size: A4;
+    }
+
+    /* Hide any buttons or interactive elements */
+    button,
+    .print-actions {
+        display: none !important;
+    }
+
+    /* Ensure black text for printing */
+    * {
+        color: #000 !important;
+    }
+
+    /* Exception for colored sections */
+    .id-display h3 {
+        color: #2e7d32 !important;
+    }
+
+    .id-display p {
+        color: #1b5e20 !important;
+    }
+}
+
+/* Responsive for smaller screens */
+@media screen and (max-width: 768px) {
+    .print-view {
+        padding: 10px;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .photo-box {
+        border-left: none;
+        border-top: 1px solid #ccc;
+        padding-left: 0;
+        padding-top: 10px;
+        margin-top: 10px;
+    }
+
+    .signature-section {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-row {
+        flex-wrap: wrap;
+    }
+
+    .print-actions {
+        flex-direction: column;
+    }
+
+    .btn-print,
+    .btn-back {
+        width: 100%;
+    }
+}

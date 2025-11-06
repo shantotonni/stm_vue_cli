@@ -7,7 +7,7 @@
           <button class="menu-toggle" @click="toggleSidebar">☰</button>
           <div class="logo">M</div>
           <div class="brand-name">
-            <span><img style="width: 115px" src="../../assets/images/logo.png" alt="logo"/></span>
+<!--            <span><img style="width: 115px" src="../../assets/images/logo.png" alt="logo"/></span>-->
           </div>
         </div>
 
