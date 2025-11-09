@@ -1358,3 +1358,400 @@ select.input-modern {
         padding: 20px;
     }
 }
+
+/* Annexes Checklist Styles */
+.annexes-checklist {
+    background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+}
+
+.annexes-instructions {
+    margin-bottom: 24px;
+}
+
+.instruction-box {
+    display: flex;
+    gap: 16px;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    border-left: 4px solid #3b82f6;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.instruction-icon {
+    font-size: 32px;
+    flex-shrink: 0;
+}
+
+.instruction-content h4 {
+    margin: 0 0 12px 0;
+    color: #1e40af;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.instruction-content ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.instruction-content li {
+    margin-bottom: 8px;
+    color: #475569;
+    line-height: 1.6;
+}
+
+.annexes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.annexes-category {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.category-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 16px 0;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #e5e7eb;
+    color: #1f2937;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.category-icon {
+    font-size: 24px;
+}
+
+.checklist-items {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    background: #f9fafb;
+    border-radius: 8px;
+    cursor: default;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.checklist-item:hover {
+    background: #f3f4f6;
+    border-color: #e5e7eb;
+}
+
+.checklist-item input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-custom {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #d1d5db;
+    border-radius: 6px;
+    flex-shrink: 0;
+    position: relative;
+    background: white;
+    transition: all 0.3s ease;
+    margin-top: 2px;
+}
+
+.checklist-item input[type="checkbox"]:checked + .checkbox-custom {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-color: #059669;
+}
+
+.checklist-item input[type="checkbox"]:checked + .checkbox-custom::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.item-content {
+    display: flex;
+    gap: 12px;
+    flex: 1;
+}
+
+.item-number {
+    font-weight: 700;
+    color: #667eea;
+    font-size: 15px;
+    flex-shrink: 0;
+    width: 24px;
+}
+
+.item-text {
+    flex: 1;
+}
+
+.item-text strong {
+    display: block;
+    color: #1f2937;
+    font-size: 14px;
+    margin-bottom: 4px;
+    line-height: 1.5;
+}
+
+.item-note {
+    display: block;
+    font-size: 12px;
+    color: #6b7280;
+    font-style: italic;
+    line-height: 1.4;
+}
+
+.annexes-summary {
+    margin-top: 24px;
+}
+
+.summary-card {
+    display: flex;
+    gap: 16px;
+    padding: 20px;
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border-radius: 12px;
+    border-left: 4px solid #f59e0b;
+}
+
+.summary-icon {
+    font-size: 32px;
+    flex-shrink: 0;
+}
+
+.summary-content h5 {
+    margin: 0 0 12px 0;
+    color: #92400e;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.summary-content ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.summary-content li {
+    margin-bottom: 8px;
+    color: #78350f;
+    line-height: 1.6;
+    font-size: 13px;
+}
+
+.warning-box {
+    margin-top: 20px;
+    display: flex;
+    gap: 16px;
+    padding: 16px;
+    background: #fef2f2;
+    border-radius: 12px;
+    border-left: 4px solid #dc2626;
+}
+
+.warning-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.warning-content {
+    color: #991b1b;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.warning-content strong {
+    color: #7f1d1d;
+}
+
+/* Print Styles for Checklist */
+@media print {
+    .annexes-checklist {
+        page-break-before: always;
+        background: white !important;
+    }
+
+    .checklist-item {
+        background: white !important;
+        border: 1px solid #e5e7eb !important;
+    }
+
+    .checkbox-custom {
+        border: 2px solid #000 !important;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .instruction-box,
+    .summary-card,
+    .warning-box {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .item-content {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .item-number {
+        width: auto;
+    }
+}
+
+/* ... existing styles ... */
+
+/* Annexes Section - Simple & Clean like PDF */
+.annexes-section {
+    background: #fff;
+    border: 2px solid #e5e7eb;
+}
+
+.annexes-list-simple {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.annex-item {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e5e7eb;
+    transition: background 0.2s ease;
+}
+
+.annex-item:last-child {
+    border-bottom: none;
+}
+
+.annex-item:hover {
+    background: #f9fafb;
+}
+
+.annex-number {
+    width: 40px;
+    font-weight: 700;
+    color: #667eea;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.annex-text {
+    flex: 1;
+    color: #1f2937;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.annex-text strong {
+    font-weight: 600;
+}
+
+.annex-checkbox {
+    width: 32px;
+    height: 32px;
+    border: 2px solid #d1d5db;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex-shrink: 0;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.annex-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+.annex-checkbox input[type="checkbox"]:checked ~ .check-icon,
+.annex-checkbox .check-icon {
+    display: block;
+}
+
+.check-icon {
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    position: absolute;
+}
+
+.annex-item:has(input:checked) .annex-checkbox {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-color: #059669;
+}
+
+/* Print Styles */
+@media print {
+    .annexes-section {
+        page-break-before: always;
+    }
+
+    .annex-item {
+        page-break-inside: avoid;
+    }
+
+    .annex-checkbox {
+        border: 2px solid #000 !important;
+        background: white !important;
+    }
+
+    .annex-item:has(input:checked) .annex-checkbox {
+        background: white !important;
+    }
+
+    .annex-item:has(input:checked) .annex-checkbox::before {
+        content: '✓';
+        color: #000;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .check-icon {
+        display: none !important;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .annex-item {
+        padding: 12px 16px;
+    }
+
+    .annex-number {
+        width: 32px;
+        font-size: 14px;
+    }
+
+    .annex-text {
+        font-size: 14px;
+    }
+
+    .annex-checkbox {
+        width: 28px;
+        height: 28px;
+    }
+}
